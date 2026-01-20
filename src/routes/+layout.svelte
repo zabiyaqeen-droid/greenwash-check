@@ -2,6 +2,7 @@
   import '../app.css';
   import Header from '$lib/components/Header.svelte';
   import Footer from '$lib/components/Footer.svelte';
+  import FeedbackButton from '$lib/components/FeedbackButton.svelte';
   
   let { children } = $props();
 </script>
@@ -18,6 +19,7 @@
     {@render children()}
   </main>
   <Footer />
+  <FeedbackButton />
 </div>
 
 <style>

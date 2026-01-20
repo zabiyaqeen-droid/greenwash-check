@@ -424,18 +424,62 @@
   
   /* Responsive */
   @media (max-width: 768px) {
+    .login-page {
+      padding: 1rem;
+    }
+    
     .login-container {
       flex-direction: column;
       align-items: center;
+      gap: 1.5rem;
     }
     
     .login-card,
     .mission-card {
       max-width: 100%;
+      padding: 1.5rem;
+    }
+    
+    .login-card h1 {
+      font-size: 1.5rem;
     }
     
     .mission-card {
       order: 2;
+    }
+    
+    .mission-card h2 {
+      font-size: 1.25rem;
+    }
+    
+    .support-options {
+      flex-direction: column;
+    }
+    
+    .support-option {
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .free-badge {
+      right: 16px;
+      font-size: 0.7rem;
+      padding: 0.3rem 0.6rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .login-card,
+    .mission-card {
+      padding: 1.25rem;
+    }
+    
+    .form-group label {
+      font-size: 0.85rem;
+    }
+    
+    .form-group input {
+      padding: 0.625rem;
     }
   }
 </style>

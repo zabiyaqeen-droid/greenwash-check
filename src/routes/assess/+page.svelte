@@ -2434,8 +2434,41 @@
   }
   
   @media (max-width: 768px) {
+    .assess-page {
+      padding: 1rem;
+    }
+    
+    .page-header h1 {
+      font-size: 1.5rem;
+    }
+    
+    .page-header .subtitle {
+      font-size: 0.9rem;
+    }
+    
+    .free-tool-banner {
+      padding: 1rem;
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .support-buttons {
+      flex-direction: column;
+      width: 100%;
+    }
+    
+    .support-btn {
+      width: 100%;
+      justify-content: center;
+    }
+    
     .quick-actions {
       flex-direction: column;
+    }
+    
+    .quick-action-btn {
+      width: 100%;
+      justify-content: center;
     }
     
     .quick-action-btn.settings {
@@ -2464,10 +2497,37 @@
       margin-top: 0.5rem;
     }
     
+    .document-upload {
+      padding: 0;
+    }
+    
+    .dropzone {
+      padding: 2rem 1rem;
+    }
+    
+    .dropzone-title {
+      font-size: 1rem;
+    }
+    
+    .run-btn {
+      width: 100%;
+      justify-content: center;
+      padding: 1rem;
+    }
+    
     .score-main {
       flex-direction: column;
       align-items: center;
       text-align: center;
+    }
+    
+    .score-circle {
+      width: 100px;
+      height: 100px;
+    }
+    
+    .score-value {
+      font-size: 2rem;
     }
     
     .risk-stats {
@@ -2478,8 +2538,41 @@
       grid-template-columns: 1fr;
     }
     
+    .issue-header, .positive-header {
+      padding: 0.75rem;
+    }
+    
     .issue-details, .positive-details {
+      padding: 0.75rem;
       padding-left: 1rem;
+    }
+    
+    .muuvment-iq-cta {
+      padding: 1.5rem;
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .cta-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .page-header h1 {
+      font-size: 1.25rem;
+    }
+    
+    .uploaded-file {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .file-actions {
+      width: 100%;
+      justify-content: flex-end;
     }
   }
 </style>

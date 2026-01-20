@@ -581,23 +581,81 @@
   }
   
   @media (max-width: 768px) {
+    .hero {
+      padding: 3rem 1rem;
+    }
+    
+    .title-row {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
     .title-row h1 {
-      font-size: 2rem;
+      font-size: 1.75rem;
+      text-align: center;
+    }
+    
+    .hero-subtitle {
+      font-size: 1rem;
+      padding: 0 0.5rem;
+    }
+    
+    .hero-actions {
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .btn-lg {
+      width: 100%;
+      justify-content: center;
+      padding: 0.875rem 1.5rem;
+      font-size: 1rem;
     }
     
     .region-grid {
       grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+    
+    .region-card {
+      padding: 1rem;
+    }
+    
+    .region-flag {
+      font-size: 2rem;
     }
     
     .feature-grid,
     .framework-grid {
       grid-template-columns: 1fr;
     }
+    
+    .features,
+    .regional,
+    .framework {
+      padding: 3rem 1rem;
+    }
+    
+    .features h2,
+    .regional h2,
+    .framework h2 {
+      font-size: 1.5rem;
+    }
   }
   
   @media (max-width: 480px) {
+    .title-row h1 {
+      font-size: 1.5rem;
+    }
+    
     .region-grid {
       grid-template-columns: 1fr;
+    }
+    
+    .beta-pill {
+      font-size: 0.75rem;
+      padding: 0.3rem 0.75rem;
     }
   }
 </style>
