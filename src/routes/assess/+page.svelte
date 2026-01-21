@@ -1249,20 +1249,17 @@
         {/if}
         
         <!-- Muuvment IQ CTA -->
-        <div class="muuvment-iq-cta">
-          <div class="cta-content">
-            <Sparkles size={32} class="cta-icon" />
-            <div class="cta-text">
-              <h3>Ready to Take Action on These Findings?</h3>
-              <p>Learn why the most innovative sustainability teams are using <strong>Muuvment IQ</strong> to reclaim their time and deliver exceptional sustainability results.</p>
-              <p class="value-prop">Get personalised guidance on addressing compliance gaps, improving environmental communications, and maintaining ongoing Bill C-59 compliance.</p>
-            </div>
+        <!-- Muuvment IQ Promotional Section -->
+        <div class="muuvment-iq-promo">
+          <div class="promo-divider"></div>
+          <div class="promo-content">
+            <h3 class="promo-title">Need More Comprehensive ESG Support?</h3>
+            <p class="promo-description">Learn why the most innovative sustainability teams are using <strong>Muuvment IQ</strong> to reclaim their time and deliver exceptional sustainability results.</p>
+            <a href="https://app.muuvment.com/ai/assistant" target="_blank" rel="noopener noreferrer" class="promo-button">
+              Try Muuvment IQ
+              <ExternalLink size={16} />
+            </a>
           </div>
-          <a href="https://app.muuvment.com/ai/assistant" target="_blank" rel="noopener noreferrer" class="cta-button">
-            Try Muuvment IQ
-            <ExternalLink size={16} />
-          </a>
-          <p class="cta-note">Free trial available — no login or credit card required</p>
         </div>
       </div>
     {/if}
@@ -3322,5 +3319,67 @@
   
   .assessment-info-text li:last-child {
     margin-bottom: 0;
+  }
+  
+  /* Muuvment IQ Promotional Section */
+  .muuvment-iq-promo {
+    margin-top: 3rem;
+  }
+  
+  .promo-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, #d1d5db, transparent);
+    margin-bottom: 2rem;
+  }
+  
+  .promo-content {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border-radius: 16px;
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+  
+  .promo-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 1.25rem 0;
+  }
+  
+  .promo-description {
+    font-size: 1.1rem;
+    color: #cbd5e1;
+    line-height: 1.7;
+    max-width: 700px;
+    margin: 0 auto 2rem auto;
+  }
+  
+  .promo-description strong {
+    color: white;
+  }
+  
+  .promo-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: white;
+    color: #1e293b;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+  }
+  
+  .promo-button:hover {
+    background: #f1f5f9;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .promo-button :global(svg) {
+    opacity: 0.7;
   }
 </style>
