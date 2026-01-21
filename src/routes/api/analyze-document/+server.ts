@@ -149,6 +149,91 @@ const enabledCriteria = dim.criteria?.filter((c: any) => c.enabled !== false) ||
   return framework;
 }
 
+// Apply weighted scoring to the AI results based on prompt weights
+function applyWeightedScoring(result: any, dimensions: any[], customPrompts?: AssessmentPrompt[]): any {
+  if (!result || !result.principleScores) {
+    return result;
+  }
+
+  // Build a weight map from custom prompts
+  const weightMap: Record<string, number> = {};
+  if (customPrompts) {
+    for (const prompt of customPrompts) {
+      weightMap[prompt.subcategory_id] = prompt.weight ?? 1.0;
+    }
+  }
+
+  // Also get weights from dimensions if not in custom prompts
+  for (const dim of dimensions) {
+    if (dim.criteria) {
+      for (const c of dim.criteria) {
+        if (!weightMap[c.id]) {
+          weightMap[c.id] = c.weight ?? 1.0;
+        }
+      }
+    }
+  }
+
+  let totalWeightedScore = 0;
+  let totalWeight = 0;
+
+  // Calculate weighted scores for each principle
+  const updatedPrincipleScores = result.principleScores.map((principle: any) => {
+    if (!principle.subcategories || principle.subcategories.length === 0) {
+      // No subcategories, use principle score directly with weight 1.0
+      totalWeightedScore += (principle.overallScore || 0) * 1.0;
+      totalWeight += 1.0;
+      return principle;
+    }
+
+    let principleWeightedScore = 0;
+    let principleWeight = 0;
+
+    const updatedSubcategories = principle.subcategories.map((sub: any) => {
+      const weight = weightMap[sub.id] ?? 1.0;
+      principleWeightedScore += (sub.score || 0) * weight;
+      principleWeight += weight;
+      return { ...sub, weight };
+    });
+
+    // Calculate weighted average for this principle
+    const weightedPrincipleScore = principleWeight > 0 
+      ? Math.round(principleWeightedScore / principleWeight) 
+      : principle.overallScore || 0;
+
+    totalWeightedScore += weightedPrincipleScore * (principleWeight / principle.subcategories.length);
+    totalWeight += principleWeight / principle.subcategories.length;
+
+    return {
+      ...principle,
+      overallScore: weightedPrincipleScore,
+      subcategories: updatedSubcategories
+    };
+  });
+
+  // Calculate overall weighted score
+  const weightedOverallScore = totalWeight > 0 
+    ? Math.round(totalWeightedScore / totalWeight) 
+    : result.overallScore || 0;
+
+  // Determine risk level based on weighted score
+  let riskLevel = result.riskLevel;
+  if (weightedOverallScore >= 75) {
+    riskLevel = 'Low Risk';
+  } else if (weightedOverallScore >= 50) {
+    riskLevel = 'Medium Risk';
+  } else {
+    riskLevel = 'High Risk';
+  }
+
+  return {
+    ...result,
+    overallScore: weightedOverallScore,
+    riskLevel,
+    principleScores: updatedPrincipleScores
+  };
+}
+
 // Analyze a batch of images with Vision API - extract claims and findings
 async function analyzeImageBatch(imagePaths: string[], dimensions: any[], batchNumber: number, pageStart: number, customPrompts?: AssessmentPrompt[]): Promise<ChunkResult> {
   const framework = buildAssessmentFramework(dimensions, customPrompts);
@@ -557,7 +642,10 @@ export const POST: RequestHandler = async ({ request }) => {
 
     console.log(`Analyzed ${chunks.length} batches, aggregating results...`);
 
-    const finalResult = await aggregateResults(chunks, dimensions);
+    const finalResult = await aggregateResults(chunks, dimensions, customPrompts);
+
+    // Apply weighted score calculation
+    const weightedResult = applyWeightedScoring(finalResult, dimensions, customPrompts);
 
     const processingTime = Math.round((Date.now() - startTime) / 1000);
     console.log(`Analysis complete in ${processingTime} seconds`);
@@ -569,11 +657,11 @@ export const POST: RequestHandler = async ({ request }) => {
           user_id: userId,
           document_id: fileId,
           document_name: fileName,
-          overall_score: finalResult.overallScore || 0,
-          risk_level: finalResult.riskLevel || 'Unknown',
-          principle_scores: finalResult.principleScores || {},
-          findings: finalResult.criticalIssues || [],
-          recommendations: finalResult.legalRiskAssessment?.priorityActions || []
+          overall_score: weightedResult.overallScore || 0,
+          risk_level: weightedResult.riskLevel || 'Unknown',
+          principle_scores: weightedResult.principleScores || {},
+          findings: weightedResult.criticalIssues || [],
+          recommendations: weightedResult.legalRiskAssessment?.priorityActions || []
         });
         console.log('Assessment result saved to Supabase');
       } catch (saveError) {
@@ -584,7 +672,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       assessment: {
-        ...finalResult,
+        ...weightedResult,
         metadata: {
           fileName,
           totalPages,
