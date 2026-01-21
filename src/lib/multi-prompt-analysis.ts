@@ -299,8 +299,7 @@ export async function extractClaims(
             { role: 'user', content: prompt }
           ],
           max_tokens: 8000,
-          response_format: { type: 'json_object' },
-          timeout: timeoutMs
+          response_format: { type: 'json_object' }
         });
         
         const content = response.choices[0]?.message?.content || '{}';
@@ -443,8 +442,7 @@ async function assessSubcategory(
               { role: 'user', content: prompt }
             ],
             max_tokens: 2000,
-            response_format: { type: 'json_object' },
-            timeout: timeoutMs
+            response_format: { type: 'json_object' }
           });
           
           const content = response.choices[0]?.message?.content || '{}';

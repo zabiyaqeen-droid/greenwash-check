@@ -442,14 +442,15 @@ export const POST: RequestHandler = async ({ request }) => {
     const subcategories = dimensionsToSubcategories(dimensions, customPrompts);
     console.log(`[HYBRID] Assessing ${subcategories.length} subcategories in parallel`);
     
-    const subcategoryResults = await assessAllSubcategories(
-      allClaims,
+    const assessmentResult = await assessAllSubcategories(
       subcategories,
+      allClaims,
       combinedText.slice(0, 5000) // Additional context
     );
+    const subcategoryResults = assessmentResult.results;
     
-    const successCount = subcategoryResults.filter(r => !r.error).length;
-    const failCount = subcategoryResults.filter(r => r.error).length;
+    const successCount = assessmentResult.succeeded;
+    const failCount = assessmentResult.failed;
     console.log(`[HYBRID] Subcategory assessments: ${successCount} succeeded, ${failCount} failed`);
     
     // PHASE 5: Aggregate results

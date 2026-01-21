@@ -406,14 +406,15 @@ export const POST: RequestHandler = async ({ request }) => {
       .map(c => `[Page ${c.page}] ${c.text}`)
       .join('\n');
 
-    const subcategoryResults = await assessAllSubcategories(
-      allClaims,
+    const assessmentResult = await assessAllSubcategories(
       subcategories,
+      allClaims,
       documentContext
     );
+    const subcategoryResults = assessmentResult.results;
     
-    const successCount = subcategoryResults.filter(r => !r.error).length;
-    const failCount = subcategoryResults.filter(r => r.error).length;
+    const successCount = assessmentResult.succeeded;
+    const failCount = assessmentResult.failed;
     console.log(`[VISION] Subcategory assessments: ${successCount} succeeded, ${failCount} failed`);
 
     // PHASE 3: Aggregate results
