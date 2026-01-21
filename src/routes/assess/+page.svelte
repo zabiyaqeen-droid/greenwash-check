@@ -43,6 +43,7 @@
   let emailSent = $state(false);
   let emailError = $state('');
   let emailAutoSent = $state(false); // Track if email was auto-sent on completion
+let emailSubmitted = $state(false); // Track if user clicked submit to confirm email
   
   // Storage key for persisting analysis state
   const STORAGE_KEY = 'greenwash_check_analysis_state';
@@ -932,11 +933,20 @@
           <button 
             class="email-submit-btn"
             disabled={!emailAddress || !emailAddress.includes('@') || isAnalyzing || emailAutoSent}
-            onclick={() => { /* Email will be sent automatically after assessment */ }}
+            onclick={() => {
+              if (emailAddress && emailAddress.includes('@')) {
+                emailSubmitted = true;
+                // Show brief confirmation
+                setTimeout(() => { emailSubmitted = false; }, 3000);
+              }
+            }}
           >
             {#if emailAutoSent}
               <CheckCircle size={16} />
               Sent
+            {:else if emailSubmitted}
+              <CheckCircle size={16} />
+              Confirmed
             {:else}
               Submit
             {/if}
@@ -944,6 +954,8 @@
         </div>
         {#if emailAutoSent}
           <span class="email-sent-text">Report sent to this email</span>
+        {:else if emailSubmitted}
+          <span class="email-confirmed-text">Email confirmed! Report will be sent after assessment.</span>
         {/if}
         <div class="assessment-info-box">
           <Info size={16} />
@@ -3558,6 +3570,15 @@
     color: #166534;
     margin-top: -0.75rem;
     margin-bottom: 1rem;
+  }
+
+  .email-confirmed-text {
+    display: block;
+    font-size: 0.85rem;
+    color: #27AE60;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
     padding-left: 0.25rem;
   }
   
