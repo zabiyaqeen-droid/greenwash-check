@@ -71,13 +71,44 @@ function createAssessmentStore() {
   return {
     subscribe,
     add: (result: AssessmentResult) => {
+      console.log('[History] Adding assessment to history:', result.id);
       update(results => [result, ...results]);
       if (typeof localStorage !== 'undefined') {
-        const stored = localStorage.getItem('greenwash_history') || '[]';
-        const history = JSON.parse(stored);
-        history.unshift(result);
-        // Store up to 20 full assessments (increased storage for full data)
-        localStorage.setItem('greenwash_history', JSON.stringify(history.slice(0, 20)));
+        try {
+          const stored = localStorage.getItem('greenwash_history') || '[]';
+          const history = JSON.parse(stored);
+          history.unshift(result);
+          // Store up to 20 full assessments (increased storage for full data)
+          const dataToStore = JSON.stringify(history.slice(0, 20));
+          console.log('[History] Storing data size:', (dataToStore.length / 1024).toFixed(2), 'KB');
+          localStorage.setItem('greenwash_history', dataToStore);
+          console.log('[History] Successfully saved to localStorage');
+        } catch (e) {
+          console.error('[History] Failed to save to localStorage:', e);
+          // If localStorage is full, try storing less data
+          if (e instanceof DOMException && e.name === 'QuotaExceededError') {
+            console.warn('[History] localStorage quota exceeded, storing minimal data');
+            try {
+              const minimalResult = {
+                id: result.id,
+                timestamp: result.timestamp,
+                inputType: result.inputType,
+                inputPreview: result.inputPreview,
+                fileName: result.fileName,
+                overallScore: result.overallScore,
+                riskLevel: result.riskLevel,
+                summary: result.summary?.slice(0, 500),
+                claimsAnalyzed: result.claimsAnalyzed
+              };
+              const stored = localStorage.getItem('greenwash_history') || '[]';
+              const history = JSON.parse(stored);
+              history.unshift(minimalResult);
+              localStorage.setItem('greenwash_history', JSON.stringify(history.slice(0, 10)));
+            } catch (e2) {
+              console.error('[History] Even minimal storage failed:', e2);
+            }
+          }
+        }
       }
     },
     get: (id: string): AssessmentResult | undefined => {

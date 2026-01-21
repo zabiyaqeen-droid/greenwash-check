@@ -388,6 +388,7 @@ let emailSubmitted = $state(false); // Track if user clicked submit to confirm e
       result = responseData.assessment || responseData;
       
       // Store full assessment data for history access
+      console.log('[Assess] Saving assessment to history, overallScore:', result.overallScore);
       assessmentHistory.add({
         id: crypto.randomUUID(),
         timestamp: new Date().toISOString(),
@@ -984,39 +985,9 @@ let emailSubmitted = $state(false); // Track if user clicked submit to confirm e
           Run Assessment
         {/if}
       </button>
-      
-      <!-- Disclaimer and Privacy Notice -->
-      <div class="pre-assessment-disclaimer">
-        <div class="disclaimer-header">
-          <AlertTriangle size={18} />
-          <h4>Important Notice & Privacy</h4>
-        </div>
-        <div class="disclaimer-content">
-          <p>
-            <strong>Your privacy matters.</strong> Your data is only accessed and used to deliver this service. 
-            We respect your privacy and <strong>do not use your documents or data to train AI models</strong>. 
-            Your assessments remain confidential.
-          </p>
-          <p>
-            While we have taken considerable effort to incorporate relevant laws, regulations, and best practices into 
-            this assessment tool, <strong>artificial intelligence can make mistakes</strong>. It is essential that you 
-            review and validate all information before relying on it for business, legal, or compliance decisions.
-          </p>
-          <p>
-            <strong>This assessment does not constitute legal advice.</strong> For specific guidance regarding Bill C-59, 
-            the Competition Act, or environmental claims compliance, please consult with a qualified legal professional.
-          </p>
-          <p class="liability-text">
-            By using this service, you acknowledge that Muuvment Ltd. and its affiliates shall not be held liable for any 
-            damages arising from reliance on this assessment tool. This tool provides informational analysis only. 
-            No warranty is made regarding accuracy or fitness for purpose. By using this service, you agree to attorn to 
-            the exclusive jurisdiction of the courts of the Province of Ontario, Canada.
-          </p>
-        </div>
-      </div>
     </div>
     
-    <!-- Progress Section -->
+    <!-- Progress Section (moved above disclaimer) -->
     {#if isAnalyzing}
       <div class="progress-section">
         <div class="stay-on-page-warning">
@@ -1030,6 +1001,37 @@ let emailSubmitted = $state(false); // Track if user clicked submit to confirm e
         <p class="progress-note">Large documents may take several minutes to analyse thoroughly. You can minimise this window but please do not close it.</p>
       </div>
     {/if}
+    
+    <!-- Disclaimer and Privacy Notice (always visible) -->
+    <div class="pre-assessment-disclaimer">
+      <div class="disclaimer-header">
+        <AlertTriangle size={18} />
+        <h4>Important Notice & Privacy</h4>
+      </div>
+      <div class="disclaimer-content">
+        <p>
+          <strong>Your privacy matters.</strong> Your data is only accessed and used to deliver this service. 
+          We respect your privacy and <strong>do not use your documents or data to train AI models</strong>. 
+          Your assessments remain confidential.
+        </p>
+        <p>
+          While we have taken considerable effort to incorporate relevant laws, regulations, and best practices into 
+          this assessment tool, <strong>artificial intelligence can make mistakes</strong>. It is essential that you 
+          review and validate all information before relying on it for business, legal, or compliance decisions.
+        </p>
+        <p>
+          <strong>This assessment does not constitute legal advice.</strong> For specific guidance regarding Bill C-59, 
+          the Competition Act, or environmental claims compliance, please consult with a qualified legal professional.
+        </p>
+        <p class="liability-text">
+          By using this service, you acknowledge that Muuvment Ltd. and its affiliates shall not be held liable for any 
+          damages arising from reliance on this assessment tool. This tool provides informational analysis only. 
+          No warranty is made regarding accuracy or fitness for purpose. This service and any disputes arising from its 
+          use are subject to the laws of the Province of Ontario and the federal laws of Canada applicable therein. 
+          By using this service, you agree to attorn to the exclusive jurisdiction of the courts of the Province of Ontario, Canada.
+        </p>
+      </div>
+    </div>
     
     <!-- Error Section -->
     {#if analysisError}
