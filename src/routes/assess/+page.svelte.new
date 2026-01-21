@@ -1,0 +1,664 @@
+<script lang="ts">
+  import { user } from '$lib/stores/user';
+  import { criteria, defaultDimensions, type Dimension, type Criterion } from '$lib/stores/criteria';
+  import { assessmentHistory } from '$lib/stores/assessment';
+  import { goto } from '$app/navigation';
+  import { onMount, onDestroy } from 'svelte';
+  import { Upload, FileText, Settings2, Play, Loader2, ChevronDown, ChevronUp, RotateCcw, AlertCircle, CheckCircle, Info, X, File, Award, AlertTriangle, ExternalLink, Sparkles, Shield, DollarSign, Scale, TrendingDown, Square, Mail, Send, StopCircle } from 'lucide-svelte';
+  import PromptsPanel from '$lib/components/PromptsPanel.svelte';
+  
+  let inputText = $state('');
+  let showPromptsPanel = $state(false);
+  let expandedDimensions = $state<Set<string>>(new Set());
+  let uploadedFile = $state<File | null>(null);
+  let uploadedFileId = $state<string | null>(null);
+  let uploadedFilePath = $state<string | null>(null);
+  let isUploading = $state(false);
+  let uploadProgress = $state(0);
+  let uploadError = $state('');
+  let fileInputRef: HTMLInputElement;
+  let inputMode = $state<'text' | 'document'>('document');
+  let analysisMode = $state<'vision' | 'hybrid'>('hybrid');
+  
+  let isAnalyzing = $state(false);
+  let analysisProgress = $state(0);
+  let analysisStage = $state('');
+  let analysisError = $state('');
+  let analysisTimer: ReturnType<typeof setInterval> | null = null;
+  let abortController: AbortController | null = null;
+  
+  // Background job state
+  let currentJobId = $state<string | null>(null);
+  let jobPollingInterval: ReturnType<typeof setInterval> | null = null;
+  
+  let result = $state<any>(null);
+  let currentUser = $state<any>(null);
+  let dimensions = $state<Dimension[]>(JSON.parse(JSON.stringify(defaultDimensions)));
+  
+  // Expanded sections state
+  let expandedIssues = $state<Set<number>>(new Set());
+  let expandedPositives = $state<Set<number>>(new Set());
+  
+  // Email modal state
+  let showEmailModal = $state(false);
+  let emailAddress = $state('');
+  let isSendingEmail = $state(false);
+  let emailSent = $state(false);
+  let emailError = $state('');
+  let emailAutoSent = $state(false);
+  let emailSubmitted = $state(false);
+  
+  // Storage key for persisting job state
+  const JOB_STORAGE_KEY = 'greenwash_check_job_state';
+  
+  // Save job state to localStorage
+  function saveJobState() {
+    if (typeof window === 'undefined' || !currentJobId) return;
+    const state = {
+      jobId: currentJobId,
+      documentName: uploadedFile?.name || 'Document',
+      timestamp: Date.now()
+    };
+    localStorage.setItem(JOB_STORAGE_KEY, JSON.stringify(state));
+  }
+  
+  // Load job state from localStorage
+  function loadJobState() {
+    if (typeof window === 'undefined') return null;
+    const saved = localStorage.getItem(JOB_STORAGE_KEY);
+    if (!saved) return null;
+    try {
+      const state = JSON.parse(saved);
+      // Only restore if less than 60 minutes old
+      if (Date.now() - state.timestamp > 60 * 60 * 1000) {
+        clearJobState();
+        return null;
+      }
+      return state;
+    } catch {
+      return null;
+    }
+  }
+  
+  // Clear job state from localStorage
+  function clearJobState() {
+    if (typeof window === 'undefined') return;
+    localStorage.removeItem(JOB_STORAGE_KEY);
+  }
+  
+  // Poll job status
+  async function pollJobStatus() {
+    if (!currentJobId) return;
+    
+    try {
+      const response = await fetch(`/api/job-status?jobId=${currentJobId}`);
+      if (!response.ok) {
+        console.error('Failed to fetch job status');
+        return;
+      }
+      
+      const job = await response.json();
+      
+      // Update progress
+      analysisProgress = job.progress || 0;
+      analysisStage = job.currentStep || 'Processing...';
+      
+      if (job.status === 'completed') {
+        // Job completed successfully
+        stopJobPolling();
+        clearJobState();
+        
+        result = job.result;
+        isAnalyzing = false;
+        analysisProgress = 100;
+        
+        // Save to history
+        if (result) {
+          assessmentHistory.add({
+            id: crypto.randomUUID(),
+            timestamp: new Date().toISOString(),
+            inputType: inputMode === 'document' ? 'document' : 'text',
+            inputPreview: job.documentName || 'Document',
+            fileName: job.documentName,
+            overallScore: result.overallScore,
+            riskLevel: result.riskLevel,
+            summary: result.executiveSummary || result.summary,
+            executiveSummary: result.executiveSummary,
+            principleScores: result.principleScores,
+            top20Issues: result.top20Issues,
+            positiveFindings: result.positiveFindings,
+            claimsAnalyzed: result.claimsAnalyzed,
+            dimensions: result.principleScores || result.dimensions,
+            keyFindings: result.top20Issues?.slice(0, 5).map((i: any) => i.title) || result.keyFindings,
+            recommendations: result.top20Issues?.slice(0, 5).map((i: any) => i.recommendation) || result.recommendations,
+            metadata: {
+              fileName: job.documentName,
+              analysisMode: result.analysisMode,
+              processingTime: result.metadata?.processingTime
+            }
+          });
+          
+          // Auto-send email if provided
+          if (emailAddress && emailAddress.includes('@')) {
+            try {
+              await sendReportEmailAuto();
+              emailAutoSent = true;
+            } catch (emailErr) {
+              console.error('Failed to send email automatically:', emailErr);
+            }
+          }
+        }
+        
+      } else if (job.status === 'failed') {
+        // Job failed
+        stopJobPolling();
+        clearJobState();
+        
+        isAnalyzing = false;
+        analysisError = job.error || 'Assessment failed. Please try again.';
+        currentJobId = null;
+        
+      } else if (job.status === 'pending' || job.status === 'processing') {
+        // Still processing - continue polling
+        saveJobState();
+      }
+      
+    } catch (error) {
+      console.error('Error polling job status:', error);
+    }
+  }
+  
+  // Start polling for job status
+  function startJobPolling() {
+    if (jobPollingInterval) {
+      clearInterval(jobPollingInterval);
+    }
+    // Poll every 3 seconds
+    jobPollingInterval = setInterval(pollJobStatus, 3000);
+    // Also poll immediately
+    pollJobStatus();
+  }
+  
+  // Stop polling
+  function stopJobPolling() {
+    if (jobPollingInterval) {
+      clearInterval(jobPollingInterval);
+      jobPollingInterval = null;
+    }
+  }
+  
+  // Cancel the current job
+  async function cancelJob() {
+    if (!currentJobId) return;
+    
+    try {
+      const response = await fetch('/api/cancel-job', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          jobId: currentJobId,
+          userId: currentUser?.id 
+        })
+      });
+      
+      if (response.ok) {
+        stopJobPolling();
+        clearJobState();
+        isAnalyzing = false;
+        currentJobId = null;
+        analysisError = 'Assessment cancelled.';
+      }
+    } catch (error) {
+      console.error('Error cancelling job:', error);
+    }
+  }
+  
+  onMount(() => {
+    user.init();
+    assessmentHistory.init();
+    user.subscribe(u => {
+      currentUser = u;
+      if (!u) goto('/login');
+    });
+    criteria.subscribe(d => {
+      dimensions = d;
+    });
+    
+    // Check for any active job from previous session
+    const savedJobState = loadJobState();
+    if (savedJobState && savedJobState.jobId) {
+      currentJobId = savedJobState.jobId;
+      isAnalyzing = true;
+      analysisStage = 'Resuming assessment...';
+      startJobPolling();
+    }
+  });
+  
+  onDestroy(() => {
+    stopJobPolling();
+    if (analysisTimer) {
+      clearInterval(analysisTimer);
+    }
+  });
+  
+  function toggleDimensionExpand(dimId: string) {
+    if (expandedDimensions.has(dimId)) {
+      expandedDimensions.delete(dimId);
+    } else {
+      expandedDimensions.add(dimId);
+    }
+    expandedDimensions = new Set(expandedDimensions);
+  }
+  
+  function toggleIssueExpand(id: number) {
+    if (expandedIssues.has(id)) {
+      expandedIssues.delete(id);
+    } else {
+      expandedIssues.add(id);
+    }
+    expandedIssues = new Set(expandedIssues);
+  }
+  
+  function togglePositiveExpand(id: number) {
+    if (expandedPositives.has(id)) {
+      expandedPositives.delete(id);
+    } else {
+      expandedPositives.add(id);
+    }
+    expandedPositives = new Set(expandedPositives);
+  }
+  
+  // Progress stages for display
+  const documentStages = [
+    'Uploading document to AI analysis engine...',
+    'AI is reading document structure and layout...',
+    'Detecting images, charts, and infographics...',
+    'Processing visual elements with computer vision...',
+    'Extracting data from charts and graphs...',
+    'Scanning for environmental terminology...',
+    'Identifying key environmental claims...',
+    'Cross-referencing with Bill C-59 requirements...',
+    'Assessing truthfulness against Competition Bureau principles...',
+    'Evaluating substantiation and evidence quality...',
+    'Checking for vague or misleading language...',
+    'Analysing scope and specificity of claims...',
+    'Reviewing comparisons and baselines...',
+    'Assessing lifecycle considerations...',
+    'Identifying potential material omissions...',
+    'Evaluating third-party verification claims...',
+    'Scoring against Competition Bureau 6 Principles...',
+    'Identifying top issues and recommendations...',
+    'Recognizing best practices and positives...',
+    'Compiling legal risk assessment...',
+    'Finalising comprehensive assessment report...'
+  ];
+  
+  const textStages = [
+    'Analysing environmental claim...',
+    'Checking against Bill C-59 requirements...',
+    'Evaluating substantiation...',
+    'Assessing clarity and specificity...',
+    'Generating recommendations...'
+  ];
+  
+  function startAnalysisProgress(isDocument: boolean) {
+    const stages = isDocument ? documentStages : textStages;
+    const totalTime = isDocument ? 180000 : 30000;
+    const stageTime = totalTime / stages.length;
+    let stageIndex = 0;
+    
+    analysisProgress = 0;
+    analysisStage = stages[0];
+    
+    analysisTimer = setInterval(() => {
+      stageIndex++;
+      if (stageIndex < stages.length) {
+        analysisStage = stages[stageIndex];
+        analysisProgress = Math.min(95, (stageIndex / stages.length) * 100);
+      }
+    }, stageTime);
+  }
+  
+  function stopAnalysisProgress() {
+    if (analysisTimer) {
+      clearInterval(analysisTimer);
+      analysisTimer = null;
+    }
+    analysisProgress = 100;
+  }
+  
+  async function handleFileUpload(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+    
+    if (!file) return;
+    
+    const validTypes = ['.pdf', '.docx', '.txt'];
+    const fileExt = '.' + file.name.split('.').pop()?.toLowerCase();
+    
+    if (!validTypes.includes(fileExt)) {
+      uploadError = 'Please upload a PDF, DOCX, or TXT file.';
+      return;
+    }
+    
+    if (file.size > 30 * 1024 * 1024) {
+      uploadError = 'File size must be less than 30MB.'
+      return;
+    }
+    
+    uploadError = '';
+    isUploading = true;
+    uploadProgress = 0;
+    uploadedFile = file;
+    inputMode = 'document';
+    inputText = '';
+    
+    try {
+      const CHUNK_SIZE = 3 * 1024 * 1024;
+      const fileId = crypto.randomUUID();
+      
+      if (file.size > CHUNK_SIZE) {
+        const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+        
+        for (let i = 0; i < totalChunks; i++) {
+          const start = i * CHUNK_SIZE;
+          const end = Math.min(start + CHUNK_SIZE, file.size);
+          const chunk = file.slice(start, end);
+          
+          const formData = new FormData();
+          formData.append('chunk', chunk);
+          formData.append('chunkIndex', i.toString());
+          formData.append('totalChunks', totalChunks.toString());
+          formData.append('fileId', fileId);
+          formData.append('fileName', file.name);
+          
+          const response = await fetch('/api/upload-chunk', {
+            method: 'POST',
+            body: formData
+          });
+          
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Upload failed');
+          }
+          
+          const result = await response.json();
+          uploadProgress = Math.round(((i + 1) / totalChunks) * 100);
+          
+          if (result.complete) {
+            uploadedFileId = result.fileId;
+            uploadedFilePath = result.filePath;
+          }
+        }
+      } else {
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        const progressInterval = setInterval(() => {
+          if (uploadProgress < 90) uploadProgress += 10;
+        }, 200);
+        
+        const response = await fetch('/api/upload-document', {
+          method: 'POST',
+          body: formData
+        });
+        
+        clearInterval(progressInterval);
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Upload failed');
+        }
+        
+        const uploadResult = await response.json();
+        uploadedFileId = uploadResult.fileId;
+        uploadedFilePath = uploadResult.filePath || uploadResult.blobUrl;
+        uploadProgress = 100;
+      }
+      
+    } catch (err) {
+      uploadError = err instanceof Error ? err.message : 'Upload failed';
+      uploadedFile = null;
+    } finally {
+      isUploading = false;
+    }
+  }
+  
+  function removeFile() {
+    uploadedFile = null;
+    uploadedFileId = null;
+    uploadedFilePath = null;
+    uploadProgress = 0;
+    uploadError = '';
+    if (fileInputRef) fileInputRef.value = '';
+  }
+  
+  async function runAssessment() {
+    if (!inputText && !uploadedFilePath) {
+      analysisError = 'Please enter text or upload a document.';
+      return;
+    }
+    
+    isAnalyzing = true;
+    analysisError = '';
+    result = null;
+    emailAutoSent = false;
+    
+    const isDocument = inputMode === 'document' && uploadedFilePath;
+    
+    try {
+      // Start the assessment as a background job
+      const response = await fetch('/api/start-assessment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: currentUser?.id || 'anonymous',
+          documentId: uploadedFileId,
+          documentName: uploadedFile?.name || 'Document',
+          filePath: uploadedFilePath,
+          inputType: isDocument ? 'document' : 'text',
+          inputText: isDocument ? undefined : inputText,
+          analysisMode: analysisMode,
+          emailAddress: emailAddress || undefined
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to start assessment');
+      }
+      
+      const { jobId } = await response.json();
+      currentJobId = jobId;
+      
+      // Save job state and start polling
+      saveJobState();
+      startJobPolling();
+      
+      // Show initial progress
+      analysisStage = 'Assessment started. You can navigate away and return later.';
+      analysisProgress = 5;
+      
+    } catch (err) {
+      isAnalyzing = false;
+      analysisError = err instanceof Error ? err.message : 'Assessment failed';
+    }
+  }
+  
+  function startNewAssessment() {
+    result = null;
+    inputText = '';
+    removeFile();
+    inputMode = 'document';
+    analysisError = '';
+    expandedIssues = new Set();
+    expandedPositives = new Set();
+    currentJobId = null;
+    clearJobState();
+  }
+  
+  function getRiskColor(level: string) {
+    if (level?.toLowerCase().includes('low')) return '#27AE60';
+    if (level?.toLowerCase().includes('medium')) return '#F39C12';
+    return '#E74C3C';
+  }
+  
+  function getScoreColor(score: number) {
+    if (score >= 70) return '#27AE60';
+    if (score >= 40) return '#F39C12';
+    return '#E74C3C';
+  }
+  
+  function getStatusColor(status: string) {
+    if (status === 'Compliant') return '#27AE60';
+    if (status === 'Needs Attention') return '#F39C12';
+    return '#E74C3C';
+  }
+  
+  function getRiskLevelColor(level: string) {
+    if (level === 'Low') return '#27AE60';
+    if (level === 'Medium') return '#F39C12';
+    return '#E74C3C';
+  }
+  
+  async function downloadReportAsPdf() {
+    if (!result) return;
+    
+    try {
+      const response = await fetch('/api/generate-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fileName: result.metadata?.fileName || uploadedFile?.name || 'Document',
+          timestamp: new Date().toISOString(),
+          overallScore: result.overallScore,
+          riskLevel: result.riskLevel,
+          executiveSummary: result.executiveSummary,
+          summary: result.summary,
+          principleScores: result.principleScores,
+          top20Issues: result.top20Issues,
+          positiveFindings: result.positiveFindings,
+          claimsAnalyzed: result.claimsAnalyzed,
+          metadata: result.metadata
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF');
+      }
+      
+      const { html, fileName } = await response.json();
+      
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        alert('Please allow popups to download the PDF report.');
+        return;
+      }
+      
+      printWindow.document.write(html);
+      printWindow.document.close();
+      
+      printWindow.onload = () => {
+        printWindow.print();
+      };
+    } catch (err) {
+      console.error('PDF generation error:', err);
+      alert('Failed to generate PDF. Please try again.');
+    }
+  }
+  
+  async function sendReportEmail() {
+    if (!result || !emailAddress) return;
+    
+    isSendingEmail = true;
+    emailError = '';
+    
+    try {
+      const reportHtml = generateReportHtml();
+      const documentName = result.metadata?.fileName || uploadedFile?.name || 'Document';
+      
+      const response = await fetch('/api/send-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: emailAddress,
+          reportHtml,
+          documentName,
+          overallScore: result.overallScore,
+          riskLevel: result.riskLevel
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send email');
+      }
+      
+      emailSent = true;
+      showEmailModal = false;
+    } catch (err) {
+      emailError = err instanceof Error ? err.message : 'Failed to send email';
+    } finally {
+      isSendingEmail = false;
+    }
+  }
+  
+  async function sendReportEmailAuto() {
+    if (!result || !emailAddress) return;
+    
+    const reportHtml = generateReportHtml();
+    const documentName = result.metadata?.fileName || uploadedFile?.name || 'Document';
+    
+    const response = await fetch('/api/send-report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: emailAddress,
+        reportHtml,
+        documentName,
+        overallScore: result.overallScore,
+        riskLevel: result.riskLevel
+      })
+    });
+    
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to send email');
+    }
+    
+    // Save email to database
+    try {
+      await fetch('/api/save-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: emailAddress,
+          documentName,
+          assessmentScore: result.overallScore,
+          riskLevel: result.riskLevel
+        })
+      });
+    } catch (e) {
+      console.error('Failed to save email submission:', e);
+    }
+  }
+  
+  function generateReportHtml(): string {
+    if (!result) return '';
+    
+    return `
+      <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">
+        <h1 style="color: #1a5f2a;">Greenwash Check Assessment Report</h1>
+        <p><strong>Overall Score:</strong> ${result.overallScore}/100</p>
+        <p><strong>Risk Level:</strong> ${result.riskLevel}</p>
+        <h2>Executive Summary</h2>
+        <p>${result.executiveSummary || result.summary || 'No summary available.'}</p>
+      </div>
+    `;
+  }
+  
+  function handleEmailSubmit() {
+    emailSubmitted = true;
+  }
+</script>

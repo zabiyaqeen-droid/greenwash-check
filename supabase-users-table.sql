@@ -30,6 +30,11 @@ CREATE TABLE IF NOT EXISTS assessment_jobs (
   user_id TEXT NOT NULL,
   document_id TEXT NOT NULL,
   document_name TEXT,
+  file_path TEXT, -- Path to the uploaded file for processing
+  input_type TEXT DEFAULT 'document', -- document or text
+  input_text TEXT, -- For text input mode
+  analysis_mode TEXT DEFAULT 'hybrid', -- hybrid or vision
+  email_address TEXT, -- Email to send report to when complete
   status TEXT DEFAULT 'pending', -- pending, processing, completed, failed
   progress INTEGER DEFAULT 0, -- 0-100
   current_step TEXT,
@@ -37,7 +42,8 @@ CREATE TABLE IF NOT EXISTS assessment_jobs (
   error TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  completed_at TIMESTAMP WITH TIME ZONE
+  completed_at TIMESTAMP WITH TIME ZONE,
+  started_at TIMESTAMP WITH TIME ZONE -- When processing actually began
 );
 
 -- Index for user job lookups

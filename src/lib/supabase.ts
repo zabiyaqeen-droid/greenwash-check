@@ -468,6 +468,11 @@ export interface AssessmentJob {
   user_id: string;
   document_id: string;
   document_name?: string;
+  file_path?: string;
+  input_type?: 'document' | 'text';
+  input_text?: string;
+  analysis_mode?: 'hybrid' | 'vision';
+  email_address?: string;
   status: 'pending' | 'processing' | 'completed' | 'failed';
   progress: number;
   current_step?: string;
@@ -476,20 +481,33 @@ export interface AssessmentJob {
   created_at?: string;
   updated_at?: string;
   completed_at?: string;
+  started_at?: string;
+}
+
+export interface CreateJobParams {
+  userId: string;
+  documentId: string;
+  documentName?: string;
+  filePath?: string;
+  inputType?: 'document' | 'text';
+  inputText?: string;
+  analysisMode?: 'hybrid' | 'vision';
+  emailAddress?: string;
 }
 
 // Create a new assessment job
-export async function createAssessmentJob(
-  userId: string,
-  documentId: string,
-  documentName?: string
-): Promise<string | null> {
+export async function createAssessmentJob(params: CreateJobParams): Promise<string | null> {
   const { data, error } = await getSupabaseAdmin()
     .from('assessment_jobs')
     .insert({
-      user_id: userId,
-      document_id: documentId,
-      document_name: documentName,
+      user_id: params.userId,
+      document_id: params.documentId,
+      document_name: params.documentName,
+      file_path: params.filePath,
+      input_type: params.inputType || 'document',
+      input_text: params.inputText,
+      analysis_mode: params.analysisMode || 'hybrid',
+      email_address: params.emailAddress,
       status: 'pending',
       progress: 0
     })
@@ -501,6 +519,34 @@ export async function createAssessmentJob(
     return null;
   }
   return data?.id || null;
+}
+
+// Start processing a job (update started_at)
+export async function startAssessmentJob(jobId: string): Promise<void> {
+  await getSupabaseAdmin()
+    .from('assessment_jobs')
+    .update({
+      status: 'processing',
+      started_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    })
+    .eq('id', jobId);
+}
+
+// Get pending jobs that need to be processed
+export async function getPendingJobs(limit: number = 10): Promise<AssessmentJob[]> {
+  const { data, error } = await getSupabaseAdmin()
+    .from('assessment_jobs')
+    .select('*')
+    .eq('status', 'pending')
+    .order('created_at', { ascending: true })
+    .limit(limit);
+  
+  if (error) {
+    console.error('Error fetching pending jobs:', error);
+    return [];
+  }
+  return data || [];
 }
 
 // Update assessment job progress
