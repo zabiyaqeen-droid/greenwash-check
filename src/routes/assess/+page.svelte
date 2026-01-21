@@ -18,6 +18,7 @@
   let uploadError = $state('');
   let fileInputRef: HTMLInputElement;
   let inputMode = $state<'text' | 'document'>('document');
+  let analysisMode = $state<'vision' | 'hybrid'>('hybrid'); // Default to hybrid for better accuracy
   
   let isAnalyzing = $state(false);
   let analysisProgress = $state(0);
@@ -328,14 +329,16 @@
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 900000);
         
-        response = await fetch('/api/analyze-document', {
+        const endpoint = analysisMode === 'hybrid' ? '/api/analyze-document-hybrid' : '/api/analyze-document';
+        response = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             filePath: uploadedFilePath,
             fileId: uploadedFileId,
             fileName: uploadedFile?.name || 'document.pdf',
-            dimensions: dimensions.filter(d => d.enabled)
+            dimensions: dimensions.filter(d => d.enabled),
+            userId: currentUser?.id
           }),
           signal: controller.signal
         });
@@ -469,6 +472,29 @@
           <ChevronDown size={16} />
         {/if}
       </button>
+      
+      <!-- Analysis Mode Toggle -->
+      <div class="analysis-mode-toggle">
+        <span class="toggle-label">Analysis Mode:</span>
+        <button 
+          class="mode-btn"
+          class:active={analysisMode === 'hybrid'}
+          onclick={() => analysisMode = 'hybrid'}
+          title="Hybrid analysis uses text embeddings for semantic search plus Vision AI for charts and images. More accurate and efficient."
+        >
+          <Sparkles size={16} />
+          Hybrid
+        </button>
+        <button 
+          class="mode-btn"
+          class:active={analysisMode === 'vision'}
+          onclick={() => analysisMode = 'vision'}
+          title="Vision-only analysis processes all pages as images. Good for image-heavy documents."
+        >
+          <FileText size={16} />
+          Vision Only
+        </button>
+      </div>
     </div>
     
     <!-- Prompts Configuration Panel -->
@@ -1147,6 +1173,45 @@
     background: #6B8E6B;
     color: white;
     border-color: #6B8E6B;
+  }
+  
+  /* Analysis Mode Toggle */
+  .analysis-mode-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem;
+    background: #F5F5F5;
+    border-radius: 20px;
+  }
+  
+  .toggle-label {
+    font-size: 0.85rem;
+    color: #666;
+    padding: 0 0.5rem;
+  }
+  
+  .mode-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.75rem;
+    background: transparent;
+    border: none;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #666;
+  }
+  
+  .mode-btn:hover {
+    background: #E8E8E8;
+  }
+  
+  .mode-btn.active {
+    background: #6B8E6B;
+    color: white;
   }
   
   /* Criteria Panel */

@@ -219,26 +219,55 @@ export async function storeDocumentChunks(
   return true;
 }
 
-// Search document chunks by content similarity (requires embeddings)
+// Search document chunks by vector similarity
 export async function searchDocumentChunks(
   documentId: string,
-  query: string,
-  limit: number = 10
-): Promise<DocumentChunk[]> {
-  // For now, do a simple text search
-  // TODO: Implement vector similarity search with embeddings
+  queryEmbedding: number[],
+  limit: number = 10,
+  similarityThreshold: number = 0.7
+): Promise<(DocumentChunk & { similarity: number })[]> {
+  try {
+    // Use the vector similarity search function
+    const { data, error } = await getSupabaseAdmin()
+      .rpc('match_document_chunks', {
+        query_embedding: queryEmbedding,
+        match_document_id: documentId,
+        match_threshold: similarityThreshold,
+        match_count: limit
+      });
+    
+    if (error) {
+      console.error('Vector search error:', error);
+      // Fallback to getting all chunks for the document
+      return fallbackGetChunks(documentId, limit);
+    }
+    
+    return data || [];
+  } catch (error) {
+    console.error('Error in searchDocumentChunks:', error);
+    return fallbackGetChunks(documentId, limit);
+  }
+}
+
+// Fallback when vector search is not available
+async function fallbackGetChunks(
+  documentId: string,
+  limit: number
+): Promise<(DocumentChunk & { similarity: number })[]> {
   const { data, error } = await getSupabaseAdmin()
     .from('document_chunks')
     .select('*')
     .eq('document_id', documentId)
-    .textSearch('content', query)
+    .order('chunk_index', { ascending: true })
     .limit(limit);
   
   if (error) {
-    console.error('Error searching chunks:', error);
+    console.error('Fallback chunk fetch error:', error);
     return [];
   }
-  return data || [];
+  
+  // Add default similarity score
+  return (data || []).map(chunk => ({ ...chunk, similarity: 1.0 }));
 }
 
 // Get all chunks for a document
