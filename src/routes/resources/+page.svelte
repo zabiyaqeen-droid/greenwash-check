@@ -302,16 +302,23 @@
     <!-- CTA Section -->
     <div class="cta-section">
       <div class="cta-content">
-        <h2>Ready to Check Your Environmental Claims?</h2>
-        <p>Use our free assessment tool to analyse your sustainability reports and marketing materials against Bill C-59 and Competition Bureau guidelines.</p>
-        <div class="cta-buttons">
+        <!-- Greenwash Check CTA -->
+        <div class="cta-block">
+          <h2>Ready to Check Your Environmental Claims?</h2>
+          <p>Use our free assessment tool to analyse your sustainability reports and marketing materials against Bill C-59 and Competition Bureau guidelines.</p>
           <a href="/assess" class="cta-primary">Run Free Assessment</a>
+        </div>
+        
+        <!-- Muuvment IQ CTA - Separate -->
+        <div class="cta-divider"></div>
+        <div class="cta-block cta-secondary-block">
+          <h3>Need More Comprehensive ESG Support?</h3>
+          <p>Learn why the most advanced sustainability teams are using <strong>Muuvment IQ</strong> to reclaim their time and deliver exceptional sustainability results.</p>
           <a href="https://app.muuvment.com/ai/assistant" target="_blank" rel="noopener noreferrer" class="cta-secondary">
             Try Muuvment IQ
             <ExternalLink size={16} />
           </a>
         </div>
-        <p class="cta-subtext"><strong>Muuvment IQ</strong> saves hours on data analysis, drafting, and research — freeing you to focus on strategy and real-world impact.</p>
       </div>
     </div>
   </div>
@@ -617,5 +624,27 @@
       width: 100%;
       justify-content: center;
     }
+  }
+
+  .cta-block {
+    text-align: center;
+  }
+  
+  .cta-divider {
+    width: 100%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 2rem 0;
+  }
+  
+  .cta-secondary-block h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    color: #E2E8F0;
+  }
+  
+  .cta-secondary-block p {
+    color: #94A3B8;
+    margin-bottom: 1rem;
   }
 </style>

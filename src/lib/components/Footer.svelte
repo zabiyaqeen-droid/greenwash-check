@@ -6,15 +6,8 @@
   <!-- AI2030 Catalyst Program Section -->
   <div class="ai2030-section">
     <div class="ai2030-content">
-      <div class="ai2030-badge">
-        <svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="50" r="45" stroke="#7C3AED" stroke-width="3" fill="none"/>
-          <text x="50" y="40" text-anchor="middle" fill="#7C3AED" font-size="14" font-weight="bold">AI</text>
-          <text x="50" y="60" text-anchor="middle" fill="#7C3AED" font-size="12" font-weight="600">2030</text>
-        </svg>
-      </div>
-      <div class="ai2030-text">
-        <h3>AI2030 Catalyst Program<br/>for Responsible AI</h3>
+      <div class="ai2030-logo">
+        <img src="/ai2030-logo.png" alt="AI2030 - Responsible Artificial Intelligence" class="ai2030-logo-img" />
       </div>
       <p class="ai2030-description">
         <strong>Muuvment is an alumni of the <a href="https://ai2030.org/" target="_blank" rel="noopener">AI2030 Catalyst Program</a> for Responsible AI.</strong> Muuvment was invited to participate in the programme because of its innovation and leadership in advancing responsible AI.
@@ -124,16 +117,13 @@
     flex-wrap: wrap;
   }
   
-  .ai2030-badge {
+  .ai2030-logo {
     flex-shrink: 0;
   }
   
-  .ai2030-text h3 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #5B21B6;
-    line-height: 1.3;
+  .ai2030-logo-img {
+    height: 50px;
+    width: auto;
   }
   
   .ai2030-description {

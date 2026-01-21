@@ -14,8 +14,8 @@
   let linkedIn = '';
 
   async function handleRegister() {
-    if (!name || !email || !company) {
-      error = 'Please fill in all required fields';
+    if (!name || !email || !company || !linkedIn) {
+      error = 'Please fill in all required fields (including LinkedIn profile)';
       return;
     }
 
@@ -116,8 +116,8 @@
           </div>
 
           <div class="form-group">
-            <label for="linkedIn">LinkedIn Profile URL</label>
-            <input type="url" id="linkedIn" bind:value={linkedIn} placeholder="https://linkedin.com/in/yourprofile" />
+            <label for="linkedIn">LinkedIn Profile URL <span class="required">*</span></label>
+            <input type="url" id="linkedIn" bind:value={linkedIn} placeholder="https://linkedin.com/in/yourprofile" required />
           </div>
 
           <button type="submit" class="btn btn-primary btn-full" disabled={loading}>

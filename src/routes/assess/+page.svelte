@@ -397,22 +397,22 @@
         <div class="risk-stat">
           <DollarSign size={20} />
           <div>
-            <span class="stat-value">$10M - $15M</span>
-            <span class="stat-label">Maximum penalties under Bill C-59</span>
+            <span class="stat-value">$10M - $15M+</span>
+            <span class="stat-label">Penalties under Bill C-59 (or 3% of global revenue)</span>
           </div>
         </div>
         <div class="risk-stat">
           <TrendingDown size={20} />
           <div>
-            <span class="stat-value">30%+</span>
-            <span class="stat-label">Brand value loss from greenwashing scandals</span>
+            <span class="stat-value">80%</span>
+            <span class="stat-label">Consumers lose trust after greenwashing exposure</span>
           </div>
         </div>
         <div class="risk-stat">
           <Scale size={20} />
           <div>
-            <span class="stat-value">Rising</span>
-            <span class="stat-label">Class action lawsuits for misleading claims</span>
+            <span class="stat-value">New</span>
+            <span class="stat-label">Private right of action enabled (June 2025)</span>
           </div>
         </div>
       </div>
