@@ -92,6 +92,7 @@ let emailSubmitted = $state(false); // Track if user clicked submit to confirm e
   
   onMount(() => {
     user.init();
+    assessmentHistory.init(); // Initialize history store to ensure localStorage sync
     user.subscribe(u => {
       currentUser = u;
       if (!u) goto('/login');
