@@ -1,6 +1,6 @@
 <script lang="ts">
   import { user } from '$lib/stores/user';
-  import { LogOut, User, Menu, X, Shield, Settings } from 'lucide-svelte';
+  import { LogOut, User, Menu, X, Shield } from 'lucide-svelte';
   import { goto } from '$app/navigation';
   
   let mobileMenuOpen = $state(false);
@@ -40,10 +40,7 @@
       
       {#if currentUser}
         <a href="/history" class="nav-link">History</a>
-        <a href="/prompts" class="nav-link">
-          <Settings size={16} />
-          Prompts
-        </a>
+        <a href="/prompts" class="nav-link">Prompts</a>
         {#if isAdmin()}
           <a href="/admin" class="nav-link admin-link">
             <Shield size={16} />
@@ -80,10 +77,7 @@
       
       {#if currentUser}
         <a href="/history" class="nav-link" onclick={() => mobileMenuOpen = false}>History</a>
-        <a href="/prompts" class="nav-link" onclick={() => mobileMenuOpen = false}>
-          <Settings size={16} />
-          Prompts
-        </a>
+        <a href="/prompts" class="nav-link" onclick={() => mobileMenuOpen = false}>Prompts</a>
         {#if isAdmin()}
           <a href="/admin" class="nav-link admin-link" onclick={() => mobileMenuOpen = false}>
             <Shield size={16} />
@@ -143,6 +137,7 @@
   .logo-img {
     height: 28px;
     width: auto;
+    margin-right: 2rem;
   }
   
   .nav-desktop {
