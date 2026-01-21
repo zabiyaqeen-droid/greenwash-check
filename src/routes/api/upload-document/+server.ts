@@ -66,10 +66,20 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     
-    // Fallback: Store file in memory or filesystem
+    // Store file in memory and optionally filesystem
     const arrayBuffer = await file.arrayBuffer();
+    const base64 = Buffer.from(arrayBuffer).toString('base64');
     
-    // Try filesystem first (for local development)
+    // Always store in memory for start-assessment to access
+    globalThis.uploadedFiles.set(fileId, {
+      name: file.name,
+      type: fileExt,
+      size: file.size,
+      data: base64
+    });
+    console.log(`File stored in memory: ${fileId}`);
+    
+    // Also try filesystem for persistence
     try {
       const uploadsDir = '/tmp/greenwash-uploads';
       await mkdir(uploadsDir, { recursive: true });
@@ -77,7 +87,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const buffer = Buffer.from(arrayBuffer);
       await writeFile(filePath, buffer);
       
-      console.log(`File saved to filesystem: ${filePath}`);
+      console.log(`File also saved to filesystem: ${filePath}`);
       
       return json({
         success: true,
@@ -86,20 +96,11 @@ export const POST: RequestHandler = async ({ request }) => {
         fileName: file.name,
         fileSize: file.size,
         fileType: fileExt,
-        storage: 'filesystem'
+        storage: 'filesystem+memory'
       });
     } catch (fsError) {
-      // Filesystem not available (serverless), use memory
-      const base64 = Buffer.from(arrayBuffer).toString('base64');
-      
-      globalThis.uploadedFiles.set(fileId, {
-        name: file.name,
-        type: fileExt,
-        size: file.size,
-        data: base64
-      });
-      
-      console.log(`File stored in memory: ${fileId}`);
+      // Filesystem not available, but file is already in memory
+      console.log(`Filesystem write failed, using memory only: ${fsError}`);
       
       return json({
         success: true,
