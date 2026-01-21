@@ -48,7 +48,6 @@ export interface AssessmentPrompt {
   subcategory_name: string;
   prompt_template: string;
   weight: number;
-  is_active: boolean;
   user_id?: string;
   created_at?: string;
   updated_at?: string;
@@ -74,7 +73,6 @@ export async function getAssessmentPrompts(userId?: string): Promise<AssessmentP
   let query = getSupabaseAdmin()
     .from('assessment_prompts')
     .select('*')
-    .eq('is_active', true)
     .order('principle_id', { ascending: true });
   
   if (userId) {
@@ -163,7 +161,6 @@ export async function updateAssessmentPrompt(
         subcategory_name: defaultPrompt.subcategory_name,
         prompt_template: promptTemplate,
         weight: weight ?? defaultPrompt.weight,
-        is_active: true,
         user_id: userId
       })
       .select()
