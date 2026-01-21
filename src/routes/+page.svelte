@@ -188,34 +188,6 @@
       </div>
     </section>
     
-    <!-- Important Notice Section -->
-    <section class="important-notice">
-      <div class="container">
-        <div class="notice-content">
-          <h2>Why Accuracy Matters</h2>
-          <p class="notice-intro">
-            Environmental claims are under increasing scrutiny. Bill C-59 introduced significant penalties for misleading 
-            environmental representations, making it more important than ever to ensure your sustainability communications 
-            are accurate, substantiated, and compliant.
-          </p>
-          <div class="notice-details">
-            <p>
-              While we have taken considerable effort to incorporate relevant laws, regulations, and best practices into 
-              this assessment tool, <strong>artificial intelligence can make mistakes</strong>. It is essential that you 
-              review and validate all information before relying on it for business, legal, or compliance decisions.
-            </p>
-            <p>
-              <strong>This assessment does not constitute legal advice.</strong> For specific guidance regarding Bill C-59, 
-              the Competition Act, or environmental claims compliance, please consult with a qualified legal professional.
-            </p>
-            <p class="liability-notice">
-              <em>By using this service, you acknowledge that Muuvment Ltd. and its affiliates shall not be held liable for any damages arising from reliance on this assessment tool. This tool provides informational analysis only and does not constitute legal or compliance advice. No warranty is made regarding accuracy or fitness for purpose. By using this service, you agree to attorn to the exclusive jurisdiction of the courts of the Province of Ontario, Canada, and that this agreement shall be governed by the laws of Ontario and the federal laws of Canada applicable therein.</em>
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-    
     <!-- CTA Section -->
     <section class="cta">
       <div class="container">

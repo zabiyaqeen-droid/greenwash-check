@@ -576,6 +576,22 @@
     const reportHtml = generateReportHtml();
     const documentName = result.metadata?.fileName || uploadedFile?.name || 'Document';
     
+    // Save email submission to database
+    try {
+      await fetch('/api/save-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: emailAddress,
+          documentName,
+          assessmentScore: result.overallScore,
+          riskLevel: result.riskLevel
+        })
+      });
+    } catch (saveErr) {
+      console.error('Failed to save email submission:', saveErr);
+    }
+    
     const response = await fetch('/api/send-report', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -896,7 +912,7 @@
       <div class="email-delivery-section">
         <div class="email-delivery-header">
           <Mail size={18} />
-          <span>Get your report via email (optional)</span>
+          <span>Get your report via email</span>
           {#if emailAutoSent}
             <span class="email-sent-badge">
               <CheckCircle size={14} />
@@ -904,7 +920,7 @@
             </span>
           {/if}
         </div>
-        <div class="email-input-wrapper">
+        <div class="email-input-row">
           <input
             type="email"
             class="email-delivery-input"
@@ -913,10 +929,22 @@
             bind:value={emailAddress}
             disabled={isAnalyzing || emailAutoSent}
           />
-          {#if emailAutoSent}
-            <span class="email-sent-text">Report sent to this email</span>
-          {/if}
+          <button 
+            class="email-submit-btn"
+            disabled={!emailAddress || !emailAddress.includes('@') || isAnalyzing || emailAutoSent}
+            onclick={() => { /* Email will be sent automatically after assessment */ }}
+          >
+            {#if emailAutoSent}
+              <CheckCircle size={16} />
+              Sent
+            {:else}
+              Submit
+            {/if}
+          </button>
         </div>
+        {#if emailAutoSent}
+          <span class="email-sent-text">Report sent to this email</span>
+        {/if}
         <div class="assessment-info-box">
           <Info size={16} />
           <div class="assessment-info-text">
@@ -1308,6 +1336,23 @@
             </div>
           </div>
         {/if}
+        
+        <!-- Disclaimer -->
+        <div class="assessment-disclaimer">
+          <h4>Important Notice</h4>
+          <p>
+            While we have taken considerable effort to incorporate relevant laws, regulations, and best practices into 
+            this assessment tool, <strong>artificial intelligence can make mistakes</strong>. It is essential that you 
+            review and validate all information before relying on it for business, legal, or compliance decisions.
+          </p>
+          <p>
+            <strong>This assessment does not constitute legal advice.</strong> For specific guidance regarding Bill C-59, 
+            the Competition Act, or environmental claims compliance, please consult with a qualified legal professional.
+          </p>
+          <p class="liability-text">
+            By using this service, you acknowledge that Muuvment Ltd. and its affiliates shall not be held liable for any damages arising from reliance on this assessment tool. This tool provides informational analysis only and does not constitute legal or compliance advice. No warranty is made regarding accuracy or fitness for purpose. By using this service, you agree to attorn to the exclusive jurisdiction of the courts of the Province of Ontario, Canada, and that this agreement shall be governed by the laws of Ontario and the federal laws of Canada applicable therein.
+          </p>
+        </div>
         
         <!-- Muuvment IQ CTA -->
         <!-- Muuvment IQ Promotional Section -->
@@ -3357,6 +3402,75 @@
   
   .email-input-wrapper {
     position: relative;
+  }
+  
+  .email-input-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .email-input-row .email-delivery-input {
+    flex: 1;
+    margin-bottom: 0;
+  }
+  
+  .email-submit-btn {
+    padding: 0.75rem 1.5rem;
+    background: #27AE60;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  
+  .email-submit-btn:hover:not(:disabled) {
+    background: #219a52;
+  }
+  
+  .email-submit-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+  }
+  
+  /* Assessment Disclaimer */
+  .assessment-disclaimer {
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .assessment-disclaimer h4 {
+    color: #92400e;
+    margin: 0 0 1rem 0;
+    font-size: 1.1rem;
+  }
+  
+  .assessment-disclaimer p {
+    color: #78350f;
+    margin: 0 0 0.75rem 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  
+  .assessment-disclaimer p:last-child {
+    margin-bottom: 0;
+  }
+  
+  .assessment-disclaimer .liability-text {
+    font-size: 0.85rem;
+    color: #a16207;
+    font-style: italic;
+    padding-top: 0.75rem;
+    border-top: 1px solid #fcd34d;
   }
   
   .email-sent-text {

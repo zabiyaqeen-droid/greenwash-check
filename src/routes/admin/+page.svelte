@@ -2,17 +2,19 @@
   import { user } from '$lib/stores/user';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
-  import { Users, Mail, Building2, Briefcase, Linkedin, Calendar, Shield, AlertCircle, Loader2, Download, RefreshCw } from 'lucide-svelte';
+  import { Users, Mail, Building2, Briefcase, Linkedin, Calendar, Shield, AlertCircle, Loader2, Download, RefreshCw, Trash2 } from 'lucide-svelte';
   
-  const ADMIN_EMAILS = ['zabi@muuvment.com', 'admin@muuvment.com'];
+  const ADMIN_EMAILS = ['zabi@muuvment.com', 'info@muuvment.com', 'martin@muuvment.com'];
   
   let currentUser = $state<any>(null);
   let isAdmin = $state(false);
   let isLoading = $state(true);
   let users = $state<any[]>([]);
+  let emailSubmissions = $state<any[]>([]);
   let error = $state('');
   let sortBy = $state<'date' | 'name' | 'company'>('date');
   let sortOrder = $state<'asc' | 'desc'>('desc');
+  let activeTab = $state<'users' | 'emails'>('users');
   
   onMount(async () => {
     user.init();
@@ -27,6 +29,7 @@
       if (ADMIN_EMAILS.includes(u.email?.toLowerCase())) {
         isAdmin = true;
         loadUsers();
+        loadEmailSubmissions();
       } else {
         isAdmin = false;
         isLoading = false;
@@ -93,6 +96,66 @@
       hour: '2-digit',
       minute: '2-digit'
     });
+  }
+  
+  async function loadEmailSubmissions() {
+    try {
+      const response = await fetch('/api/admin/email-submissions', {
+        headers: {
+          'x-admin-email': currentUser?.email || ''
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        emailSubmissions = data.submissions || [];
+      }
+    } catch (err) {
+      console.error('Error loading email submissions:', err);
+    }
+  }
+  
+  async function deleteEmailSubmission(id: string) {
+    if (!confirm('Are you sure you want to delete this email submission?')) return;
+    
+    try {
+      const response = await fetch('/api/admin/email-submissions', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-email': currentUser?.email || ''
+        },
+        body: JSON.stringify({ id })
+      });
+      
+      if (response.ok) {
+        emailSubmissions = emailSubmissions.filter(e => e.id !== id);
+      }
+    } catch (err) {
+      console.error('Error deleting email submission:', err);
+    }
+  }
+  
+  function exportEmailsCSV() {
+    const headers = ['Email', 'Document Name', 'Score', 'Risk Level', 'Submitted At'];
+    const rows = emailSubmissions.map(e => [
+      e.email || '',
+      e.document_name || '',
+      e.assessment_score?.toString() || '',
+      e.risk_level || '',
+      e.submitted_at || ''
+    ]);
+    
+    const csv = [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `greenwash-check-emails-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    
+    URL.revokeObjectURL(url);
   }
   
   function exportCSV() {
@@ -171,15 +234,11 @@
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <Calendar size={24} />
+            <Mail size={24} />
           </div>
           <div class="stat-content">
-            <span class="stat-value">{users.filter(u => {
-              const date = new Date(u.registeredAt);
-              const now = new Date();
-              return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
-            }).length}</span>
-            <span class="stat-label">This Month</span>
+            <span class="stat-value">{emailSubmissions.length}</span>
+            <span class="stat-label">Email Submissions</span>
           </div>
         </div>
         <div class="stat-card">
@@ -193,6 +252,26 @@
         </div>
       </div>
       
+      <!-- Tabs -->
+      <div class="admin-tabs">
+        <button 
+          class="tab-btn" 
+          class:active={activeTab === 'users'}
+          onclick={() => activeTab = 'users'}
+        >
+          <Users size={18} />
+          Registered Users ({users.length})
+        </button>
+        <button 
+          class="tab-btn" 
+          class:active={activeTab === 'emails'}
+          onclick={() => activeTab = 'emails'}
+        >
+          <Mail size={18} />
+          Email Submissions ({emailSubmissions.length})
+        </button>
+      </div>
+      
       {#if error}
         <div class="error-message">
           <AlertCircle size={20} />
@@ -200,6 +279,7 @@
         </div>
       {/if}
       
+      {#if activeTab === 'users'}
       <!-- Users Table -->
       <div class="users-section">
         <div class="section-header">
@@ -298,6 +378,87 @@
           </div>
         {/if}
       </div>
+      {/if}
+      
+      {#if activeTab === 'emails'}
+      <!-- Email Submissions Table -->
+      <div class="users-section">
+        <div class="section-header">
+          <h2>Email Submissions</h2>
+          <button class="action-btn primary" onclick={exportEmailsCSV}>
+            <Download size={18} />
+            Export CSV
+          </button>
+        </div>
+        
+        {#if emailSubmissions.length === 0}
+          <div class="empty-state">
+            <Mail size={48} strokeWidth={1} />
+            <p>No email submissions yet.</p>
+          </div>
+        {:else}
+          <div class="users-table-container">
+            <table class="users-table">
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>Document</th>
+                  <th>Score</th>
+                  <th>Risk Level</th>
+                  <th>Submitted</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {#each emailSubmissions as submission}
+                  <tr>
+                    <td class="user-cell">
+                      <div class="user-avatar">
+                        <Mail size={16} />
+                      </div>
+                      <div class="user-info">
+                        <span class="user-email">{submission.email}</span>
+                      </div>
+                    </td>
+                    <td>
+                      {#if submission.document_name}
+                        <span>{submission.document_name}</span>
+                      {:else}
+                        <span class="empty-value">-</span>
+                      {/if}
+                    </td>
+                    <td>
+                      {#if submission.assessment_score !== null && submission.assessment_score !== undefined}
+                        <span class="score-badge">{submission.assessment_score}/100</span>
+                      {:else}
+                        <span class="empty-value">-</span>
+                      {/if}
+                    </td>
+                    <td>
+                      {#if submission.risk_level}
+                        <span class="risk-badge" class:high={submission.risk_level === 'High Risk'} class:medium={submission.risk_level === 'Medium Risk'} class:low={submission.risk_level === 'Low Risk'}>
+                          {submission.risk_level}
+                        </span>
+                      {:else}
+                        <span class="empty-value">-</span>
+                      {/if}
+                    </td>
+                    <td class="date-cell">
+                      {formatDate(submission.submitted_at)}
+                    </td>
+                    <td>
+                      <button class="delete-btn" onclick={() => deleteEmailSubmission(submission.id)}>
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                {/each}
+              </tbody>
+            </table>
+          </div>
+        {/if}
+      </div>
+      {/if}
     {/if}
   </div>
 </main>
@@ -660,5 +821,88 @@
     .users-table td {
       padding: 0.75rem 1rem;
     }
+  }
+  
+  /* Tabs */
+  .admin-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #E2E8F0;
+    padding-bottom: 0;
+  }
+  
+  .tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    color: #7F8C8D;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .tab-btn:hover {
+    color: #2C3E50;
+  }
+  
+  .tab-btn.active {
+    color: #6B8E6B;
+    border-bottom-color: #6B8E6B;
+  }
+  
+  /* Score and Risk Badges */
+  .score-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    background: #E8F5E9;
+    color: #2E7D32;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+  
+  .risk-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.85rem;
+  }
+  
+  .risk-badge.high {
+    background: #FFEBEE;
+    color: #C62828;
+  }
+  
+  .risk-badge.medium {
+    background: #FFF3E0;
+    color: #E65100;
+  }
+  
+  .risk-badge.low {
+    background: #E8F5E9;
+    color: #2E7D32;
+  }
+  
+  /* Delete Button */
+  .delete-btn {
+    padding: 0.35rem 0.75rem;
+    background: #FFEBEE;
+    color: #C62828;
+    border: 1px solid #FFCDD2;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .delete-btn:hover {
+    background: #FFCDD2;
   }
 </style>

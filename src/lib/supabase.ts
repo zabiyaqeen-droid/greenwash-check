@@ -582,3 +582,87 @@ export async function getUserActiveJobs(userId: string): Promise<AssessmentJob[]
   }
   return data || [];
 }
+
+
+// ============================================
+// Email Submissions Functions
+// ============================================
+
+export interface EmailSubmission {
+  id?: string;
+  email: string;
+  document_name?: string;
+  assessment_score?: number;
+  risk_level?: string;
+  submitted_at?: string;
+  ip_address?: string;
+  user_agent?: string;
+}
+
+// Save an email submission
+export async function saveEmailSubmission(submission: Omit<EmailSubmission, 'id' | 'submitted_at'>): Promise<string | null> {
+  const { data, error } = await getSupabaseAdmin()
+    .from('email_submissions')
+    .insert({
+      ...submission,
+      email: submission.email.toLowerCase(),
+      submitted_at: new Date().toISOString()
+    })
+    .select('id')
+    .single();
+  
+  if (error) {
+    console.error('Error saving email submission:', error);
+    return null;
+  }
+  return data?.id || null;
+}
+
+// Get all email submissions (for admin)
+export async function getAllEmailSubmissions(): Promise<EmailSubmission[]> {
+  const { data, error } = await getSupabaseAdmin()
+    .from('email_submissions')
+    .select('*')
+    .order('submitted_at', { ascending: false });
+  
+  if (error) {
+    console.error('Error fetching email submissions:', error);
+    return [];
+  }
+  return data || [];
+}
+
+// Delete an email submission
+export async function deleteEmailSubmission(id: string): Promise<boolean> {
+  const { error } = await getSupabaseAdmin()
+    .from('email_submissions')
+    .delete()
+    .eq('id', id);
+  
+  if (error) {
+    console.error('Error deleting email submission:', error);
+    return false;
+  }
+  return true;
+}
+
+// ============================================
+// Admin Account Functions
+// ============================================
+
+// List of admin emails
+const ADMIN_EMAILS = [
+  'info@muuvment.com',
+  'martin@muuvment.com',
+  'zabi@muuvment.com'
+];
+
+// Check if an email is an admin
+export function isAdminEmail(email: string): boolean {
+  return ADMIN_EMAILS.includes(email.toLowerCase());
+}
+
+// Get all admin emails
+export function getAdminEmails(): string[] {
+  return ADMIN_EMAILS;
+}
