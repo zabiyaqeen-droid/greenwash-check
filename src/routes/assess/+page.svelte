@@ -18,7 +18,7 @@
   let uploadError = $state('');
   let fileInputRef: HTMLInputElement;
   let inputMode = $state<'text' | 'document'>('document');
-  let analysisMode = $state<'vision' | 'hybrid' | 'parallel'>('parallel'); // Default to parallel for best accuracy
+  let analysisMode = $state<'vision' | 'hybrid'>('hybrid'); // Default to hybrid (now uses multi-prompt architecture)
   
   let isAnalyzing = $state(false);
   let analysisProgress = $state(0);
@@ -326,9 +326,7 @@
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 3600000); // 60 minute timeout
         
-        const endpoint = analysisMode === 'parallel' 
-          ? '/api/analyze-document-parallel' 
-          : analysisMode === 'hybrid' 
+        const endpoint = analysisMode === 'hybrid' 
             ? '/api/analyze-document-hybrid' 
             : '/api/analyze-document';
         response = await fetch(endpoint, {
@@ -727,19 +725,11 @@
           <span class="toggle-label">Analysis Mode:</span>
           <button 
             class="mode-btn recommended"
-            class:active={analysisMode === 'parallel'}
-            onclick={() => analysisMode = 'parallel'}
-          >
-            <Sparkles size={16} />
-            Multi-Prompt
-          </button>
-          <button 
-            class="mode-btn"
             class:active={analysisMode === 'hybrid'}
             onclick={() => analysisMode = 'hybrid'}
           >
-            <FileText size={16} />
-            Hybrid
+            <Sparkles size={16} />
+            Hybrid (Recommended)
           </button>
           <button 
             class="mode-btn"
@@ -752,12 +742,10 @@
         </div>
         <div class="mode-info-box">
           <Info size={14} />
-          {#if analysisMode === 'parallel'}
-            <span><strong>Multi-Prompt (Recommended):</strong> Uses dedicated claim extraction followed by 18 parallel subcategory assessments. Most accurate analysis with detailed findings per subcategory.</span>
-          {:else if analysisMode === 'hybrid'}
-            <span><strong>Hybrid Mode:</strong> Uses text embeddings for semantic search combined with Vision AI for charts, graphs, and images. Good for documents with visual elements.</span>
+          {#if analysisMode === 'hybrid'}
+            <span><strong>Hybrid (Recommended):</strong> Extracts text and uses Vision AI for charts/images. Uses dedicated claim extraction followed by 18 parallel subcategory assessments for most accurate analysis.</span>
           {:else}
-            <span><strong>Vision Only:</strong> Processes every page as an image using Vision AI. Best for image-heavy documents, infographics, or when text extraction fails. Takes longer but captures all visual elements.</span>
+            <span><strong>Vision Only:</strong> Processes every page as an image using Vision AI. Best for image-heavy documents, infographics, or when text extraction fails. Uses multi-prompt architecture for detailed analysis.</span>
           {/if}
         </div>
       </div>

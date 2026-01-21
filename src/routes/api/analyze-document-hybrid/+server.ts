@@ -9,8 +9,6 @@ import { existsSync } from 'fs';
 import { 
   getAssessmentPrompts, 
   saveAssessmentResult, 
-  getDocumentChunks,
-  searchDocumentChunks,
   deleteDocumentChunks,
   type AssessmentPrompt 
 } from '$lib/supabase';
@@ -18,9 +16,15 @@ import {
   extractTextWithPages,
   splitTextIntoChunks,
   storeChunksWithEmbeddings,
-  generateEmbedding,
   detectVisualContent
 } from '$lib/embeddings';
+import {
+  extractClaims,
+  assessAllSubcategories,
+  aggregateResults,
+  type SubcategoryConfig,
+  type ExtractedClaim
+} from '$lib/multi-prompt-analysis';
 
 const execAsync = promisify(exec);
 
@@ -44,23 +48,6 @@ interface AnalyzeRequest {
   fileName: string;
   dimensions: any[];
   userId?: string;
-}
-
-interface TextAnalysisResult {
-  claims: Array<{
-    text: string;
-    type: string;
-    page: number;
-    context: string;
-  }>;
-  findings: Array<{
-    principle: string;
-    subcategory: string;
-    claim: string;
-    assessment: string;
-    severity: 'High' | 'Medium' | 'Low';
-    page: number;
-  }>;
 }
 
 interface VisionAnalysisResult {
@@ -125,121 +112,6 @@ async function convertPagesToImages(pdfPath: string, outputDir: string, pages: n
   return pageImages;
 }
 
-// Build assessment framework prompt
-function buildAssessmentFramework(dimensions: any[], customPrompts?: AssessmentPrompt[]): string {
-  const enabledDimensions = dimensions.filter((d: any) => d.enabled !== false);
-  
-  let framework = `COMPETITION BUREAU'S 6 PRINCIPLES FOR ENVIRONMENTAL CLAIMS:\n\n`;
-  
-  enabledDimensions.forEach((d: any) => {
-    framework += `PRINCIPLE ${d.id}: ${d.name}\n`;
-    framework += `Description: ${d.principle || d.description}\n`;
-    framework += `Subcategories to evaluate:\n`;
-    
-    const enabledCriteria = d.criteria?.filter((c: any) => c.enabled !== false) || [];
-    enabledCriteria.forEach((c: any) => {
-      const customPrompt = customPrompts?.find(p => p.subcategory_id === c.id);
-      const promptText = customPrompt?.prompt_template || c.description;
-      const weight = customPrompt?.weight ?? c.weight ?? 1.0;
-      
-      framework += `   - ${c.name} (Weight: ${weight}x): ${promptText}\n`;
-    });
-    framework += `\n`;
-  });
-  
-  return framework;
-}
-
-// Analyze text chunks using embeddings and LLM
-async function analyzeTextChunks(
-  documentId: string,
-  dimensions: any[],
-  customPrompts?: AssessmentPrompt[]
-): Promise<TextAnalysisResult> {
-  const chunks = await getDocumentChunks(documentId);
-  
-  if (chunks.length === 0) {
-    return { claims: [], findings: [] };
-  }
-  
-  const framework = buildAssessmentFramework(dimensions, customPrompts);
-  
-  // Combine chunks for analysis (up to token limit)
-  const combinedText = chunks
-    .slice(0, 50) // Limit to first 50 chunks
-    .map(c => `[Page ${c.page_number || 'N/A'}]\n${c.content}`)
-    .join('\n\n---\n\n');
-  
-  const prompt = `Analyze the following sustainability report text for environmental claims and potential greenwashing issues.
-
-${framework}
-
-CRITICAL INSTRUCTION - EXTRACT ALL CLAIMS:
-You MUST extract EVERY environmental or sustainability-related claim. Look for:
-- Emission reduction claims (carbon, GHG, CO2)
-- Net-zero or carbon neutral commitments
-- Renewable energy claims
-- Recycling or waste reduction claims
-- Water conservation claims
-- Biodiversity or nature-positive claims
-- Sustainable sourcing claims
-- ESG performance claims
-- Any percentage improvements mentioned
-- Future commitments or targets
-- Certifications mentioned (ISO, B Corp, etc.)
-- Awards or recognition for sustainability
-
-Even if a claim seems minor or well-substantiated, EXTRACT IT. We need to assess ALL claims.
-
-DOCUMENT TEXT:
-${combinedText}
-
-Identify ALL environmental claims and assess each against the Competition Bureau's 6 Principles.
-
-Return JSON:
-{
-  "claims": [
-    {
-      "text": "exact quote of the claim",
-      "type": "carbon|energy|waste|water|biodiversity|general",
-      "page": <page number>,
-      "context": "surrounding context"
-    }
-  ],
-  "findings": [
-    {
-      "principle": "principle name",
-      "subcategory": "subcategory name",
-      "claim": "the problematic claim",
-      "assessment": "detailed assessment of the issue",
-      "severity": "High|Medium|Low",
-      "page": <page number>
-    }
-  ]
-}`;
-
-  try {
-    const response = await getOpenAIClient().chat.completions.create({
-      model: 'gpt-4.1-mini',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an expert in Canadian environmental law and Bill C-59 greenwashing provisions. Analyze documents for environmental claims and potential compliance issues.'
-        },
-        { role: 'user', content: prompt }
-      ],
-      max_tokens: 4000,
-      response_format: { type: 'json_object' }
-    });
-
-    const content = response.choices[0]?.message?.content || '{}';
-    return JSON.parse(content);
-  } catch (error) {
-    console.error('Error analyzing text chunks:', error);
-    return { claims: [], findings: [] };
-  }
-}
-
 // Analyze visual elements using Vision API
 async function analyzeVisualElements(
   imagePaths: Map<number, string>,
@@ -250,7 +122,6 @@ async function analyzeVisualElements(
     return { visualClaims: [] };
   }
   
-  const framework = buildAssessmentFramework(dimensions, customPrompts);
   const visualClaims: VisionAnalysisResult['visualClaims'] = [];
   
   // Process images in batches
@@ -290,8 +161,6 @@ Focus on:
 3. Images that make implicit environmental claims
 4. Tables with environmental data
 5. Visual representations of carbon footprints, emissions, etc.
-
-${framework}
 
 For each visual element containing environmental claims, identify:
 - What type of visual it is
@@ -345,247 +214,108 @@ Return JSON:
   return { visualClaims };
 }
 
-// Semantic search for specific principle-related content
-async function searchForPrincipleContent(
-  documentId: string,
-  principle: string,
-  subcategory: string
-): Promise<string[]> {
-  const searchQuery = `${principle} ${subcategory} environmental claim sustainability`;
-  
-  try {
-    const queryEmbedding = await generateEmbedding(searchQuery);
-    const relevantChunks = await searchDocumentChunks(documentId, queryEmbedding, 5, 0.6);
-    
-    return relevantChunks.map(c => c.content);
-  } catch (error) {
-    console.error('Error in semantic search:', error);
-    return [];
-  }
-}
-
-// Aggregate all results into final assessment
-async function aggregateHybridResults(
-  textResults: TextAnalysisResult,
-  visionResults: VisionAnalysisResult,
-  dimensions: any[],
+// Convert dimensions to SubcategoryConfig array
+function dimensionsToSubcategories(
+  dimensions: any[], 
   customPrompts?: AssessmentPrompt[]
-): Promise<any> {
-  const allClaims = [
-    ...textResults.claims,
-    ...visionResults.visualClaims.flatMap(vc => 
-      vc.claimsIdentified.map(claim => ({
-        text: claim,
-        type: 'visual',
-        page: vc.page,
-        context: vc.description
-      }))
-    )
-  ];
+): SubcategoryConfig[] {
+  const subcategories: SubcategoryConfig[] = [];
   
-  const allFindings = [
-    ...textResults.findings,
-    ...visionResults.visualClaims.flatMap(vc => 
-      vc.concerns.map(concern => ({
-        principle: 'Visual Representation',
-        subcategory: vc.type,
-        claim: vc.claimsIdentified.join('; '),
-        assessment: concern,
-        severity: 'Medium' as const,
-        page: vc.page
-      }))
-    )
-  ];
-  
-  const enabledDimensions = dimensions.filter((d: any) => d.enabled !== false);
-  
-  // CRITICAL: If no claims were found, this is a problem
-  const noClaimsWarning = allClaims.length === 0 ? `
-
-CRITICAL WARNING: No environmental claims were extracted from this document.
-This is UNUSUAL for a sustainability report. Possible reasons:
-1. The document may not contain environmental claims (unlikely for a sustainability report)
-2. The document analysis may have failed to extract claims properly
-3. The document may be image-heavy with text that couldn't be read
-
-IF THIS IS A SUSTAINABILITY REPORT, you should:
-- Score lower (50-70 range) due to inability to verify claims
-- Note in rationale that claims could not be extracted for analysis
-- Recommend manual review of the document
-- Flag this as a limitation of the automated analysis
-
-DO NOT give 100% scores when no claims were found - this indicates analysis failure, not compliance.` : '';
-  
-  // Build aggregation prompt
-  const aggregationPrompt = `Based on analyzing a sustainability report with BOTH text and visual content, here are ALL findings:
-
-TOTAL CLAIMS FOUND: ${allClaims.length}
-Text Claims: ${textResults.claims.length}
-Visual Claims: ${visionResults.visualClaims.length}
-${noClaimsWarning}
-
-CLAIMS:
-${allClaims.length > 0 ? JSON.stringify(allClaims.slice(0, 30), null, 2) : 'NO CLAIMS EXTRACTED - See warning above'}
-
-FINDINGS:
-${allFindings.length > 0 ? JSON.stringify(allFindings, null, 2) : 'NO FINDINGS EXTRACTED'}
-
-VISUAL ELEMENTS ANALYZED:
-${JSON.stringify(visionResults.visualClaims, null, 2)}
-
-Provide a COMPREHENSIVE assessment scoring EACH of the 6 Principles AND EACH subcategory.
-
-For EACH principle and subcategory:
-1. Score 0-100 (100 = fully compliant)
-2. Explain rationale with SPECIFIC EXAMPLES
-3. Include page references
-4. Provide actionable recommendations
-
-Return JSON:
-{
-  "overallScore": <0-100>,
-  "riskLevel": "Low Risk" | "Medium Risk" | "High Risk",
-  "executiveSummary": "3-4 sentence summary",
-  "totalClaimsAnalyzed": ${allClaims.length},
-  "textClaimsCount": ${textResults.claims.length},
-  "visualClaimsCount": ${visionResults.visualClaims.length},
-  "principleScores": [
-    ${enabledDimensions.map((d: any) => {
-      const enabledCriteria = d.criteria?.filter((c: any) => c.enabled !== false) || [];
-      return `{
-      "id": "${d.id}",
-      "name": "${d.name}",
-      "principle": "${d.principle || ''}",
-      "overallScore": <0-100>,
-      "status": "Compliant" | "Needs Attention" | "High Risk",
-      "summary": "summary of findings",
-      "subcategories": [
-        ${enabledCriteria.map((c: any) => `{
-          "id": "${c.id}",
-          "name": "${c.name}",
-          "score": <0-100>,
-          "status": "Compliant" | "Needs Attention" | "High Risk",
-          "rationale": "specific rationale with evidence",
-          "evidence": [{"quote": "...", "pageReference": "Page X", "context": "..."}],
-          "recommendations": ["recommendation"]
-        }`).join(',\n        ')}
-      ]
-    }`}).join(',\n    ')}
-  ],
-  "legalRiskAssessment": {
-    "penaltyExposure": "potential penalty range",
-    "enforcementRisk": "Low" | "Medium" | "High",
-    "priorityActions": ["action 1", "action 2"]
-  },
-  "keyStrengths": [{"title": "...", "description": "...", "evidence": "...", "pageReference": "..."}],
-  "criticalIssues": [{"title": "...", "description": "...", "principle": "...", "evidence": "...", "pageReference": "...", "recommendation": "..."}]
-}`;
-
-  try {
-    const response = await getOpenAIClient().chat.completions.create({
-      model: 'gpt-4.1-mini',
-      messages: [
-        {
-          role: 'system',
-          content: `You are an expert in Canadian environmental law and Bill C-59 greenwashing provisions. 
-Provide comprehensive assessments that score EACH principle and subcategory with specific evidence.
-Consider BOTH text claims and visual representations in your assessment.`
-        },
-        { role: 'user', content: aggregationPrompt }
-      ],
-      max_tokens: 8000,
-      response_format: { type: 'json_object' }
-    });
-
-    const content = response.choices[0]?.message?.content || '{}';
-    return JSON.parse(content);
-  } catch (error) {
-    console.error('Aggregation error:', error);
-    return {
-      overallScore: 50,
-      riskLevel: 'Medium Risk',
-      executiveSummary: 'Hybrid analysis completed. Manual review recommended.',
-      totalClaimsAnalyzed: allClaims.length,
-      principleScores: []
-    };
+  for (const dim of dimensions) {
+    if (dim.enabled === false) continue;
+    
+    const principleId = parseInt(dim.id.replace(/\D/g, '')) || subcategories.length + 1;
+    
+    for (const criterion of dim.criteria || []) {
+      if (criterion.enabled === false) continue;
+      
+      const customPrompt = customPrompts?.find(p => p.subcategory_id === criterion.id);
+      
+      subcategories.push({
+        id: criterion.id,
+        name: criterion.name,
+        principleId: principleId,
+        principleName: dim.name,
+        description: customPrompt?.prompt_template || criterion.description,
+        weight: customPrompt?.weight ?? criterion.weight ?? 1.0
+      });
+    }
   }
+  
+  return subcategories;
 }
 
-// Apply weighted scoring
-function applyWeightedScoring(result: any, dimensions: any[], customPrompts?: AssessmentPrompt[]): any {
-  if (!result || !result.principleScores) {
-    return result;
-  }
-
-  const weightMap: Record<string, number> = {};
-  if (customPrompts) {
-    for (const prompt of customPrompts) {
-      weightMap[prompt.subcategory_id] = prompt.weight ?? 1.0;
+// Convert visual claims to ExtractedClaim format
+function visualClaimsToExtractedClaims(visualClaims: VisionAnalysisResult['visualClaims']): ExtractedClaim[] {
+  const claims: ExtractedClaim[] = [];
+  let claimIndex = 1;
+  
+  for (const vc of visualClaims) {
+    for (const claimText of vc.claimsIdentified) {
+      claims.push({
+        id: `visual_claim_${claimIndex++}`,
+        text: claimText,
+        page: vc.page,
+        section: `Visual: ${vc.type}`,
+        category: 'general_sustainability',
+        claimType: 'factual',
+        vaguenessFlags: []
+      });
     }
   }
+  
+  return claims;
+}
 
-  for (const dim of dimensions) {
-    if (dim.criteria) {
-      for (const c of dim.criteria) {
-        if (!weightMap[c.id]) {
-          weightMap[c.id] = c.weight ?? 1.0;
-        }
-      }
-    }
-  }
-
-  let totalWeightedScore = 0;
-  let totalWeight = 0;
-
-  const updatedPrincipleScores = result.principleScores.map((principle: any) => {
-    if (!principle.subcategories || principle.subcategories.length === 0) {
-      totalWeightedScore += (principle.overallScore || 0) * 1.0;
-      totalWeight += 1.0;
-      return principle;
-    }
-
-    let principleWeightedScore = 0;
-    let principleWeight = 0;
-
-    const updatedSubcategories = principle.subcategories.map((sub: any) => {
-      const weight = weightMap[sub.id] ?? 1.0;
-      principleWeightedScore += (sub.score || 0) * weight;
-      principleWeight += weight;
-      return { ...sub, weight };
-    });
-
-    const weightedPrincipleScore = principleWeight > 0 
-      ? Math.round(principleWeightedScore / principleWeight) 
-      : principle.overallScore || 0;
-
-    totalWeightedScore += weightedPrincipleScore * (principleWeight / principle.subcategories.length);
-    totalWeight += principleWeight / principle.subcategories.length;
-
-    return {
-      ...principle,
-      overallScore: weightedPrincipleScore,
-      subcategories: updatedSubcategories
-    };
-  });
-
-  const weightedOverallScore = totalWeight > 0 
-    ? Math.round(totalWeightedScore / totalWeight) 
-    : result.overallScore || 0;
-
-  let riskLevel = result.riskLevel;
-  if (weightedOverallScore >= 75) {
-    riskLevel = 'Low Risk';
-  } else if (weightedOverallScore >= 50) {
-    riskLevel = 'Medium Risk';
-  } else {
-    riskLevel = 'High Risk';
-  }
-
+// Format results for the frontend
+function formatResultsForFrontend(
+  result: any,
+  fileName: string,
+  totalPages: number,
+  pagesAnalyzed: number,
+  textChunksCount: number,
+  visualPagesAnalyzed: number,
+  processingTime: number
+): any {
   return {
-    ...result,
-    overallScore: weightedOverallScore,
-    riskLevel,
-    principleScores: updatedPrincipleScores
+    overallScore: result.overallScore,
+    riskLevel: result.riskLevel,
+    executiveSummary: result.executiveSummary,
+    totalClaimsAnalyzed: result.totalClaimsAnalyzed,
+    textClaimsCount: result.totalClaimsAnalyzed,
+    visualClaimsCount: 0,
+    principleScores: result.principleScores.map((ps: any) => ({
+      id: ps.id.toString(),
+      name: ps.name,
+      principle: ps.principle,
+      overallScore: ps.overallScore,
+      status: ps.status,
+      summary: ps.summary,
+      subcategories: ps.subcategories.map((sub: any) => ({
+        id: sub.subcategoryId,
+        name: sub.subcategoryName,
+        score: sub.score,
+        status: sub.status,
+        rationale: sub.rationale,
+        weight: sub.weight,
+        evidence: sub.evidenceUsed,
+        recommendations: sub.recommendations
+      }))
+    })),
+    keyStrengths: result.keyStrengths,
+    criticalIssues: result.criticalIssues,
+    legalRiskAssessment: result.legalRiskAssessment,
+    metadata: {
+      fileName,
+      totalPages,
+      pagesAnalyzed,
+      textChunksProcessed: textChunksCount,
+      visualPagesAnalyzed,
+      processingTimeSeconds: processingTime,
+      assessmentDate: new Date().toISOString(),
+      framework: 'Competition Bureau 6 Principles + Bill C-59 (Multi-Prompt Hybrid Analysis)',
+      analysisMetrics: result.metadata
+    }
   };
 }
 
@@ -598,7 +328,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const body: AnalyzeRequest = await request.json();
     const { fileId, filePath, fileName, dimensions, userId } = body;
 
-    console.log(`[HYBRID] Starting analysis of ${fileName}`);
+    console.log(`[HYBRID] Starting multi-prompt hybrid analysis of ${fileName}`);
 
     // Fetch custom prompts
     let customPrompts: AssessmentPrompt[] = [];
@@ -636,12 +366,11 @@ export const POST: RequestHandler = async ({ request }) => {
     
     console.log(`[HYBRID] Document has ${totalPages} pages, processing ${pagesToProcess}`);
 
-    // PHASE 1: Extract text and create embeddings
-    console.log('[HYBRID] Phase 1: Extracting text and generating embeddings...');
-    
     // Delete any existing chunks for this document
     await deleteDocumentChunks(fileId);
     
+    // PHASE 1: Extract text from PDF
+    console.log('[HYBRID] Phase 1: Extracting text from PDF...');
     const pagesWithText = await extractTextWithPages(localFilePath);
     const visualPages: number[] = [];
     const textChunks: Array<{ content: string; pageNumber: number; metadata: any }> = [];
@@ -663,29 +392,41 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     
-    console.log(`[HYBRID] Extracted ${textChunks.length} text chunks, ${visualPages.length} pages with visual content`);
+    console.log(`[HYBRID] Extracted ${textChunks.length} text chunks from ${pagesWithText.length} pages`);
+    console.log(`[HYBRID] Found ${visualPages.length} pages with visual content`);
     
-    // Store chunks with embeddings
+    // Store chunks with embeddings for future use
     if (textChunks.length > 0 && userId) {
       await storeChunksWithEmbeddings(fileId, userId, textChunks);
     }
     
-    // PHASE 2: Analyze text using embeddings
-    console.log('[HYBRID] Phase 2: Analyzing text content...');
-    const textResults = await analyzeTextChunks(fileId, dimensions, customPrompts);
-    console.log(`[HYBRID] Found ${textResults.claims.length} text claims, ${textResults.findings.length} findings`);
+    // Combine text for claim extraction
+    const combinedText = textChunks
+      .slice(0, 100) // Limit to first 100 chunks to stay within token limits
+      .map(c => `[Page ${c.pageNumber || 'N/A'}]\n${c.content}`)
+      .join('\n\n---\n\n');
     
-    // PHASE 3: Analyze visual elements with Vision API
+    // PHASE 2: Extract claims using dedicated Claimify-inspired prompt
+    console.log('[HYBRID] Phase 2: Extracting environmental claims (Claimify-inspired)...');
+    const claimExtractionResult = await extractClaims(combinedText, 90000);
+    console.log(`[HYBRID] Extracted ${claimExtractionResult.totalClaimsFound} claims from text`);
+    
+    // PHASE 3: Analyze visual elements with Vision API (in parallel with text)
     console.log('[HYBRID] Phase 3: Analyzing visual elements...');
     const imageDir = join(tempDir, 'images');
     await mkdir(imageDir, { recursive: true });
     
-    // Limit visual pages to analyze (prioritize pages with most visual content)
+    // Limit visual pages to analyze
     const pagesToAnalyzeVisually = visualPages.slice(0, 30);
     const pageImages = await convertPagesToImages(localFilePath, imageDir, pagesToAnalyzeVisually);
     
     const visionResults = await analyzeVisualElements(pageImages, dimensions, customPrompts);
     console.log(`[HYBRID] Found ${visionResults.visualClaims.length} visual claims`);
+    
+    // Convert visual claims to ExtractedClaim format and merge
+    const visualExtractedClaims = visualClaimsToExtractedClaims(visionResults.visualClaims);
+    const allClaims = [...claimExtractionResult.claims, ...visualExtractedClaims];
+    console.log(`[HYBRID] Total claims for assessment: ${allClaims.length}`);
     
     // Clean up images
     for (const [, imgPath] of pageImages) {
@@ -696,20 +437,43 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     
-    // PHASE 4: Aggregate results
-    console.log('[HYBRID] Phase 4: Aggregating results...');
-    const aggregatedResult = await aggregateHybridResults(
-      textResults,
-      visionResults,
-      dimensions,
-      customPrompts
+    // PHASE 4: Parallel subcategory assessment (G-Eval inspired)
+    console.log('[HYBRID] Phase 4: Running parallel subcategory assessments (G-Eval inspired)...');
+    const subcategories = dimensionsToSubcategories(dimensions, customPrompts);
+    console.log(`[HYBRID] Assessing ${subcategories.length} subcategories in parallel`);
+    
+    const subcategoryResults = await assessAllSubcategories(
+      allClaims,
+      subcategories,
+      combinedText.slice(0, 5000) // Additional context
     );
     
-    // Apply weighted scoring
-    const weightedResult = applyWeightedScoring(aggregatedResult, dimensions, customPrompts);
+    const successCount = subcategoryResults.filter(r => !r.error).length;
+    const failCount = subcategoryResults.filter(r => r.error).length;
+    console.log(`[HYBRID] Subcategory assessments: ${successCount} succeeded, ${failCount} failed`);
+    
+    // PHASE 5: Aggregate results
+    console.log('[HYBRID] Phase 5: Aggregating results...');
+    const aggregatedResult = await aggregateResults(
+      allClaims,
+      subcategoryResults,
+      subcategories
+    );
     
     const processingTime = Math.round((Date.now() - startTime) / 1000);
     console.log(`[HYBRID] Analysis complete in ${processingTime} seconds`);
+    console.log(`[HYBRID] Overall score: ${aggregatedResult.overallScore}`);
+
+    // Format results for frontend
+    const formattedResult = formatResultsForFrontend(
+      aggregatedResult,
+      fileName,
+      totalPages,
+      pagesToProcess,
+      textChunks.length,
+      pagesToAnalyzeVisually.length,
+      processingTime
+    );
 
     // Save assessment result
     if (userId) {
@@ -718,11 +482,11 @@ export const POST: RequestHandler = async ({ request }) => {
           user_id: userId,
           document_id: fileId,
           document_name: fileName,
-          overall_score: weightedResult.overallScore || 0,
-          risk_level: weightedResult.riskLevel || 'Unknown',
-          principle_scores: weightedResult.principleScores || {},
-          findings: weightedResult.criticalIssues || [],
-          recommendations: weightedResult.legalRiskAssessment?.priorityActions || []
+          overall_score: formattedResult.overallScore || 0,
+          risk_level: formattedResult.riskLevel || 'Unknown',
+          principle_scores: formattedResult.principleScores || {},
+          findings: formattedResult.criticalIssues || [],
+          recommendations: formattedResult.legalRiskAssessment?.priorityActions || []
         });
       } catch (saveError) {
         console.warn('Could not save assessment result:', saveError);
@@ -741,19 +505,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       analysisType: 'hybrid',
-      assessment: {
-        ...weightedResult,
-        metadata: {
-          fileName,
-          totalPages,
-          pagesAnalyzed: pagesToProcess,
-          textChunksProcessed: textChunks.length,
-          visualPagesAnalyzed: pagesToAnalyzeVisually.length,
-          processingTimeSeconds: processingTime,
-          assessmentDate: new Date().toISOString(),
-          framework: 'Competition Bureau 6 Principles + Bill C-59 (Hybrid Analysis)'
-        }
-      }
+      assessment: formattedResult
     });
 
   } catch (error) {
