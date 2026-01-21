@@ -519,6 +519,39 @@ let emailSubmitted = $state(false); // Track if user clicked submit to confirm e
     return '#E74C3C';
   }
   
+  // Format rationale text with proper line breaks for Step X: patterns
+  function formatRationale(text: string): string {
+    if (!text) return '';
+    
+    // Escape HTML to prevent XSS
+    const escaped = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+    
+    // Split on "Step X:" patterns and format as separate paragraphs
+    let formatted = escaped
+      // Add line breaks before Step patterns
+      .replace(/\s*(Step\s*\d+:)/gi, '</p><p class="rationale-step"><strong>$1</strong>')
+      // Add line breaks before "Red flags" or "Therefore" conclusions
+      .replace(/\s*(Red flags are present:)/gi, '</p><p class="rationale-flags"><strong>$1</strong>')
+      .replace(/\s*(Therefore,)/gi, '</p><p class="rationale-conclusion"><strong>$1</strong>')
+      // Clean up any empty paragraphs at the start
+      .replace(/^<\/p>/, '');
+    
+    // Wrap in paragraph if not already
+    if (!formatted.startsWith('<p')) {
+      formatted = '<p>' + formatted;
+    }
+    if (!formatted.endsWith('</p>')) {
+      formatted = formatted + '</p>';
+    }
+    
+    return formatted;
+  }
+  
   function getRiskLevelColor(level: string) {
     if (level === 'Low') return '#27AE60';
     if (level === 'Medium') return '#F39C12';
@@ -1227,7 +1260,9 @@ let emailSubmitted = $state(false); // Track if user clicked submit to confirm e
                             
                             <div class="subcategory-rationale">
                               <h5>Assessment Rationale</h5>
-                              <p>{sub.rationale}</p>
+                              <div class="rationale-content">
+                                {@html formatRationale(sub.rationale)}
+                              </div>
                             </div>
                             
                             {#if sub.evidence && sub.evidence.length > 0}
@@ -2750,6 +2785,52 @@ let emailSubmitted = $state(false); // Track if user clicked submit to confirm e
     margin: 0;
     color: #2C3E50;
     line-height: 1.6;
+  }
+  
+  .rationale-content {
+    color: #2C3E50;
+    line-height: 1.7;
+  }
+  
+  .rationale-content p {
+    margin: 0 0 1rem 0;
+  }
+  
+  .rationale-content p:last-child {
+    margin-bottom: 0;
+  }
+  
+  .rationale-content .rationale-step {
+    padding-left: 0;
+    border-left: none;
+  }
+  
+  .rationale-content .rationale-step strong {
+    color: #1a365d;
+    display: inline;
+  }
+  
+  .rationale-content .rationale-flags {
+    background: #FEF3C7;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    border-left: 3px solid #F39C12;
+  }
+  
+  .rationale-content .rationale-flags strong {
+    color: #92400E;
+  }
+  
+  .rationale-content .rationale-conclusion {
+    background: #F0FDF4;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    border-left: 3px solid #27AE60;
+    font-weight: 500;
+  }
+  
+  .rationale-content .rationale-conclusion strong {
+    color: #166534;
   }
   
   .evidence-item {

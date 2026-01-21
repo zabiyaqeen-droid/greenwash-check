@@ -84,12 +84,44 @@
     showDeleteConfirm = false;
   }
 
-  function downloadPDF(assessment: AssessmentResult) {
-    // Navigate to assess page with the assessment data to use the PDF generation there
-    // For now, store in sessionStorage and redirect
-    if (typeof sessionStorage !== 'undefined') {
-      sessionStorage.setItem('viewAssessment', JSON.stringify(assessment));
-      goto('/assess?view=' + assessment.id);
+  async function downloadPDF(assessment: AssessmentResult) {
+    try {
+      // Prepare the data for PDF generation
+      const pdfData = {
+        overallScore: assessment.overallScore,
+        riskLevel: assessment.riskLevel?.replace(/ Risk$/i, '') || 'Unknown',
+        executiveSummary: assessment.executiveSummary || assessment.summary || '',
+        principleScores: assessment.principleScores || [],
+        top20Issues: assessment.top20Issues || [],
+        positiveFindings: assessment.positiveFindings || [],
+        fileName: assessment.fileName || assessment.inputPreview || 'Assessment',
+        timestamp: assessment.timestamp
+      };
+
+      const response = await fetch('/api/generate-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(pdfData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `greenwash-report-${new Date(assessment.timestamp).toISOString().split('T')[0]}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      alert('Failed to download PDF. Please try again.');
     }
   }
 </script>
@@ -202,7 +234,7 @@
               {selectedAssessment.overallScore}/100
             </span>
             <span class="risk-badge" style="background: {getRiskColor(selectedAssessment.riskLevel)}">
-              {selectedAssessment.riskLevel} Risk
+              {selectedAssessment.riskLevel?.replace(/ Risk$/i, '')} Risk
             </span>
           </div>
         </div>
@@ -600,6 +632,7 @@
 
   .modal-header h2 {
     margin: 0;
+    color: white;
   }
 
   .close-btn {
