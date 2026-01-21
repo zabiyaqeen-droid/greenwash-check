@@ -46,12 +46,18 @@ declare global {
   var uploadedFiles: Map<string, { name: string; type: string; size: number; data: string }>;
 }
 
-// Get file from memory storage
+// Get file from memory storage (fallback)
 function getFileFromMemory(fileId: string): Buffer | null {
   if (!globalThis.uploadedFiles) return null;
   const file = globalThis.uploadedFiles.get(fileId);
   if (!file) return null;
   return Buffer.from(file.data, 'base64');
+}
+
+// Get file from database (document_data field)
+function getFileFromDatabase(job: AssessmentJob): Buffer | null {
+  if (!job.document_data) return null;
+  return Buffer.from(job.document_data, 'base64');
 }
 
 // Get PDF page count
@@ -321,10 +327,14 @@ async function processJob(job: AssessmentJob): Promise<void> {
       // Document mode
       await updateAssessmentJobProgress(jobId, 10, 'Loading document...');
       
-      // Get file from memory
-      const fileBuffer = getFileFromMemory(job.document_id);
+      // Get file from database first (persistent), then try memory (fallback)
+      let fileBuffer = getFileFromDatabase(job);
       if (!fileBuffer) {
-        throw new Error('Document not found in memory. Please re-upload the document.');
+        // Fallback to memory storage
+        fileBuffer = getFileFromMemory(job.document_id);
+      }
+      if (!fileBuffer) {
+        throw new Error('Document not found. Please re-upload the document.');
       }
       
       // Create temp directory

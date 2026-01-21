@@ -14,6 +14,19 @@ interface StartAssessmentRequest {
   emailAddress?: string;
 }
 
+// Access global uploaded files storage
+declare global {
+  var uploadedFiles: Map<string, { name: string; type: string; size: number; data: string }>;
+}
+
+// Get file data from memory storage (base64 encoded)
+function getFileDataFromMemory(fileId: string): string | null {
+  if (!globalThis.uploadedFiles) return null;
+  const file = globalThis.uploadedFiles.get(fileId);
+  if (!file) return null;
+  return file.data; // Already base64 encoded
+}
+
 // POST /api/start-assessment - Create a new assessment job and start processing
 export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
@@ -35,7 +48,16 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     // Generate a document ID if not provided
     const documentId = body.documentId || uuidv4();
     
-    // Create the job in the database
+    // Get document data from memory if it's a document input
+    let documentData: string | undefined;
+    if (body.inputType === 'document' && body.documentId) {
+      documentData = getFileDataFromMemory(body.documentId) || undefined;
+      if (!documentData) {
+        return json({ error: 'Document not found in memory. Please re-upload the document.' }, { status: 400 });
+      }
+    }
+    
+    // Create the job in the database with document data
     const jobId = await createAssessmentJob({
       userId: body.userId,
       documentId: documentId,
@@ -43,6 +65,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       filePath: body.filePath,
       inputType: body.inputType,
       inputText: body.inputText,
+      documentData: documentData, // Store base64 document data in DB
       analysisMode: body.analysisMode || 'hybrid',
       emailAddress: body.emailAddress
     });

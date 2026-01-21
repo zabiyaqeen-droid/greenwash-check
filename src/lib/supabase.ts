@@ -471,6 +471,7 @@ export interface AssessmentJob {
   file_path?: string;
   input_type?: 'document' | 'text';
   input_text?: string;
+  document_data?: string; // Base64-encoded document content
   analysis_mode?: 'hybrid' | 'vision';
   email_address?: string;
   status: 'pending' | 'processing' | 'completed' | 'failed';
@@ -491,6 +492,7 @@ export interface CreateJobParams {
   filePath?: string;
   inputType?: 'document' | 'text';
   inputText?: string;
+  documentData?: string; // Base64-encoded document content
   analysisMode?: 'hybrid' | 'vision';
   emailAddress?: string;
 }
@@ -506,6 +508,7 @@ export async function createAssessmentJob(params: CreateJobParams): Promise<stri
       file_path: params.filePath,
       input_type: params.inputType || 'document',
       input_text: params.inputText,
+      document_data: params.documentData,
       analysis_mode: params.analysisMode || 'hybrid',
       email_address: params.emailAddress,
       status: 'pending',
