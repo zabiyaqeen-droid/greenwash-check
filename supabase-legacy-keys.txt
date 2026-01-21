@@ -1,0 +1,10 @@
+# Supabase Legacy API Keys (JWT-based)
+# These are the correct keys for the Supabase JavaScript client
+
+SUPABASE_URL=https://wpkccelykmppwzbcrgkf.supabase.co
+
+# anon (public) key - for client-side
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indwa2NjZWx5a21wcHd6YmNyZ2tmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc0MjkwMTYsImV4cCI6MjA1MzAwNTAxNn0.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indwa2NjZWx5a21wcHd6YmNyZ2tmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc0MjkwMTYsImV4cCI6MjA1MzAwNTAxNn0
+
+# service_role (secret) key - for server-side
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indwa2NjZWx5a21wcHd6YmNyZ2tmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNzQyOTAxNiwiZXhwIjoyMDUzMDA1MDE2fQ.PLACEHOLDER

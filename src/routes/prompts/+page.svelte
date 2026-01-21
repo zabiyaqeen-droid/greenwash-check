@@ -1,8 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import Header from '$lib/components/Header.svelte';
-  import Footer from '$lib/components/Footer.svelte';
-  import { Settings, Save, RotateCcw, ChevronDown, ChevronUp, Edit3, Check, X, Info, AlertTriangle } from 'lucide-svelte';
+  import { Save, RotateCcw, ChevronDown, ChevronUp, Edit3, Check, X, Info, AlertTriangle } from 'lucide-svelte';
 
   interface Subcategory {
     id: string;
@@ -179,15 +177,10 @@
   <meta name="description" content="Customize the AI prompts used to assess your environmental claims against the Competition Bureau's 6 Principles." />
 </svelte:head>
 
-<Header />
-
-<main class="prompts-page">
+<div class="prompts-page">
   <div class="container">
     <div class="page-header">
       <div class="header-content">
-        <div class="icon-wrapper">
-          <Settings size={32} />
-        </div>
         <div>
           <h1>Assessment Prompts</h1>
           <p class="subtitle">Customize how your documents are analyzed against the Competition Bureau's 6 Principles</p>
@@ -342,9 +335,7 @@
       </div>
     {/if}
   </div>
-</main>
-
-<Footer />
+</div>
 
 <style>
   .prompts-page {

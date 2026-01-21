@@ -5,23 +5,23 @@ import { env } from '$env/dynamic/private';
 let _supabaseAdmin: ReturnType<typeof createClient> | null = null;
 let _supabaseClient: ReturnType<typeof createClient> | null = null;
 
-// Server-side client with full access
+// Server-side client with full access (uses service_role key)
 export function getSupabaseAdmin() {
   if (!_supabaseAdmin) {
     _supabaseAdmin = createClient(
       env.SUPABASE_URL || '',
-      env.SUPABASE_SECRET_KEY || ''
+      env.SUPABASE_SERVICE_ROLE_KEY || ''
     );
   }
   return _supabaseAdmin;
 }
 
-// Client-side safe client (for browser use)
+// Client-side safe client (uses anon key)
 export function getSupabaseClient() {
   if (!_supabaseClient) {
     _supabaseClient = createClient(
       env.SUPABASE_URL || '',
-      env.SUPABASE_PUBLISHABLE_KEY || ''
+      env.SUPABASE_ANON_KEY || ''
     );
   }
   return _supabaseClient;
