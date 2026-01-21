@@ -1050,7 +1050,7 @@
   }
   
   .free-badge-large {
-    background: linear-gradient(135deg, #0D9488 0%, #059669 100%);
+    background: linear-gradient(135deg, #356904 0%, #2A5403 100%);
     color: white;
     padding: 0.5rem 1rem;
     border-radius: 20px;

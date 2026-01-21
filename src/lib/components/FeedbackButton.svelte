@@ -46,7 +46,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background: linear-gradient(135deg, #0D9488 0%, #0f766e 100%);
+    background: linear-gradient(135deg, #4A428E 0%, #0f766e 100%);
     color: white;
     border: none;
     padding: 12px 18px;
@@ -130,12 +130,12 @@
   }
   
   .feedback-content strong {
-    color: #0D9488;
+    color: #4A428E;
   }
   
   .feedback-submit-btn {
     width: 100%;
-    background: linear-gradient(135deg, #0D9488 0%, #0f766e 100%);
+    background: linear-gradient(135deg, #4A428E 0%, #0f766e 100%);
     color: white;
     border: none;
     padding: 12px 20px;

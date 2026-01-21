@@ -334,14 +334,14 @@
   
   .source-citation {
     background: #F0FDF4;
-    border-left: 4px solid #0D9488;
+    border-left: 4px solid #4A428E;
     padding: 0.75rem 1rem;
     border-radius: 0 8px 8px 0;
     font-size: 0.9rem;
   }
   
   .source-citation a {
-    color: #0D9488;
+    color: #4A428E;
     text-decoration: underline;
   }
   
@@ -522,7 +522,7 @@
   }
   
   .additional-sources a {
-    color: #0D9488;
+    color: #4A428E;
     text-decoration: underline;
   }
   

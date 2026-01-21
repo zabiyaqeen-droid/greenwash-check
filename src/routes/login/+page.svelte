@@ -218,7 +218,7 @@
     position: absolute;
     top: -12px;
     right: 24px;
-    background: linear-gradient(135deg, #0D9488 0%, #059669 100%);
+    background: linear-gradient(135deg, #356904 0%, #2A5403 100%);
     color: white;
     padding: 0.5rem 1rem;
     border-radius: 20px;
@@ -263,7 +263,7 @@
   
   .form-group input:focus {
     outline: none;
-    border-color: #0D9488;
+    border-color: #4A428E;
     box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
   }
 
@@ -275,7 +275,7 @@
     width: 100%;
     padding: 1rem;
     font-size: 1rem;
-    background: linear-gradient(135deg, #0D9488 0%, #059669 100%);
+    background: linear-gradient(135deg, #356904 0%, #2A5403 100%);
     color: white;
     border: none;
     border-radius: 8px;
@@ -317,7 +317,7 @@
   .switch-mode button {
     background: none;
     border: none;
-    color: #0D9488;
+    color: #4A428E;
     font-weight: 600;
     cursor: pointer;
   }
@@ -334,7 +334,7 @@
   }
 
   .terms a {
-    color: #0D9488;
+    color: #4A428E;
   }
 
   .error-message {

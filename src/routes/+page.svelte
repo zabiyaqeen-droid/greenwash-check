@@ -218,7 +218,7 @@
     padding: 0.5rem 1rem;
     border-radius: 20px;
     font-size: 0.875rem;
-    color: #0D9488;
+    color: #4A428E;
     margin-bottom: 1.5rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     font-weight: 500;
@@ -236,7 +236,7 @@
   .title-row h1 {
     font-size: 2.75rem;
     margin: 0;
-    color: #1a2b4a;
+    color: #1C2947;
   }
   
   .beta-pill {
@@ -275,7 +275,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    color: #0D9488;
+    color: #4A428E;
     font-size: 0.9rem;
   }
   
@@ -293,22 +293,22 @@
   }
   
   .btn-primary {
-    background: #0D9488;
+    background: #356904;
     color: white;
   }
   
   .btn-primary:hover {
-    background: #0F766E;
+    background: #2A5403;
   }
   
   .btn-outline {
     background: transparent;
-    color: #0D9488;
-    border: 2px solid #0D9488;
+    color: #4A428E;
+    border: 2px solid #4A428E;
   }
   
   .btn-outline:hover {
-    background: #0D9488;
+    background: #356904;
     color: white;
   }
   
@@ -329,7 +329,7 @@
     justify-content: center;
     gap: 0.75rem;
     margin-bottom: 0.75rem;
-    color: #1a2b4a;
+    color: #1C2947;
   }
   
   .regions-header h2 {
@@ -385,7 +385,7 @@
   .region-name-row h3 {
     font-size: 1rem;
     margin: 0;
-    color: #1a2b4a;
+    color: #1C2947;
   }
   
   .status-badge {
@@ -420,7 +420,7 @@
     align-items: center;
     gap: 0.25rem;
     margin-top: 1rem;
-    color: #0D9488;
+    color: #4A428E;
     font-size: 0.875rem;
     font-weight: 500;
     text-decoration: none;
@@ -446,7 +446,7 @@
     text-align: center;
     font-size: 2rem;
     margin-bottom: 3rem;
-    color: #1a2b4a;
+    color: #1C2947;
   }
   
   .feature-grid {
@@ -472,13 +472,13 @@
     align-items: center;
     justify-content: center;
     margin: 0 auto 1.5rem;
-    color: #0D9488;
+    color: #4A428E;
   }
   
   .feature-card h3 {
     font-size: 1.25rem;
     margin-bottom: 0.75rem;
-    color: #1a2b4a;
+    color: #1C2947;
   }
   
   .feature-card p {
@@ -497,7 +497,7 @@
     text-align: center;
     font-size: 2rem;
     margin-bottom: 3rem;
-    color: #1a2b4a;
+    color: #1C2947;
   }
   
   .framework-grid {
@@ -528,7 +528,7 @@
   .framework-card h3 {
     font-size: 1.125rem;
     margin-bottom: 0.75rem;
-    color: #1a2b4a;
+    color: #1C2947;
   }
   
   .framework-card p {
@@ -539,7 +539,7 @@
   }
   
   .framework-link {
-    color: #0D9488;
+    color: #4A428E;
     font-size: 0.875rem;
     font-weight: 500;
     text-decoration: none;
@@ -547,7 +547,7 @@
   }
   
   .framework-link:hover {
-    color: #0F766E;
+    color: #3D3676;
   }
   
   /* CTA Section */

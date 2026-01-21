@@ -232,7 +232,7 @@
   }
   
   .contact-link:hover {
-    color: #0D9488;
+    color: #4A428E;
   }
   
   /* Footer Columns */
@@ -253,7 +253,7 @@
   }
   
   .footer-column a:hover {
-    color: #0D9488;
+    color: #4A428E;
   }
   
   /* Social & Copyright */
@@ -282,8 +282,8 @@
   }
   
   .social-links a:hover {
-    border-color: #0D9488;
-    color: #0D9488;
+    border-color: #4A428E;
+    color: #4A428E;
   }
   
   .copyright {
@@ -303,7 +303,7 @@
   }
   
   .cookie-preferences:hover {
-    color: #0D9488;
+    color: #4A428E;
   }
   
   /* Responsive */

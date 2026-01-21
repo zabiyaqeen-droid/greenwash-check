@@ -153,18 +153,18 @@
   }
   
   .nav-link:hover {
-    color: #1a2b4a;
+    color: #1C2947;
   }
   
   .admin-link {
     display: flex;
     align-items: center;
     gap: 0.375rem;
-    color: #0D9488;
+    color: #4A428E;
   }
   
   .admin-link:hover {
-    color: #0F766E;
+    color: #3D3676;
   }
   
   .user-menu {
@@ -175,7 +175,7 @@
     background: #F3F4F6;
     border-radius: 20px;
     font-size: 0.875rem;
-    color: #1a2b4a;
+    color: #1C2947;
   }
   
   .logout-btn {
@@ -198,7 +198,7 @@
     display: none;
     background: none;
     border: none;
-    color: #1a2b4a;
+    color: #1C2947;
     cursor: pointer;
     padding: 0.5rem;
   }
@@ -250,12 +250,12 @@
   }
   
   .btn-primary {
-    background-color: #0D9488;
+    background-color: #356904;
     color: white;
   }
   
   .btn-primary:hover {
-    background-color: #0F766E;
+    background-color: #2A5403;
   }
   
   @media (max-width: 768px) {
