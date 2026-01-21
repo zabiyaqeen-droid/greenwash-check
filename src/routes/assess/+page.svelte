@@ -5,9 +5,10 @@
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   import { Upload, FileText, Settings2, Play, Loader2, ChevronDown, ChevronUp, RotateCcw, AlertCircle, CheckCircle, Info, X, File, Award, AlertTriangle, ExternalLink, Sparkles, Shield, DollarSign, Scale, TrendingDown, Square } from 'lucide-svelte';
+  import PromptsPanel from '$lib/components/PromptsPanel.svelte';
   
   let inputText = $state('');
-  let showCriteriaPanel = $state(false);
+  let showPromptsPanel = $state(false);
   let expandedDimensions = $state<Set<string>>(new Set());
   let uploadedFile = $state<File | null>(null);
   let uploadedFileId = $state<string | null>(null);
@@ -457,12 +458,12 @@
     <div class="quick-actions">
       <button 
         class="quick-action-btn settings"
-        class:active={showCriteriaPanel}
-        onclick={() => showCriteriaPanel = !showCriteriaPanel}
+        class:active={showPromptsPanel}
+        onclick={() => showPromptsPanel = !showPromptsPanel}
       >
         <Settings2 size={18} />
-        Assessment Criteria
-        {#if showCriteriaPanel}
+        Configure Prompts
+        {#if showPromptsPanel}
           <ChevronUp size={16} />
         {:else}
           <ChevronDown size={16} />
@@ -470,98 +471,9 @@
       </button>
     </div>
     
-    <!-- Criteria Panel -->
-    {#if showCriteriaPanel}
-      <div class="criteria-panel">
-        <div class="criteria-header">
-          <h3>Competition Bureau's 6 Principles</h3>
-          <p class="criteria-subtitle">Configure which principles and criteria to assess against</p>
-          <button class="reset-btn" onclick={() => criteria.reset()}>
-            <RotateCcw size={14} />
-            Reset to Default
-          </button>
-        </div>
-        
-        <div class="dimensions-list">
-          {#each dimensions as dim}
-            <div class="dimension-section" class:disabled={!dim.enabled}>
-              <button class="dimension-header" onclick={() => toggleDimensionExpand(dim.id)}>
-                <div class="dimension-left">
-                  <input 
-                    type="checkbox" 
-                    checked={dim.enabled}
-                    onclick={(e) => { e.stopPropagation(); criteria.toggleDimension(dim.id); }}
-                  />
-                  <div class="dimension-info">
-                    <span class="dimension-name">{dim.name}</span>
-                    <span class="dimension-principle">{dim.principle}</span>
-                  </div>
-                </div>
-                <div class="dimension-right">
-                  <span class="criteria-count">{dim.criteria.filter(c => c.enabled).length}/{dim.criteria.length} criteria</span>
-                  {#if expandedDimensions.has(dim.id)}
-                    <ChevronUp size={20} />
-                  {:else}
-                    <ChevronDown size={20} />
-                  {/if}
-                </div>
-              </button>
-              
-              {#if expandedDimensions.has(dim.id)}
-                <div class="criteria-list">
-                  {#if dim.legalReference}
-                    <div class="legal-reference">
-                      <Scale size={14} />
-                      <span>{dim.legalReference}</span>
-                    </div>
-                  {/if}
-                  {#each dim.criteria as crit}
-                    <div class="criterion-item" class:disabled={!crit.enabled}>
-                      <div class="criterion-main">
-                        <input 
-                          type="checkbox" 
-                          checked={crit.enabled}
-                          onchange={() => criteria.toggleCriterion(dim.id, crit.id)}
-                        />
-                        <div class="criterion-content">
-                          <span class="criterion-name">{crit.name}</span>
-                          <p class="criterion-description">{crit.description}</p>
-                          {#if crit.legalBasis}
-                            <p class="criterion-legal">{crit.legalBasis}</p>
-                          {/if}
-                        </div>
-                      </div>
-                      <div class="criterion-importance">
-                        <span class="importance-label">Importance:</span>
-                        <div class="importance-buttons">
-                          <button 
-                            class="importance-btn"
-                            class:active={crit.importance === 'high'}
-                            style="--btn-color: #E74C3C"
-                            onclick={() => criteria.setImportance(dim.id, crit.id, 'high')}
-                          >High</button>
-                          <button 
-                            class="importance-btn"
-                            class:active={crit.importance === 'medium'}
-                            style="--btn-color: #F39C12"
-                            onclick={() => criteria.setImportance(dim.id, crit.id, 'medium')}
-                          >Medium</button>
-                          <button 
-                            class="importance-btn"
-                            class:active={crit.importance === 'low'}
-                            style="--btn-color: #27AE60"
-                            onclick={() => criteria.setImportance(dim.id, crit.id, 'low')}
-                          >Low</button>
-                        </div>
-                      </div>
-                    </div>
-                  {/each}
-                </div>
-              {/if}
-            </div>
-          {/each}
-        </div>
-      </div>
+    <!-- Prompts Configuration Panel -->
+    {#if showPromptsPanel}
+      <PromptsPanel />
     {/if}
     
     <!-- Input Section -->

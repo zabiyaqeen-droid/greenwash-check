@@ -134,15 +134,15 @@ function buildAssessmentFramework(dimensions: any[], customPrompts?: AssessmentP
     framework += `   Legal Reference: ${dim.legalReference || 'N/A'}\n`;
     framework += `   Subcategories to assess:\n`;
     
-    const enabledCriteria = dim.criteria?.filter((c: any) => c.enabled !== false) || [];
-    enabledCriteria.forEach((c: any) => {
-      // Check if there's a custom prompt for this subcategory
-      const customPrompt = customPrompts?.find(p => p.subcategory_id === c.id);
-      const promptText = customPrompt?.prompt_template || c.description;
-      const weight = customPrompt?.weight || c.weight || 1;
-      
-      framework += `   - ${c.name} (Weight: ${weight}%): ${promptText}\n`;
-    });
+const enabledCriteria = dim.criteria?.filter((c: any) => c.enabled !== false) || [];
+      enabledCriteria.forEach((c: any) => {
+        // Check if there's a custom prompt for this subcategory
+        const customPrompt = customPrompts?.find(p => p.subcategory_id === c.id);
+        const promptText = customPrompt?.prompt_template || c.description;
+        const weight = customPrompt?.weight ?? c.weight ?? 1.0;
+        
+        framework += `   - ${c.name} (Weight: ${weight}x): ${promptText}\n`;
+      });
     framework += `\n`;
   });
   

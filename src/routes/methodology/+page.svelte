@@ -382,6 +382,11 @@
           </a> - The primary legislation as amended by Bill C-59
         </li>
         <li>
+          <a href="https://antigreenwashcharter.org/" target="_blank" rel="noopener">
+            Anti-Greenwash Charter
+          </a> - UK-based framework establishing four core standards for environmental communications: Transparency, Accountability, Fairness, and Honesty. Our detailed prompt scoring criteria incorporate the Charter's rigorous requirements for clear communication, empirical evidence, fair comparisons, and honest representation.
+        </li>
+        <li>
           <a href="https://www.iso.org/standard/66652.html" target="_blank" rel="noopener">
             ISO 14021:2016
           </a> - Environmental labels and declarations — Self-declared environmental claims
@@ -390,6 +395,16 @@
           <a href="https://www.iso.org/standard/38498.html" target="_blank" rel="noopener">
             ISO 14040:2006
           </a> - Environmental management — Life cycle assessment
+        </li>
+        <li>
+          <a href="https://ghgprotocol.org/" target="_blank" rel="noopener">
+            GHG Protocol
+          </a> - The internationally recognised standard for measuring and managing greenhouse gas emissions
+        </li>
+        <li>
+          <a href="https://sciencebasedtargets.org/" target="_blank" rel="noopener">
+            Science Based Targets initiative (SBTi)
+          </a> - Framework for setting emissions reduction targets aligned with climate science
         </li>
         <li>
           Nemes et al. (2022) - "An Integrated Framework to Assess Greenwashing" - Peer-reviewed academic framework

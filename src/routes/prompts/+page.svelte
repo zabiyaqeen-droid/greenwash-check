@@ -250,7 +250,7 @@
                       <div class="subcategory-info">
                         <h3>{subcategory.name}</h3>
                         <div class="subcategory-meta">
-                          <span class="weight-badge">Weight: {subcategory.weight}%</span>
+                          <span class="weight-badge">Weight: {subcategory.weight}x</span>
                           {#if subcategory.isCustom}
                             <span class="custom-badge">Customized</span>
                           {/if}
@@ -293,15 +293,16 @@
                         </div>
                         
                         <div class="form-group weight-group">
-                          <label for="weight-{subcategory.id}">Weight (%)</label>
+                          <label for="weight-{subcategory.id}">Weight (multiplier)</label>
                           <input 
                             type="number" 
                             id="weight-{subcategory.id}"
                             bind:value={editedWeight}
-                            min="1"
-                            max="100"
+                            min="0.1"
+                            max="3.0"
+                            step="0.1"
                           />
-                          <p class="help-text">How much this subcategory contributes to the overall score.</p>
+                          <p class="help-text">Weight multiplier (0.1-3.0). Higher values increase this subcategory's impact on the overall score.</p>
                         </div>
 
                         <div class="edit-actions">

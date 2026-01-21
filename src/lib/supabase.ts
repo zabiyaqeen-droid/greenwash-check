@@ -48,6 +48,7 @@ export interface AssessmentPrompt {
   subcategory_name: string;
   prompt_template: string;
   weight: number;
+  is_default?: boolean;
   user_id?: string;
   created_at?: string;
   updated_at?: string;
