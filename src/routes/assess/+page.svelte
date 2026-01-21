@@ -327,7 +327,7 @@
       let response;
       if (isDocument) {
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 900000);
+        const timeout = setTimeout(() => controller.abort(), 1800000); // 30 minute timeout
         
         const endpoint = analysisMode === 'hybrid' ? '/api/analyze-document-hybrid' : '/api/analyze-document';
         response = await fetch(endpoint, {
@@ -356,8 +356,27 @@
       }
       
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Assessment failed');
+        // Check if response is JSON before parsing
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Assessment failed');
+        } else {
+          // Server returned HTML error page (e.g., 504 Gateway Timeout)
+          if (response.status === 504) {
+            throw new Error('The server took too long to respond. Please try again or use a smaller document.');
+          } else if (response.status === 502) {
+            throw new Error('Server temporarily unavailable. Please try again in a moment.');
+          } else {
+            throw new Error(`Server error (${response.status}). Please try again.`);
+          }
+        }
+      }
+      
+      // Check if response is JSON before parsing
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Server returned an invalid response. Please try again.');
       }
       
       const responseData = await response.json();
@@ -474,26 +493,34 @@
       </button>
       
       <!-- Analysis Mode Toggle -->
-      <div class="analysis-mode-toggle">
-        <span class="toggle-label">Analysis Mode:</span>
-        <button 
-          class="mode-btn"
-          class:active={analysisMode === 'hybrid'}
-          onclick={() => analysisMode = 'hybrid'}
-          title="Hybrid analysis uses text embeddings for semantic search plus Vision AI for charts and images. More accurate and efficient."
-        >
-          <Sparkles size={16} />
-          Hybrid
-        </button>
-        <button 
-          class="mode-btn"
-          class:active={analysisMode === 'vision'}
-          onclick={() => analysisMode = 'vision'}
-          title="Vision-only analysis processes all pages as images. Good for image-heavy documents."
-        >
-          <FileText size={16} />
-          Vision Only
-        </button>
+      <div class="analysis-mode-section">
+        <div class="analysis-mode-toggle">
+          <span class="toggle-label">Analysis Mode:</span>
+          <button 
+            class="mode-btn"
+            class:active={analysisMode === 'hybrid'}
+            onclick={() => analysisMode = 'hybrid'}
+          >
+            <Sparkles size={16} />
+            Hybrid
+          </button>
+          <button 
+            class="mode-btn"
+            class:active={analysisMode === 'vision'}
+            onclick={() => analysisMode = 'vision'}
+          >
+            <FileText size={16} />
+            Vision Only
+          </button>
+        </div>
+        <div class="mode-info-box">
+          <Info size={14} />
+          {#if analysisMode === 'hybrid'}
+            <span><strong>Hybrid Mode:</strong> Uses text embeddings for semantic search combined with Vision AI for charts, graphs, and images. Best for most documents — faster and more accurate.</span>
+          {:else}
+            <span><strong>Vision Only:</strong> Processes every page as an image using Vision AI. Best for image-heavy documents, infographics, or when text extraction fails. Takes longer but captures all visual elements.</span>
+          {/if}
+        </div>
       </div>
     </div>
     
@@ -1212,6 +1239,35 @@
   .mode-btn.active {
     background: #6B8E6B;
     color: white;
+  }
+  
+  .analysis-mode-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .mode-info-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: #F0F7F0;
+    border: 1px solid #D4E5D4;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #4A5A4A;
+    line-height: 1.4;
+  }
+  
+  .mode-info-box :global(svg) {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: #6B8E6B;
+  }
+  
+  .mode-info-box strong {
+    color: #2C3E50;
   }
   
   /* Criteria Panel */
