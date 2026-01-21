@@ -1,0 +1,2218 @@
+{
+  "overallScore": 66,
+  "riskLevel": "Medium Risk",
+  "totalClaimsAnalyzed": 49,
+  "claims": [
+    {
+      "id": "claim_1",
+      "text": "Over the past year, we’ve strengthened our sustainability principles, ensuring they are more closely aligned with our business strategy and supported by clearer governance.",
+      "page": 3,
+      "section": "Introduction - Standing with Our Customers, Driven by Our Culture",
+      "category": "general_sustainability",
+      "claimType": "commitment",
+      "vaguenessFlags": [
+        "sustainability principles"
+      ]
+    },
+    {
+      "id": "claim_2",
+      "text": "We recognize our responsibility to the planet, and we take thoughtful, pragmatic steps to minimize our impact while also advising and working alongside our partners to promote best practices throughout the supply chain.",
+      "page": 3,
+      "section": "Introduction - Standing with Our Customers, Driven by Our Culture",
+      "category": "general_sustainability",
+      "claimType": "commitment",
+      "vaguenessFlags": [
+        "minimize our impact",
+        "best practices",
+        "supply chain"
+      ]
+    },
+    {
+      "id": "claim_3",
+      "text": "Aspen's sustainability strategy is deeply aligned with and flows from our core values... emphasize a commitment to environmental stewardship and social responsibility. We will remain focused on our diverse group of customers and their varied transition paths towards a low carbon economy.",
+      "page": 4,
+      "section": "Introduction - Aspen Sustainability Philosophy Statement",
+      "category": "general_sustainability",
+      "claimType": "commitment",
+      "vaguenessFlags": [
+        "environmental stewardship",
+        "low carbon economy",
+        "social responsibility"
+      ]
+    },
+    {
+      "id": "claim_4",
+      "text": "89% of our colleagues say they feel their manager genuinely cares about their wellbeing.",
+      "page": 5,
+      "section": "Scorecard",
+      "category": "general_sustainability",
+      "claimType": "factual",
+      "vaguenessFlags": []
+    },
+    {
+      "id": "claim_5",
+      "text": "Improved supply chain engagement initiatives Achieving supplier-specific measurement methodologies",
+      "page": 5,
+      "section": "Scorecard",
+      "category": "sustainable_sourcing",
+      "claimType": "factual",
+      "vaguenessFlags": [
+        "improved",
+        "supplier-specific"
+      ]
+    },
+    {
+      "id": "claim_6",
+      "text": "Better assessing carbon impact Internal assessment of Carbon Reduction options, within the carbon footprint and transition plan workstream",
+      "page": 5,
+      "section": "Scorecard",
+      "category": "emission_reduction",
+      "claimType": "factual",
+      "vaguenessFlags": [
+        "better assessing",
+        "carbon reduction options"
+      ]
+    },
+    {
+      "id": "claim_7",
+      "text": "75% of our offices were able to disclose actual electricity consumption, increasing the accuracy of our scope 2 emissions",
+      "page": 5,
+      "section": "Scorecard",
+      "category": "emission_reduction",
+      "claimType": "factual",
+      "vaguenessFlags": []
+    },
+    {
+      "id": "claim_8",
+      "text": "$2.25M Spent on charitable and impact support in 2024",
+      "page": 5,
+      "section": "Scorecard",
+      "category": "general_sustainability",
+      "claimType": "factual",
+      "vaguenessFlags": [
+        "impact support"
+      ]
+    },
+    {
+      "id": "claim_9",
+      "text": "In 2024, we received a record number of submissions to our innovation investment competition from diverse functions and Geographies up 23% from the previous competition",
+      "page": 5,
+      "section": "Scorecard",
+      "category": "general_sustainability",
+      "claimType": "comparison",
+      "vaguenessFlags": []
+    },
+    {
+      "id": "claim_10",
+      "text": "Aspen becomes signatory of United Nations Principles for Responsible Investment (UNPRI) in Q1 2023",
+      "page": 6,
+      "section": "Sustainability Milestones",
+      "category": "ESG_performance|certifications",
+      "claimType": "factual",
+      "vaguenessFlags": []
+    },
+    {
+      "id": "claim_11",
+      "text": "Aspen becomes voluntary signatory of UN Principles for Sustainable Insurance (UNPSI) in Q3 2022",
+      "page": 6,
+      "section": "Sustainability Milestones",
+      "category": "ESG_performance|certifications",
+      "claimType": "factual",
+      "vaguenessFlags": []
+    },
+    {
+      "id": "claim_12",
+      "text": "Aspen established a formal Carbon Footprint & Transition Plan Workstream as a sub-group to Aspen's Sustainability Committee in 2024.",
+      "page": 6,
+      "section": "Sustainability Milestones",
+      "category": "emission_reduction|governance",
+      "claimType": "factual",
+      "vaguenessFlags": []
+    },
+    {
+      "id": "claim_13",
+      "text": "Aspen developed its first Sustainability Principles – Policy & Framework document to articulate Aspen’s approach to sustainability for our governance bodies, regulators, and auditors (2024)",
+      "page": 6,
+      "section": "Sustainability Milestones",
+      "category": "governance",
+      "claimType": "factual",
+      "vaguenessFlags": []
+    },
+    {
+      "id": "claim_14",
+      "text": "We have improved the quality and granularity of our emissions-related data, while also laying the groundwork for emissions reduction in the years ahead.",
+      "page": 17,
+      "section": "Our Environmental Impact",
+      "category": "emission_reduction",
+      "claimType": "factual",
+      "vaguenessFlags": [
+        "granularity",
+        "laying the groundwork"
+      ]
+    },
+    {
+      "id": "claim_15",
+      "text": "Improved supply chain engagement initiatives, achieving supplier-specific measurement methodologies and reported reduction strategies",
+      "page": 17,
+      "section": "Our Environmental Impact",
+      "category": "sustainable_sourcing|emission_reduction",
+      "claimType": "factual",
+      "vaguenessFlags": [
+        "improved",
+        "supplier-specific",
+        "reported reduction strategies"
+      ]
+    },
+    {
+      "id": "claim_16",
+      "text": "Continued development of our emissions reduction strategy, supported by a rebaselined dataset and better insight into emissions sources",
+      "page": 17,
+      "section": "Our Environmental Impact",
+      "category": "emission_reduction",
+      "claimType": "commitment",
+      "vaguenessFlags": [
+        "better insight"
+      ]
+    },
+    {
+      "id": "claim_17",
+      "text": "Enhanced internal governance, with our senior leaders meeting regularly to shape long-term strategy and embed best practices",
+      "page": 17,
+      "section": "Our Environmental Impact",
+      "category": "governance",
+      "claimType": "factual",
+      "vaguenessFlags": [
+        "best practices"
+      ]
+    },
+    {
+      "id": "claim_18",
+      "text": "Ongoing engagement of employees through office-based sustainability initiatives and behaviour change efforts",
+      "page": 17,
+      "section": "Our Environmental Impact",
+      "category": "waste_reduction|general_sustainability",
+      "claimType": "commitment",
+      "vaguenessFlags": [
+        "sustainability initiatives",
+        "behaviour change"
+      ]
+    },
+    {
+      "id": "claim_19",
+      "text": "Continued delivery of our high-quality carbon offsetting program, focused on independently verified, nature-based solutions.",
+      "page": 17,
+      "section": "Our Environmental Impact",
+      "category": "emission_reduction|carbon_offsetting",
+      "claimType": "commitment",
+      "vaguenessFlags": [
+        "high-quality",
+        "nature-based solutions"
+      ]
+    },
+    {
+      "id": "claim_20",
+      "text": "First measurement of scope 1 & 2 emissions (2019-2021)",
+      "page": 18,
+      "section": "GHG Emissions: Our Journey",
+      "category": "emission_reduction",
+      "claimType": "factual",
+      "vaguenessFlags": []
+    },
+    {
+      "id": "claim_21",
+      "text": "Expanded scope of measurement to employee commuting, purchased goods & services and capital goods (2023)",
+      "page": 18,
+      "section": "GHG Emissions: Our Journey",
+      "category": "emission_reduction|sustainable_sourcing",
+      "claimType": "factual",
+      "vaguenessFlags": []
+    },
+    {
+      "id": "claim_22",
+      "text": "Expanded scope of measurement to: travel & accommodation, well-to-tank, home working, water and waste (2022)",
+      "page": 18,
+      "section": "GHG Emissions: Our Journey",
+      "category": "emission_reduction|water_conservation|waste_reduction",
+      "claimType": "factual",
+      "vaguenessFlags": [
+        "well-to-tank"
+      ]
+    },
+    {
+      "id": "claim_23",
+      "text": "Data quality improvement across all global facilities emissions (2024)",
+      "page": 18,
+      "section": "GHG Emissions: Our Journey",
+      "category": "emission_reduction",
+      "claimType": "commitment",
+      "vaguenessFlags": [
+        "data quality improvement"
+      ]
+    },
+    {
+      "id": "claim_24",
+      "text": "Independent limited-assurance on our emissions to ISO14064:2018 requirements (2024)",
+      "page": 18,
+      "section": "GHG Emissions: Our Journey",
+      "category": "certifications",
+      "claimType": "factual",
+      "vaguenessFlags": []
+    },
+    {
+      "id": "claim_25",
+      "text": "7 5% of our offices were able to disclose actual electricity consumption, increasing the accuracy of our scope 2 emissions.",
+      "page": 19,
+      "section": "Aspen's Greenhouse Gas (GHG) Emissions",
+      "category": "emission_reduction",
+      "claimType": "factual",
+      "vaguenessFlags": []
+    },
+    {
+      "id": "claim_26",
+      "text": "Activity data is now disclosed directly from our three business travel providers, including passenger kilometers of travel and nights of hotel stay.",
+      "page": 19,
+      "section": "Aspen's Greenhouse Gas (GHG) Emissions",
+      "category": "emission_reduction",
+      "claimType": "factual",
+      "vaguenessFlags": []
+    },
+    {
+      "id": "claim_27",
+      "text": "Improved supplier categorisation and measurement has resulted in a decrease in reported emissions under Purchased Goods & Services.",
+      "page": 19,
+      "section": "Aspen's Greenhouse Gas (GHG) Emissions",
+      "category": "emission_reduction|sustainable_sourcing",
+      "claimType": "factual",
+      "vaguenessFlags": []
+    },
+    {
+      "id": "claim_28",
+      "text": "Our emissions have undergone independent limited-assurance review by BSI against ISO 14064:2018 requirements. The verifier issued a limited assurance opinion and 10% materiality, confirming that nothing came to their attention to suggest material misstatements in our reported figures.",
+      "page": 19,
+      "section": "Aspen's Greenhouse Gas (GHG) Emissions",
+      "category": "certifications",
+      "claimType": "factual",
+      "vaguenessFlags": []
+    },
+    {
+      "id": "claim_29",
+      "text": "We continue to evaluate all offset projects using methodologies such as the ICVCM’s Core Carbon Principles and the Carbon Credit Quality Initiative, and we work with trusted partners to ensure that all projects meet the highest standards of permanence, additionality, and co-benefits.",
+      "page": 20,
+      "section": "Carbon Reduction, Offsetting & Biodiversity",
+      "category": "carbon_offsetting",
+      "claimType": "commitment",
+      "vaguenessFlags": [
+        "highest standards",
+        "trusted partners"
+      ]
+    },
+    {
+      "id": "claim_30",
+      "text": "We align our offset selection strategy with the 12 core principles of high-integrity carbon offsetting. This means we prioritize projects that deliver real, additional and measurable emission reductions. We ensure that all offsets are independently verified, avoid double counting, and are selected with a strong focus on transparency, environmental integrity, and social co-benefits.",
+      "page": 20,
+      "section": "Carbon Reduction, Offsetting & Biodiversity",
+      "category": "carbon_offsetting|certifications",
+      "claimType": "commitment",
+      "vaguenessFlags": [
+        "high-integrity",
+        "real, additional and measurable",
+        "strong focus"
+      ]
+    },
+    {
+      "id": "claim_31",
+      "text": "Total Tons Offset: 6,411",
+      "page": 20,
+      "section": "Carbon Reduction, Offsetting & Biodiversity",
+      "category": "carbon_offsetting",
+      "claimType": "factual",
+      "vaguenessFlags": []
+    },
+    {
+      "id": "claim_32",
+      "text": "Total Tons Procured as Pending Issuance Unit and claimed as a Contribution: 320",
+      "page": 20,
+      "section": "Carbon Reduction, Offsetting & Biodiversity",
+      "category": "carbon_offsetting",
+      "claimType": "factual",
+      "vaguenessFlags": []
+    },
+    {
+      "id": "claim_33",
+      "text": "This year, we also began expanding the geographic reach of our project portfolio to include projects closer to our areas of operation, including the United States and United Kingdom, in addition to our long-standing support for projects in Canada.",
+      "page": 20,
+      "section": "Carbon Reduction, Offsetting & Biodiversity",
+      "category": "carbon_offsetting",
+      "claimType": "commitment",
+      "vaguenessFlags": [
+        "closer to our areas of operation"
+      ]
+    },
+    {
+      "id": "claim_34",
+      "text": "The Darkwoods Forest Project in Canada supports improved forest management (emissions avoidance) with third-party verification and is projected to remove over 14.66 million tCO2e over the next 100 years.",
+      "page": 21,
+      "section": "Carbon Reduction, Offsetting & Biodiversity - Darkwoods Forest Project in Canada",
+      "category": "carbon_offsetting|biodiversity",
+      "claimType": "factual",
+      "vaguenessFlags": [
+        "projected"
+      ]
+    },
+    {
+      "id": "claim_35",
+      "text": "This project uses mineralization to convert waste CO₂ into stable carbonate in fresh concrete, providing long-term carbon storage and decarbonizing a hard-to-abate industry.",
+      "page": 21,
+      "section": "Carbon Reduction, Offsetting & Biodiversity - CO2 Utilization in Concrete",
+      "category": "carbon_offsetting|emission_reduction",
+      "claimType": "factual",
+      "vaguenessFlags": [
+        "long-term"
+      ]
+    },
+    {
+      "id": "claim_36",
+      "text": "In 2024, Aspen refreshed its Supplier Onboarding process. Extended due diligence is now mandatory for suppliers deemed critical in meeting our ethical, integrity, and sustainability standards.",
+      "page": 23,
+      "section": "Purchase Goods & Services Business Travel Facilities",
+      "category": "sustainable_sourcing",
+      "claimType": "commitment",
+      "vaguenessFlags": [
+        "critical",
+        "sustainability standards"
+      ]
+    },
+    {
+      "id": "claim_37",
+      "text": "Low-risk suppliers are now required to complete, at minimum, an Anti-Bribery and Corruption (ABC) validation as well as declaring their anti-modern slavery efforts.",
+      "page": 23,
+      "section": "Purchase Goods & Services Business Travel Facilities",
+      "category": "sustainable_sourcing",
+      "claimType": "commitment",
+      "vaguenessFlags": []
+    },
+    {
+      "id": "claim_38",
+      "text": "A new Supplier Code of Conduct will be introduced in 2025 to complement our standard terms of business and contract language, clearly outlining the ethical, integrity, and sustainability expectations for all suppliers.",
+      "page": 23,
+      "section": "Purchase Goods & Services Business Travel Facilities",
+      "category": "sustainable_sourcing",
+      "claimType": "commitment",
+      "vaguenessFlags": [
+        "ethical",
+        "integrity",
+        "sustainability expectations"
+      ]
+    },
+    {
+      "id": "claim_39",
+      "text": "After recent renovations to our Zurich office, we were successfully awarded the LEED Silver ID+C certification.",
+      "page": 24,
+      "section": "SPOTLIGHT - Zurich Office Awarded Certification",
+      "category": "certifications",
+      "claimType": "factual",
+      "vaguenessFlags": []
+    },
+    {
+      "id": "claim_40",
+      "text": "Going into 2025 we are excited to announce the completion of two office optimization projects in Puerto Rico (April 14th) and Bermuda (May 16th), both being targeted to achieve a minimum LEED certification.",
+      "page": 23,
+      "section": "Purchase Goods & Services Business Travel Facilities",
+      "category": "certifications",
+      "claimType": "commitment",
+      "vaguenessFlags": [
+        "minimum LEED certification"
+      ]
+    },
+    {
+      "id": "claim_41",
+      "text": "Aspen supported Street Storage since 2019, helping the charity expand its impact by funding a move to a larger space and enabling workforce growth.",
+      "page": 28,
+      "section": "Working with our Local Communities - SPOTLIGHT - Street Storage",
+      "category": "general_sustainability",
+      "claimType": "factual",
+      "vaguenessFlags": [
+        "expand its impact"
+      ]
+    },
+    {
+      "id": "claim_42",
+      "text": "Aspen's support has enabled a rise in referrals from 420 in 2023 to 794 in 2024 (up from 10 per week to 10 per day), expansion of the team from 2 to 6 employees plus volunteers, referral sources from over 90 partner agencies, opening of two new UK locations, and ongoing employee volunteering efforts.",
+      "page": 28,
+      "section": "Working with our Local Communities - SPOTLIGHT - Street Storage",
+      "category": "general_sustainability",
+      "claimType": "factual",
+      "vaguenessFlags": [
+        "ongoing volunteering efforts"
+      ]
+    },
+    {
+      "id": "claim_43",
+      "text": "$2.25M spent on charitable and impact support in 2024, with over 100 charitable causes supported with emphasis placed on reducing inequalities, Good Health and Wellbeing, Quality education and Climate action.",
+      "page": 26,
+      "section": "Working with our Local Communities",
+      "category": "general_sustainability",
+      "claimType": "factual",
+      "vaguenessFlags": [
+        "impact support",
+        "emphasis",
+        "climate action"
+      ]
+    },
+    {
+      "id": "claim_44",
+      "text": "At Aspen, colleagues enjoy a minimum of one dedicated day per year for volunteering activities.",
+      "page": 26,
+      "section": "Working with our Local Communities",
+      "category": "general_sustainability",
+      "claimType": "commitment",
+      "vaguenessFlags": [
+        "minimum"
+      ]
+    },
+    {
+      "id": "claim_45",
+      "text": "Aspen’s Bermuda Gender And Inclusion Network (GAIN) led the office-wide 30-day Movember campaign in support of the Bermuda Cancer and Health Centre, raising funds in mental health, suicide prevention, and cancer initiatives.",
+      "page": 12,
+      "section": "Our People - Spotlight - Bermuda Inclusion Network Movember Challenge",
+      "category": "general_sustainability|social_sustainability",
+      "claimType": "factual",
+      "vaguenessFlags": [
+        "mental health",
+        "suicide prevention"
+      ]
+    },
+    {
+      "id": "claim_46",
+      "text": "Aspen developed group-wide Sustainability Underwriting Guidelines, providing a framework to assist underwriting teams with the application of sustainable underwriting standards in 2024.",
+      "page": 32,
+      "section": "Our Planet - Sustainable Underwriting",
+      "category": "general_sustainability",
+      "claimType": "factual",
+      "vaguenessFlags": [
+        "sustainable underwriting standards"
+      ]
+    },
+    {
+      "id": "claim_47",
+      "text": "The alignment with the UN Principles for Sustainable Insurance (PSI) has been a cornerstone of our strategic initiatives in this area.",
+      "page": 32,
+      "section": "Our Planet - Sustainable Underwriting",
+      "category": "ESG_performance|certifications",
+      "claimType": "commitment",
+      "vaguenessFlags": []
+    },
+    {
+      "id": "claim_48",
+      "text": "In 2024, updated our North Atlantic Hurricane Risk Model to incorporate a vendor update that considers the enhanced risk of precipitation ingress into buildings.",
+      "page": 33,
+      "section": "Our Planet - Sustainable Underwriting (2025 plans started)",
+      "category": "climate-related_disclosures|emission_reduction",
+      "claimType": "factual",
+      "vaguenessFlags": [
+        "enhanced risk"
+      ]
+    },
+    {
+      "id": "claim_49",
+      "text": "Continued to enhance the Tropical Cyclone Induced Precipitation Tool to help underwriters price the flood risk associated with hurricane events, as well as incorporating a climate change adjustment for our updated Japan Typhoon View of Risk.",
+      "page": 5,
+      "section": "Scorecard",
+      "category": "climate-related_disclosures|emission_reduction",
+      "claimType": "factual",
+      "vaguenessFlags": [
+        "climate change adjustment"
+      ]
+    }
+  ],
+  "subcategoryResults": [
+    {
+      "subcategoryId": "literal_accuracy",
+      "subcategoryName": "Literal Accuracy",
+      "principleId": 1,
+      "principleName": "Principle 1: Be Truthful",
+      "score": 80,
+      "status": "Generally Compliant",
+      "rationale": "Most environmental claims reviewed in the Sustainability Report 2024 are factually stated with verifiable data or clear milestones (such as certifications and percentages). However, several claims contain vague, ambiguous or subjective language that may reduce literal accuracy and verifiability. For example, words like 'improved', 'better insight', and 'high-quality' are subjective without defined metrics or third-party verification references. Furthermore, some forward-looking claims use terms like 'projected' or 'laying the groundwork' which require caution as they are inherently predictive, though this is common in sustainability reporting. Overall, the document maintains truthful statements but could improve precision and references to verifiable sources or data for some commitment-based and descriptive claims.",
+      "findings": [
+        {
+          "claimId": "claim_1",
+          "issue": "Use of vague term 'sustainability principles' without definition limits verifiability of progress claim.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_2",
+          "issue": "Terms such as 'minimize our impact' and 'best practices' are subjective and lack concrete measurement or examples.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_5",
+          "issue": "Phrase 'improved supply chain engagement' is vague and 'supplier-specific measurement methodologies' need clearer specification for assessment.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_6",
+          "issue": "'Better assessing carbon impact' and 'carbon reduction options' are comparative and nonspecific, impairing exact verification.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_14",
+          "issue": "Claims about 'granularity' and 'laying the groundwork' are vague and less directly verifiable in literal terms.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_15",
+          "issue": "Use of 'improved,' 'supplier-specific,' and 'reported reduction strategies' remains vague without quantitative support.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_19",
+          "issue": "Use of qualitative descriptors such as 'high-quality' and 'nature-based solutions' without defining standards or certifications weakens literal accuracy.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_29",
+          "issue": "'Highest standards' and 'trusted partners' are subjective phrases lacking precise, verifiable references.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_30",
+          "issue": "While referencing recognized principles, terms like 'high-integrity', 'real, additional and measurable' benefits are ambitious and require strong evidence for literal accuracy.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_34",
+          "issue": "'Projected to remove over 14.66 million tCO2e over 100 years' is a forward-looking estimate relying on modeling and assumptions, which should be clearly stated as such to avoid misinterpretation.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_35",
+          "issue": "'Long-term carbon storage' is stated without precise timeframes or external verification detailed.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_40",
+          "issue": "'Targeted to achieve a minimum LEED certification' is a goal rather than a guaranteed outcome and hence less literally accurate in present tense terms.",
+          "severity": "Medium"
+        }
+      ],
+      "recommendations": [
+        "Define or clarify all potentially vague or subjective terms with measurable criteria or examples.",
+        "When using forward-looking statements or projections, clearly label them as such and indicate assumptions or modeling bases used.",
+        "Reference any third-party verifications, certifications, or audit results explicitly to strengthen factual verifiability.",
+        "Avoid overly subjective qualifiers such as 'high-quality', 'best practices', or 'trusted' without objective support.",
+        "For commitments or improvements, include baseline data and measurable targets to enhance literal accuracy."
+      ],
+      "evidenceUsed": [
+        {
+          "quote": "\"Over the past year, we’ve strengthened our sustainability principles...\" (claim_1)",
+          "pageReference": "Page 3, Introduction",
+          "context": "Commitment statement lacking precise metrics"
+        },
+        {
+          "quote": "\"75% of our offices were able to disclose actual electricity consumption, increasing the accuracy of our scope 2 emissions\" (claim_7 and claim_25 identical content)",
+          "pageReference": "Page 5 / 19, Scorecard / Greenhouse Gas Emissions",
+          "context": "Clear factual data with verifiable scope"
+        },
+        {
+          "quote": "\"Independent limited-assurance on our emissions to ISO14064:2018 requirements (2024)\" (claim_24)",
+          "pageReference": "Page 18, GHG Emissions",
+          "context": "Third-party verification supporting emission data literal accuracy"
+        },
+        {
+          "quote": "\"The Darkwoods Forest Project in Canada supports improved forest management... projected to remove over 14.66 million tCO2e over the next 100 years.\" (claim_34)",
+          "pageReference": "Page 21, Carbon Reduction Section",
+          "context": "Forward-looking estimate requiring qualification"
+        },
+        {
+          "quote": "\"Aspen becomes signatory of United Nations Principles for Responsible Investment (UNPRI) in Q1 2023\" (claim_10)",
+          "pageReference": "Page 6, Sustainability Milestones",
+          "context": "Clear, verifiable fact"
+        }
+      ],
+      "weight": 1,
+      "duration": 17264
+    },
+    {
+      "subcategoryId": "general_impression",
+      "subcategoryName": "General Impression",
+      "principleId": 1,
+      "principleName": "Principle 1: Be Truthful",
+      "score": 78,
+      "status": "Generally Compliant",
+      "rationale": "The environmental claims in the Sustainability Report 2024 mostly reflect a genuine and structured approach to sustainability and environmental performance. Many claims are factual and specific, supported by data (e.g., claims regarding electricity consumption disclosure, third-party verification, and certifications such as LEED and ISO 14064:2018). However, several commitments and statements contain vague or qualitative language (e.g., \"strengthened our sustainability principles,\" \"better assessing,\" \"high-quality,\" \"trusted partners,\" \"improved supply chain engagement\") without clear, measurable outcomes or independent verification attached. This vagueness can dilute the overall impression of environmental performance and may overstate progress. Thus, while there is reasonable transparency and evidence of credible efforts, there remains room for improved clarity and substantiation to fully align overall impression with actual environmental performance.",
+      "findings": [
+        {
+          "claimId": "claim_1",
+          "issue": "\"Strengthened sustainability principles\" is vague with no measurable outcomes or evidence of enhanced environmental performance.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_2",
+          "issue": "Broad, vague language such as \"minimize our impact\" and \"promote best practices\" lacks supporting data or concrete actions.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_3",
+          "issue": "Phrases like \"commitment to environmental stewardship\" and \"low carbon economy\" are aspirational without linked performance metrics.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_14",
+          "issue": "Claim about 'improved quality and granularity' and 'laying groundwork' is vague and non-quantitative.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_15",
+          "issue": "\"Improved supply chain engagement\" and \"supplier-specific measurement\" are stated without specific results or data.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_16",
+          "issue": "Commitment to 'better insight' remains non-specific without clear evidence of resultant environmental performance improvements.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_19",
+          "issue": "Use of 'high-quality' and 'nature-based solutions' are qualitative claims requiring substantiation to avoid misleading impression.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_29",
+          "issue": "'Highest standards' and 'trusted partners' claimed without independent verification or transparency details might mislead stakeholders.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_30",
+          "issue": "Claims of prioritizing offsets with 'real, additional and measurable' emission reductions are positive but would benefit from third-party impact evidence.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_33",
+          "issue": "'Closer to our areas of operation' is a vague geographical reference lacking clear environmental benefit description.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_38",
+          "issue": "Reference to 'ethical, integrity, and sustainability expectations' in Supplier Code of Conduct lacks detail on enforcement or verification.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_40",
+          "issue": "Targeting 'minimum LEED certification' is a positive commitment but the uncertainty around final certification attainment weakens the impression.",
+          "severity": "Low"
+        }
+      ],
+      "recommendations": [
+        "Provide more specific, quantifiable data and outcome metrics to support aspirational and qualitative claims, ensuring clarity and transparency.",
+        "Where claims are based on commitments or ongoing initiatives, clearly indicate timelines and milestones with measurable targets and results.",
+        "Include independent verification or assurance statements explicitly tied to key environmental claims to strengthen credibility and stakeholder confidence.",
+        "Avoid vague terms like 'best practices,' 'high-quality,' or 'trusted partners' without concrete definitions or evidence.",
+        "Clarify geographic and operational scopes when referencing project locations and supply chain initiatives to demonstrate direct environmental relevance.",
+        "Update commitments with follow-up disclosures on progress to prevent perception of greenwashing or misleading impressions."
+      ],
+      "evidenceUsed": [
+        {
+          "quote": "Over the past year, we’ve strengthened our sustainability principles, ensuring they are more closely aligned with our business strategy and supported by clearer governance.",
+          "pageReference": "3",
+          "context": "Introduction - Standing with Our Customers, Driven by Our Culture"
+        },
+        {
+          "quote": "75% of our offices were able to disclose actual electricity consumption, increasing the accuracy of our scope 2 emissions.",
+          "pageReference": "5",
+          "context": "Scorecard"
+        },
+        {
+          "quote": "Our emissions have undergone independent limited-assurance review by BSI against ISO 14064:2018 requirements. The verifier issued a limited assurance opinion and 10% materiality, confirming that nothing came to their attention to suggest material misstatements in our reported figures.",
+          "pageReference": "19",
+          "context": "Aspen's Greenhouse Gas (GHG) Emissions"
+        },
+        {
+          "quote": "After recent renovations to our Zurich office, we were successfully awarded the LEED Silver ID+C certification.",
+          "pageReference": "24",
+          "context": "SPOTLIGHT - Zurich Office Awarded Certification"
+        },
+        {
+          "quote": "Continued delivery of our high-quality carbon offsetting program, focused on independently verified, nature-based solutions.",
+          "pageReference": "17",
+          "context": "Our Environmental Impact"
+        },
+        {
+          "quote": "Improved supply chain engagement initiatives, achieving supplier-specific measurement methodologies and reported reduction strategies.",
+          "pageReference": "17",
+          "context": "Our Environmental Impact"
+        },
+        {
+          "quote": "We align our offset selection strategy with the 12 core principles of high-integrity carbon offsetting. This means we prioritize projects that deliver real, additional and measurable emission reductions.",
+          "pageReference": "20",
+          "context": "Carbon Reduction, Offsetting & Biodiversity"
+        }
+      ],
+      "weight": 1,
+      "duration": 19365
+    },
+    {
+      "subcategoryId": "no_exaggeration",
+      "subcategoryName": "No Exaggeration",
+      "principleId": 1,
+      "principleName": "Principle 1: Be Truthful",
+      "score": 85,
+      "status": "Generally Compliant",
+      "rationale": "The vast majority of the claims evaluated provide factual statements or reasonable commitments with appropriate qualifiers. Many claims reference measurable data, certifications, or established initiatives (e.g., LEED certification, scope 1 & 2 emissions measurements, ISO 14064:2018 assurance) that underpin their environmental benefits without overstating achievements. However, certain claims exhibit some use of vague or promotional language, such as 'high-quality', 'best practices', 'trusted partners', or future-oriented projections (e.g., projected emissions removal over 100 years), which could potentially overstate benefits or create an impression of definitive results without sufficient supporting evidence. These instances represent minor exaggerations and could be clarified or substantiated to fully align with the 'No Exaggeration' criterion. Overall, the company demonstrates a generally truthful approach to environmental claims, with room to enhance precision and minimize vagueness in some areas.",
+      "findings": [
+        {
+          "claimId": "claim_19",
+          "issue": "Use of 'high-quality carbon offsetting' and 'nature-based solutions' without specific supporting evidence could be seen as potentially overstating benefits.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_29",
+          "issue": "Claims of working with 'trusted partners' and meeting the 'highest standards' of permanence and additionality may lack transparency or explicit verification, risking slight exaggeration.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_30",
+          "issue": "Phrases like 'high-integrity' and 'real, additional and measurable emission reductions' are ambitious and may overstate certainty unless independently proven.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_34",
+          "issue": "Projection of removing over 14.66 million tCO2e over the next 100 years is forward-looking and carries uncertainty; could be overstated without caveats.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_14",
+          "issue": "Claim of 'improved quality and granularity' and 'laying the groundwork' is vague and may exaggerate current accomplishments.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_15",
+          "issue": "Use of 'improved' and 'reported reduction strategies' without explicit measurable data could overstate progress in supplier measurement and emission reduction.",
+          "severity": "Low"
+        }
+      ],
+      "recommendations": [
+        "Provide clear, measurable evidence supporting claims that use qualitative descriptors such as 'high-quality', 'best practices', 'trusted partners', and 'high-integrity' to reduce ambiguity and potential exaggeration.",
+        "Where projections and future benefits are mentioned (e.g., long-term carbon removal), include disclaimers or contextual information about uncertainties and assumptions.",
+        "Avoid vague terms like 'improved', 'better insight', and 'laying the groundwork' without specific data, benchmarks, or outcomes to substantiate the claims.",
+        "Ensure all sustainability efforts and certifications referenced align with independent verification to bolster credibility and mitigate risks of overstatement.",
+        "Consider including more quantitative data or references to third-party validation especially for claims involving supplier engagement and emission reductions."
+      ],
+      "evidenceUsed": [
+        {
+          "quote": "Continued delivery of our high-quality carbon offsetting program, focused on independently verified, nature-based solutions.",
+          "pageReference": "17",
+          "context": "Commitment claim on emission reduction and carbon offsetting quality."
+        },
+        {
+          "quote": "We continue to evaluate all offset projects using methodologies such as the ICVCM’s Core Carbon Principles and the Carbon Credit Quality Initiative, and we work with trusted partners to ensure that all projects meet the highest standards of permanence, additionality, and co-benefits.",
+          "pageReference": "20",
+          "context": "Commitment claim emphasizing quality and standards of carbon offset projects."
+        },
+        {
+          "quote": "Aspen aligns our offset selection strategy with the 12 core principles of high-integrity carbon offsetting. This means we prioritize projects that deliver real, additional and measurable emission reductions.",
+          "pageReference": "20",
+          "context": "Commitment to offset integrity and measurable reductions."
+        },
+        {
+          "quote": "The Darkwoods Forest Project supports improved forest management (emissions avoidance) with third-party verification and is projected to remove over 14.66 million tCO2e over the next 100 years.",
+          "pageReference": "21",
+          "context": "Factual claim with future-oriented emission removal projections."
+        },
+        {
+          "quote": "We have improved the quality and granularity of our emissions-related data, while also laying the groundwork for emissions reduction in the years ahead.",
+          "pageReference": "17",
+          "context": "Factual claim highlighting improvements and future plans."
+        },
+        {
+          "quote": "Improved supply chain engagement initiatives, achieving supplier-specific measurement methodologies and reported reduction strategies.",
+          "pageReference": "17",
+          "context": "Factual claim about supply chain measurement and reduction efforts."
+        }
+      ],
+      "weight": 1,
+      "duration": 15931
+    },
+    {
+      "subcategoryId": "adequate_testing",
+      "subcategoryName": "Adequate Testing",
+      "principleId": 2,
+      "principleName": "Principle 2: Be Substantiated",
+      "score": 45,
+      "status": "High Risk",
+      "rationale": "The environmental claims within the Sustainability Report 2024 predominantly consist of commitments, governance actions, and general statements rather than assertions supported by evidence of adequate, proper testing conducted prior to making such claims. While there are several factual claims regarding measurements, certifications, and independent reviews (e.g., limited assurance to ISO14064:2018), most lack explicit details that confirm testing was completed before these claims were made. For many emission reduction and carbon offsetting commitments, although references are made to verification frameworks and standards, concrete evidence of pre-claim testing (e.g., dates, methodologies, test procedures, third-party audit reports) is missing or referenced only in vague terms. Additionally, numerous claims contain vague language or refer to ongoing assessments and strategies which implies testing is either incomplete or not fully documented. Hence, there is a significant compliance gap regarding the requirement that environmental claims must be based on adequate pre-claim testing.",
+      "findings": [
+        {
+          "claimId": "claim_14",
+          "issue": "Claim about improved emissions data quality and groundwork for future reductions is vague and does not specify evidence of testing conducted before making the claim.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_19",
+          "issue": "Claims of a 'high-quality carbon offsetting program' with 'independently verified, nature-based solutions' lack specifics about verification timing and methodology prior to claim.",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_24",
+          "issue": "Limited-assurance certification is mentioned but without full disclosure of test scope, timing, or supporting data before claims.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_28",
+          "issue": "Reference to independent limited assurance review offers some substantiation, but details on testing scope and timing relative to claim issuance are minimal.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_29",
+          "issue": "Evaluation of offset projects using recognized methodologies is ongoing; lack of clear evidence that such evaluations and testing were fully completed before claim publication.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_30",
+          "issue": "Offset selection strategy refers to principles and independent verification but without clear indication of completed pre-claim testing and evidence thereof.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_34",
+          "issue": "Darkwoods Forest Project claim is 'projected' and while third-party verification is mentioned, testing adequacy before claim made is unclear.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_35",
+          "issue": "Claim about mineralization process lacks detail on prior testing proving efficacy before making the claim.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_36",
+          "issue": "Supplier due diligence claim states 'now mandatory' but no evidence of prior testing or validation of supplier compliance data before claim.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_40",
+          "issue": "Targeting LEED certification for future projects is a commitment, lacking evidence of completed testing prior to claim.",
+          "severity": "Low"
+        }
+      ],
+      "recommendations": [
+        "Include detailed documentation and referencing of all testing conducted prior to claim publication, specifying methodologies, dates, and test results.",
+        "Disclose third-party verification reports and assurance statements in full or summaries with clear timelines showing testing predates claims.",
+        "Avoid vague language in claims; specify when and how tests and assessments were conducted to support quantitative or qualitative assertions.",
+        "For projection-based claims, clearly mark them as projections and avoid implying completion of testing if still pending.",
+        "Embed stronger evidence of testing in future report iterations to comply fully with the adequate testing requirement under Bill C-59 and Competition Bureau guidelines."
+      ],
+      "evidenceUsed": [
+        {
+          "quote": "Independent limited-assurance on our emissions to ISO14064:2018 requirements (2024)",
+          "pageReference": "18",
+          "context": "Claim 24 indicates some assurance engagement but lacks detailed timing and scope disclosure."
+        },
+        {
+          "quote": "Our emissions have undergone independent limited-assurance review by BSI against ISO 14064:2018 requirements. The verifier issued a limited assurance opinion and 10% materiality, confirming that nothing came to their attention to suggest material misstatements in our reported figures.",
+          "pageReference": "19",
+          "context": "Claim 28 provides some substantiation but does not fully clarify testing before claim publication."
+        },
+        {
+          "quote": "We continue to evaluate all offset projects using methodologies such as the ICVCM’s Core Carbon Principles and the Carbon Credit Quality Initiative...",
+          "pageReference": "20",
+          "context": "Claim 29 refers to evaluation methodologies, implying ongoing assessment rather than completed testing."
+        },
+        {
+          "quote": "The Darkwoods Forest Project... with third-party verification and is projected to remove over 14.66 million tCO2e over the next 100 years.",
+          "pageReference": "21",
+          "context": "Claim 34 relies on projections and includes third-party verification mention but without testing specifics."
+        }
+      ],
+      "weight": 1,
+      "duration": 17446
+    },
+    {
+      "subcategoryId": "recognized_methodology",
+      "subcategoryName": "Recognized Methodology",
+      "principleId": 2,
+      "principleName": "Principle 2: Be Substantiated",
+      "score": 70,
+      "status": "Needs Attention",
+      "rationale": "While several claims reference recognized standards and methodologies such as ISO 14064:2018 for emissions reporting and independent verification (claims 24, 28), and alignment with frameworks like the UN Principles for Responsible Investment (claim 10) and sustainable insurance (claim 11), a large portion of claims lack explicit mention of adoption or use of internationally recognized methodologies for substantiation. Many assertions on emissions data, offsetting, and sustainability strategies rely on vague phrases without clear adherence to established protocols like the GHG Protocol or Science Based Targets. For example, claims related to emissions reduction strategy (claims 6, 14–16), carbon offset selection (claims 29, 30), and supply chain measurement (claims 5, 15) do not explicitly state reliance on recognized methodologies, raising material concerns about substantiation and comparability. This gap limits the overall credibility and compliance with the requirement for substantiation using recognized methodologies, suggesting a need for clearer articulation and reference to such standards across more claims.",
+      "findings": [
+        {
+          "claimId": "claim_24",
+          "issue": "Explicit use of ISO 14064:2018 for independent limited-assurance on emissions, demonstrating strong adherence to recognized methodology.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_28",
+          "issue": "Independent verification against ISO 14064:2018 with limited assurance opinion supports credible substantiation.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_10",
+          "issue": "Signatory of UNPRI reflects alignment with globally recognized ESG principles and methodologies.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_11",
+          "issue": "Voluntary signatory of UNPSI aligns with recognized sustainable insurance principles and methodologies.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_29",
+          "issue": "Commitment to evaluate offset projects using ICVCM’s Core Carbon Principles and Carbon Credit Quality Initiative is positive but lacks explicit methodological detail and standardized measurement framework.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_30",
+          "issue": "Offset selection strategy aligns with 12 core principles of high-integrity carbon offsetting but does not specify use of standards like GHG Protocol for quantification or reporting.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_5",
+          "issue": "Mention of 'Achieving supplier-specific measurement methodologies' is vague with no reference to any recognized methodology.",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_15",
+          "issue": "Improved supply chain engagement and measurement methodologies do not specify recognized international standards for measurement or reporting.",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_6",
+          "issue": "Internal assessment of carbon reduction options does not indicate use of recognized methodologies such as the GHG Protocol or Science Based Targets.",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_14",
+          "issue": "Claim to improve data quality and granularity lacks indication that improvements align with recognized data quality frameworks or protocols.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_16",
+          "issue": "Commitment to develop emissions reduction strategy lacks explicit methodological frameworks for measurement and reporting.",
+          "severity": "Medium"
+        }
+      ],
+      "recommendations": [
+        "Clearly state all emissions measurement and reduction efforts reference globally recognized methodologies such as the GHG Protocol, ISO standards, or Science Based Targets.",
+        "For carbon offset claims, explicitly detail adherence to standardized frameworks for quantification, verification, and reporting, referencing entities like ICVCM, VCS, or Gold Standard alongside ISO protocols.",
+        "Define and disclose supply chain measurement methodologies aligned with recognized standards to ensure transparency and comparability.",
+        "Ensure all commitments and strategies related to emission reductions and sustainability reporting are substantiated by or developed from recognized scientific and accounting standards.",
+        "Enhance transparency by including more references to third-party verification and audit processes based on established international methodologies."
+      ],
+      "evidenceUsed": [
+        {
+          "quote": "Independent limited-assurance on our emissions to ISO14064:2018 requirements (2024)",
+          "pageReference": "Page 18",
+          "context": "Emissions assurance and verification"
+        },
+        {
+          "quote": "Our emissions have undergone independent limited-assurance review by BSI against ISO 14064:2018 requirements. The verifier issued a limited assurance opinion and 10% materiality, confirming that nothing came to their attention to suggest material misstatements in our reported figures.",
+          "pageReference": "Page 19",
+          "context": "Verification of emissions data"
+        },
+        {
+          "quote": "Aspen becomes signatory of United Nations Principles for Responsible Investment (UNPRI) in Q1 2023",
+          "pageReference": "Page 6",
+          "context": "Sustainability Milestones - ESG certifications"
+        },
+        {
+          "quote": "We continue to evaluate all offset projects using methodologies such as the ICVCM’s Core Carbon Principles and the Carbon Credit Quality Initiative, and we work with trusted partners to ensure that all projects meet the highest standards of permanence, additionality, and co-benefits.",
+          "pageReference": "Page 20",
+          "context": "Offset project evaluation standards"
+        },
+        {
+          "quote": "Improved supply chain engagement initiatives Achieving supplier-specific measurement methodologies",
+          "pageReference": "Page 5",
+          "context": "Supply chain reporting and measurement"
+        }
+      ],
+      "weight": 1,
+      "duration": 17559
+    },
+    {
+      "subcategoryId": "third_party_verification",
+      "subcategoryName": "Third-Party Verification",
+      "principleId": 2,
+      "principleName": "Principle 2: Be Substantiated",
+      "score": 85,
+      "status": "Generally compliant",
+      "rationale": "The majority of environmental claims in Aspen's Sustainability Report 2024 lack explicit reference to third-party verification, which is critical for substantiating environmental data under international methodologies such as ISO 14064:2018 and standards recommended by the Competition Bureau under Bill C-59 greenwashing provisions. However, several key claims (notably claims 24 and 28) demonstrate independent limited-assurance verification by a recognized third party (BSI) against ISO 14064:2018, lending strong credibility to their emissions reporting. The carbon offset claims (claims 19, 29, 30, 34) indicate reliance on recognized methodologies and mention verification, but specific third-party verification details are more tentative or partially implicit, warranting minor improvements in clarity and documentation. Other factual and commitment claims related to supply chain, governance, and general sustainability are mostly internal or aspirational without clear external verification, which is typical but weakens full substantiation under this criterion.",
+      "findings": [
+        {
+          "claimId": "claim_24",
+          "issue": "Explicit independent limited-assurance verification to ISO 14064:2018 requirements provided, demonstrating strong third-party verification for emissions.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_28",
+          "issue": "Detailed report of independent limited-assurance review by BSI confirms credible third-party verification for emissions figures.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_19",
+          "issue": "Carbon offsetting program claims independent verification but lacks detailed explanation of verifier identity or scope.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_30",
+          "issue": "Claim states offsets are independently verified, but specifics on third-party verifier and assurance level are not fully transparent.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_34",
+          "issue": "Explicit mention of third-party verification for the Darkwoods Forest Project, yet the details of verification process and verifier are not deeply provided.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_5",
+          "issue": "Supply chain measurement methodologies mentioned without indication of third-party verification or audit.",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_15",
+          "issue": "Reported reduction strategies and supplier-specific methodologies lack clear third-party substantiation.",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_14",
+          "issue": "Claims improved data quality and granularity but absence of mention of third-party verification or assurance.",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_6",
+          "issue": "Internal carbon assessments reported without reference to external verification.",
+          "severity": "High"
+        }
+      ],
+      "recommendations": [
+        "Provide explicit third-party verification details for all major emissions and offsetting claims, including verifier name, scope, assurance level, and date of verification.",
+        "Where methodologies such as ISO 14064:2018 or ICVCM Core Carbon Principles require verification, ensure that reports include clear, public evidence of this verification.",
+        "Enhance transparency around verification processes for supply chain data and reported reduction strategies by engaging qualified third-party auditors.",
+        "Include appendices or public disclosures containing verification statements or certificates to build stakeholder confidence and meet Bill C-59 substantiation requirements.",
+        "Avoid vague or implicit references to verification; instead, clearly document and communicate verification processes to comply fully with Principle 2 of substantiation."
+      ],
+      "evidenceUsed": [
+        {
+          "quote": "Independent limited-assurance on our emissions to ISO14064:2018 requirements (2024)",
+          "pageReference": "Page 18, GHG Emissions: Our Journey",
+          "context": "Clear statement confirming engagement of an independent third party to provide limited assurance on emissions data."
+        },
+        {
+          "quote": "Our emissions have undergone independent limited-assurance review by BSI against ISO 14064:2018 requirements. The verifier issued a limited assurance opinion and 10% materiality, confirming that nothing came to their attention to suggest material misstatements in our reported figures.",
+          "pageReference": "Page 19, Aspen's Greenhouse Gas (GHG) Emissions",
+          "context": "Provides detailed verification outcome from an internationally recognized auditor, evidencing robust third-party verification practice."
+        },
+        {
+          "quote": "Continued delivery of our high-quality carbon offsetting program, focused on independently verified, nature-based solutions.",
+          "pageReference": "Page 17, Our Environmental Impact",
+          "context": "References independent verification of the carbon offset program but without specifying third-party verifier details."
+        },
+        {
+          "quote": "Aspen becomes signatory of United Nations Principles for Responsible Investment (UNPRI) in Q1 2023",
+          "pageReference": "Page 6, Sustainability Milestones",
+          "context": "Indicates adherence to frameworks that often require third-party verification or reporting but does not directly state verification of claims."
+        },
+        {
+          "quote": "The Darkwoods Forest Project in Canada supports improved forest management (emissions avoidance) with third-party verification and is projected to remove over 14.66 million tCO2e over the next 100 years.",
+          "pageReference": "Page 21, Carbon Reduction, Offsetting & Biodiversity",
+          "context": "Explicitly mentions third-party verification for this nature-based offsetting project."
+        }
+      ],
+      "weight": 1,
+      "duration": 12127
+    },
+    {
+      "subcategoryId": "comparison_basis",
+      "subcategoryName": "Clear Comparison Basis",
+      "principleId": 3,
+      "principleName": "Principle 3: Be Specific About Comparisons",
+      "score": 65,
+      "status": "Needs Attention",
+      "rationale": "Many claims lack a clear, explicit comparison basis. Some comparative claims provide some reference points (e.g., claim_9 referencing a record number of submissions and a 23% increase from a previous competition), but most do not clearly specify the basis of comparison, making it difficult for consumers or regulators to understand the context or relevance of the claim. Several claims use vague language without specifying what is being compared (e.g., 'improved', 'better assessing'), which weakens the clarity and transparency required by the Competition Bureau guidelines and Bill C-59 provisions on environmental claims. Conversely, factual claims that present raw data without comparison (e.g., emission numbers or certification achievements) generally do not raise compliance issues under this criterion as they are not comparative claims. Overall, the report would benefit from clearer articulation of the comparison basis for claims that imply or state improvement or alignment relative to previous performance, competitors, standards, or industry benchmarks.",
+      "findings": [
+        {
+          "claimId": "claim_1",
+          "issue": "Claim states strengthening of principles aligned with business strategy but does not specify what is being compared or the previous state.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_2",
+          "issue": "Commitment to minimizing impact and promoting best practices lacks clear comparison basis—no specifics on what the impact is compared to or which best practices are benchmarked.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_5",
+          "issue": "Use of 'improved' supply chain engagement and 'supplier-specific measurement methodologies' with no clear reference point or baseline for comparison.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_6",
+          "issue": "'Better assessing carbon impact' does not clarify compared to what prior assessment or method, rendering the comparison unclear.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_9",
+          "issue": "Claim includes a clear comparison basis as it identifies a 23% increase from a previous competition, making it a good example of clarity.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_14",
+          "issue": "Claims improvement in data quality and granularity without clear indication of the baseline or prior quality.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_15",
+          "issue": "'Improved' initiatives and 'reported reduction strategies' lack clear comparison basis for what was improved or by how much.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_16",
+          "issue": "Commitment to development supported by 'better insight' does not specify the prior insight level or measures considered.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_40",
+          "issue": "Targets 'minimum LEED certification' in the future but does not specify what prior certification levels or targets were, reducing clarity on basis of comparison.",
+          "severity": "Medium"
+        }
+      ],
+      "recommendations": [
+        "For all comparative claims, explicitly state the previous baseline, benchmark, competitor, or standard against which the claim is made.",
+        "Avoid vague terms like 'improved', 'better', and 'enhanced' without quantification or specification of the comparison context.",
+        "Where percentage increases or decreases are cited, include clear reference to the time frame or prior measure to ensure transparency.",
+        "In commitments or future-oriented claims, clarify the current status and specifically outline what the commitment aims to surpass or align with.",
+        "Align the environmental claims with recognized standards or verified data points to provide objective points of comparison."
+      ],
+      "evidenceUsed": [
+        {
+          "quote": "In 2024, we received a record number of submissions to our innovation investment competition from diverse functions and Geographies up 23% from the previous competition",
+          "pageReference": "5",
+          "context": "Scorecard - good example of clear comparison basis"
+        },
+        {
+          "quote": "Improved supply chain engagement initiatives Achieving supplier-specific measurement methodologies",
+          "pageReference": "5",
+          "context": "Scorecard - lacks explicit prior baseline or comparative reference"
+        },
+        {
+          "quote": "Better assessing carbon impact Internal assessment of Carbon Reduction options, within the carbon footprint and transition plan workstream",
+          "pageReference": "5",
+          "context": "Scorecard - vague on what previous assessment was"
+        },
+        {
+          "quote": "Improved supply chain engagement initiatives, achieving supplier-specific measurement methodologies and reported reduction strategies",
+          "pageReference": "17",
+          "context": "Our Environmental Impact - no clear prior reference"
+        },
+        {
+          "quote": "Going into 2025 we are excited to announce the completion of two office optimization projects in Puerto Rico (April 14th) and Bermuda (May 16th), both being targeted to achieve a minimum LEED certification.",
+          "pageReference": "23",
+          "context": "Purchase Goods & Services - future target without clarity on previous status"
+        }
+      ],
+      "weight": 1,
+      "duration": 15273
+    },
+    {
+      "subcategoryId": "extent_of_difference",
+      "subcategoryName": "Extent of Difference",
+      "principleId": 3,
+      "principleName": "Principle 3: Be Specific About Comparisons",
+      "score": 45,
+      "status": "High Risk",
+      "rationale": "Most claims in the Sustainability Report 2024 lack clear articulation of the extent of environmental difference or improvement. While some claims provide numerical data (e.g., claim_7 on 75% of offices disclosing electricity consumption, claim_31 on total tons offset), the majority of claims are vague and do not specifically quantify improvements, reductions, or differences in environmental performance compared to a baseline or previous period. Without explicit extent measures, these claims do not meet the Competition Bureau’s guideline that claims must clearly state the extent of environmental benefit to avoid misleading consumers under the Canadian Competition Act and Bill C-59 greenwashing provisions.",
+      "findings": [
+        {
+          "claimId": "claim_1",
+          "issue": "Uses general language ('strengthened our sustainability principles') without specifying the extent of improvement or measurable impact.",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_2",
+          "issue": "States 'minimize our impact' but fails to quantify how much impact is reduced or improved.",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_3",
+          "issue": "Commitment to environmental stewardship without concrete measures or extent of improvement.",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_14",
+          "issue": "Mentions improved data quality and groundwork for future reductions but lacks numeric extent or quantification.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_15",
+          "issue": "Reports improved initiatives and reduction strategies without quantifying the extent or magnitude of these improvements.",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_16",
+          "issue": "Discusses ongoing strategy development and better insight but lacks clear quantification of extent of difference achieved to date.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_19",
+          "issue": "Calls the offsetting program 'high-quality' without quantifying the extent or scale of emission reductions delivered.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_33",
+          "issue": "Claims geographic expansion of projects 'closer to areas of operation' but does not quantify environmental impact differences linked to this expansion.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_40",
+          "issue": "Targets office optimization projects for 'minimum LEED certification' without specifying expected improvements or extent of environmental benefits.",
+          "severity": "High"
+        }
+      ],
+      "recommendations": [
+        "Clearly quantify environmental improvements or extent of difference in key claims, specifying percentage reductions, absolute emissions reduced, or specific measurable outcomes compared to baseline periods.",
+        "When describing strategies or initiatives, provide data-backed metrics demonstrating environmental impact or improvement.",
+        "Avoid generic or qualitative terms without supportive figures to meet the specificity requirement under Principle 3.",
+        "Reference standardized metrics or industry benchmarks where possible to provide context for extent of difference.",
+        "Ensure all comparative claims explicitly state the extent or degree of environmental difference or benefit."
+      ],
+      "evidenceUsed": [
+        {
+          "quote": "Over the past year, we’ve strengthened our sustainability principles, ensuring they are more closely aligned with our business strategy and supported by clearer governance.",
+          "pageReference": "Page 3, Introduction - Standing with Our Customers, Driven by Our Culture",
+          "context": "Claim_1 illustrates general commitment but lacks extent of environmental improvement."
+        },
+        {
+          "quote": "75% of our offices were able to disclose actual electricity consumption, increasing the accuracy of our scope 2 emissions.",
+          "pageReference": "Page 5, Scorecard",
+          "context": "Claim_7 represents a factual and quantified disclosure, aligning with extent of difference principle."
+        },
+        {
+          "quote": "Improved supply chain engagement initiatives, achieving supplier-specific measurement methodologies and reported reduction strategies",
+          "pageReference": "Page 17, Our Environmental Impact",
+          "context": "Claim_15 reports improvements but does not quantify extent of reductions."
+        },
+        {
+          "quote": "Going into 2025 we are excited to announce the completion of two office optimization projects... both being targeted to achieve a minimum LEED certification.",
+          "pageReference": "Page 23, Purchase Goods & Services Business Travel Facilities",
+          "context": "Claim_40 commits to certifications but does not state expected extent of environmental gains."
+        }
+      ],
+      "weight": 1,
+      "duration": 14829
+    },
+    {
+      "subcategoryId": "fair_comparisons",
+      "subcategoryName": "Fair Comparisons",
+      "principleId": 3,
+      "principleName": "Principle 3: Be Specific About Comparisons",
+      "score": 85,
+      "status": "Generally Compliant",
+      "rationale": "The sustainability report contains mostly factual and commitment claims that rarely include explicit comparative claims that are essential in assessing fair comparisons. Among the claims that do contain comparative elements (e.g., claim_9 comparing innovation investment competition submissions to a prior period), the comparisons are relevant and timely, referring to the immediate previous competition without indicating outdated products or cherry-picked competitors. The lack of detailed comparative metrics or direct competitor comparisons limits a full assessment of comparative fairness. Some claims are vague in comparative context or omit reference points for their improvements (e.g., claims on improved data quality or supplier engagement) which could be enhanced by specifying the baseline or alternatives used for comparison. Overall, the claims tend to avoid unfair comparisons, but opportunities exist to improve specific referencing of relevant alternatives, avoiding potential ambiguities that could raise questions under Bill C-59 and Competition Bureau expectations.",
+      "findings": [
+        {
+          "claimId": "claim_9",
+          "issue": "Claim compares current competition submissions with the previous competition, a relevant and recent comparison. No indication of cherry-picking or outdated baseline.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_14",
+          "issue": "States 'improved quality and granularity' but does not specify the basis or alternative for comparison, limiting transparency.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_15",
+          "issue": "References 'improved supply chain engagement' but without clear comparison to relevant supplier alternatives or baseline data, limiting clarity on what the improvement is against.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_25",
+          "issue": "Repeats fact from claim_7 (75% office electricity disclosure) affirming consistency without an unfair comparative context.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_34",
+          "issue": "Projects future emissions avoidance but uses projected data without comparison to alternatives or past data explicitly; however, this is less about comparison fairness and more about projection methodology.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_1",
+          "issue": "General commitment to strengthened principles without any comparatives undermines the possibility to fairly assess progress relative to past or alternatives.",
+          "severity": "Low"
+        }
+      ],
+      "recommendations": [
+        "Include explicit baseline or alternative product/reference points when stating improvements or strategy enhancements to comply with fair comparisons.",
+        "Avoid vague terms such as 'improved', 'better assessing', and 'high-quality' without meaningful, specific comparative data for transparency.",
+        "Where comparative claims are made, clearly specify the timeframe and competitors or alternative approaches to avoid misleading impressions.",
+        "Use consistent metrics or standardized third-party benchmarks when possible to demonstrate fair and relevant comparisons.",
+        "Ensure pledges or commitments referencing improvement are supported by clearly articulated prior states or relevant contemporaneous alternatives."
+      ],
+      "evidenceUsed": [
+        {
+          "quote": "In 2024, we received a record number of submissions to our innovation investment competition from diverse functions and Geographies up 23% from the previous competition",
+          "pageReference": "5",
+          "context": "Scorecard section highlighting quantified progress in innovation investment competition participation demonstrating a fair and relevant recent comparison."
+        },
+        {
+          "quote": "Improved supply chain engagement initiatives Achieving supplier-specific measurement methodologies",
+          "pageReference": "5",
+          "context": "Scorecard section providing a vague improvement claim lacking clear comparative baseline or alternative."
+        },
+        {
+          "quote": "We have improved the quality and granularity of our emissions-related data, while also laying the groundwork for emissions reduction in the years ahead.",
+          "pageReference": "17",
+          "context": "Our Environmental Impact section describing improvements without specific reference to prior data state or external comparators."
+        },
+        {
+          "quote": "75% of our offices were able to disclose actual electricity consumption, increasing the accuracy of our scope 2 emissions",
+          "pageReference": "5",
+          "context": "Scorecard entry giving a factual percentage with a clear reference point (offices that could disclose consumption) indicating accurate comparative context."
+        }
+      ],
+      "weight": 1,
+      "duration": 14193
+    },
+    {
+      "subcategoryId": "proportionate_claims",
+      "subcategoryName": "Proportionate Claims",
+      "principleId": 4,
+      "principleName": "Principle 4: Be Proportionate",
+      "score": 68,
+      "status": "Needs Attention",
+      "rationale": "The environmental claims reviewed generally indicate positive steps toward sustainability and governance improvements with some factual data points included. However, many claims are framed as commitments or improvements without clear evidence of actual environmental benefits or measurable outcomes. Several claims use vague or qualitative terms that make it difficult to assess whether the marketing is proportionate to actual impact. This vagueness creates a risk that the marketing overstates environmental benefits relative to what has been demonstrated or achieved. While there are some concrete figures (e.g. tons offset, emission scope disclosures), the overall presentation lacks comprehensive quantification or verifiable data for a significant number of claims. As a result, the suite of claims falls short of exemplary proportionality and could benefit from enhanced clarity and substantiation to reduce risk of greenwashing under Bill C-59 and Competition Bureau guidelines.",
+      "findings": [
+        {
+          "claimId": "claim_1",
+          "issue": "Uses vague term 'strengthened sustainability principles' without specifying measurable benefits or outcomes.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_2",
+          "issue": "Reference to 'minimize our impact' and 'best practices' lacks quantifiable data making proportionality unclear.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_3",
+          "issue": "Commitment statements about 'environmental stewardship' and 'low carbon economy' are broad and non-specific, limiting proportionality assessment.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_14",
+          "issue": "Claim of 'improved quality and granularity' and 'laying groundwork' is qualitative and does not quantify actual environmental benefit.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_15",
+          "issue": "Vague reference to 'improved initiatives' and 'reported reduction strategies' without substantiating actual impact.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_18",
+          "issue": "Commitment to 'sustainability initiatives and behaviour change' is broad, lacking measurable outcomes to assess proportionality.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_19",
+          "issue": "Claim of a 'high-quality' offsetting program relies on vague descriptors lacking quantified verification of environmental benefit.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_29",
+          "issue": "Use of 'highest standards' and 'trusted partners' is vague, and the actual environmental benefit is not quantified in the claim.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_30",
+          "issue": "Commitment to prioritizing projects with 'real, additional and measurable emission reductions' is positive but again relies on qualitative assurances rather than presenting data.",
+          "severity": "Medium"
+        }
+      ],
+      "recommendations": [
+        "Include clear, quantitative metrics and performance data in environmental claims to demonstrate actual benefits achieved.",
+        "Avoid vague or qualitative language that obscures the extent of environmental benefits; use concrete, measurable terms.",
+        "Where commitments are made, provide timelines, milestones, or benchmarks to gauge progress and proportionality.",
+        "Ensure claims clearly reflect environmental benefits relative to the scale and impact of operations to prevent overstatement.",
+        "Where certifications or verifications exist, emphasize these and provide accessible references to independent assurance reports.",
+        "Continuously update claims with actual performance data rather than projections or intentions to maintain proportionality."
+      ],
+      "evidenceUsed": [
+        {
+          "quote": "Over the past year, we’ve strengthened our sustainability principles, ensuring they are more closely aligned with our business strategy and supported by clearer governance.",
+          "pageReference": "3, Introduction",
+          "context": "Lacks quantification of environmental improvements attributable to governance strengthening."
+        },
+        {
+          "quote": "We recognize our responsibility to the planet, and we take thoughtful, pragmatic steps to minimize our impact while also advising and working alongside our partners to promote best practices throughout the supply chain.",
+          "pageReference": "3, Introduction",
+          "context": "Uses non-specific terms like 'minimize impact' and 'best practices' without measured outcomes."
+        },
+        {
+          "quote": "We have improved the quality and granularity of our emissions-related data, while also laying the groundwork for emissions reduction in the years ahead.",
+          "pageReference": "17, Our Environmental Impact",
+          "context": "Descriptive of processes but lacks direct linkage to measurable reductions."
+        },
+        {
+          "quote": "Continued delivery of our high-quality carbon offsetting program, focused on independently verified, nature-based solutions.",
+          "pageReference": "17, Our Environmental Impact",
+          "context": "Descriptor 'high-quality' is subjective without data on environmental benefit quantities or verification scope."
+        },
+        {
+          "quote": "We continue to evaluate all offset projects using methodologies such as the ICVCM’s Core Carbon Principles and the Carbon Credit Quality Initiative, and we work with trusted partners to ensure that all projects meet the highest standards of permanence, additionality, and co-benefits.",
+          "pageReference": "20, Carbon Reduction, Offsetting & Biodiversity",
+          "context": "Positive governance commitments but without accompanying measurable results in the claim."
+        },
+        {
+          "quote": "Total Tons Offset: 6,411",
+          "pageReference": "20, Carbon Reduction, Offsetting & Biodiversity",
+          "context": "Provides a measurable offset metric contributing to proportionate claim practices."
+        }
+      ],
+      "weight": 1,
+      "duration": 16750
+    },
+    {
+      "subcategoryId": "materiality",
+      "subcategoryName": "Materiality of Claims",
+      "principleId": 4,
+      "principleName": "Principle 4: Be Proportionate",
+      "score": 60,
+      "status": "Needs Attention",
+      "rationale": "The analyzed claims demonstrate a mixture of progress on environmental initiatives and governance, but many lack clear, quantifiable, or impactful environmental improvements that would make a meaningful difference. Several claims are commitments or vague statements focusing on processes, intentions, or governance rather than substantive environmental outcomes. While facts like the disclosure of electricity consumption (claims 7, 25), issuance of certifications (claims 10, 11, 24, 39), and offset tonnage (claim 31) are concrete, their materiality relative to overall environmental impact is not contextualized or linked directly to performance improvements. Many claims are aspirational or process-oriented — e.g., developing frameworks, improving data quality, or aligning with standards — without clear evidence that these efforts translate to meaningful environmental improvement. Consequently, the report risks greenwashing through emphasis on governance and procedural steps over material environmental progress, meriting a 'Needs Attention' score for materiality.",
+      "findings": [
+        {
+          "claimId": "claim_1",
+          "issue": "Focuses on strengthening principles and governance aligned with strategy but lacks evidence of material environmental improvement.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_2",
+          "issue": "Commitment to 'minimize impact' without quantification or specific meaningful outcomes; vague terminology reduces materiality.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_5",
+          "issue": "Use of vague terms like 'improved' and 'supplier-specific' measurement without detailing actual emissions reductions or impacts.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_14",
+          "issue": "Claims improved data quality and groundwork laying without clear actual emission reductions or measurable environmental benefits.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_15",
+          "issue": "Reports improved engagement and measurement but lacks quantification or evidence of meaningful emission reductions.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_16",
+          "issue": "Describes continuing strategy development and data improvements without tangible environmental outcomes yet realized.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_29",
+          "issue": "Commitment to high standards in offset projects, yet 'trusted partners' and 'highest standards' are vague, potentially overstating impact.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_30",
+          "issue": "Offsets described as 'real, additional and measurable' but lack independent verification details or evidence of achieved emission reductions.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_33",
+          "issue": "Geographic expansion of projects stated without specific metrics on emissions impact or material environmental outcomes.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_34",
+          "issue": "Darkwoods Forest Project projected to remove significant CO2 but reliance on projections and long time frames reduce immediate materiality.",
+          "severity": "Low"
+        }
+      ],
+      "recommendations": [
+        "Include quantifiable metrics for all major environmental claims to demonstrate clear evidence of material environmental improvement (e.g., actual emissions reduced, waste diverted, water conserved).",
+        "Avoid vague and aspirational language without supporting data. Define all technical terms plainly and connect governance or process improvements directly to environmental outcomes.",
+        "Disclose independent verification details comprehensively for environmental performance claims, including scope and materiality thresholds.",
+        "Provide contextual benchmarks or baselines to show how claimed improvements contribute meaningfully relative to overall environmental impact.",
+        "Clarify the actual impact and timeframe of carbon offset projects, avoiding over-reliance on projections and ensuring transparency on additionality, permanence, and verification."
+      ],
+      "evidenceUsed": [
+        {
+          "quote": "Over the past year, we’ve strengthened our sustainability principles, ensuring they are more closely aligned with our business strategy and supported by clearer governance.",
+          "pageReference": "Page 3, Introduction",
+          "context": "Commitment focuses on governance alignment, lacking material environmental achievement."
+        },
+        {
+          "quote": "75% of our offices were able to disclose actual electricity consumption, increasing the accuracy of our scope 2 emissions.",
+          "pageReference": "Page 5, Scorecard",
+          "context": "Factual disclosure improving measurement but not directly evidencing emissions reduction."
+        },
+        {
+          "quote": "Improved supply chain engagement initiatives, achieving supplier-specific measurement methodologies and reported reduction strategies.",
+          "pageReference": "Page 17, Our Environmental Impact",
+          "context": "Fails to detail real outcomes or quantifiable emission reductions."
+        },
+        {
+          "quote": "Aspen's Greenhouse Gas (GHG) Emissions: 'Our emissions have undergone independent limited-assurance review... confirming that nothing came to their attention to suggest material misstatements'",
+          "pageReference": "Page 19",
+          "context": "Verification applies to data quality, but linkage to material environmental improvements is unstated."
+        },
+        {
+          "quote": "The Darkwoods Forest Project in Canada supports improved forest management (emissions avoidance) with third-party verification and is projected to remove over 14.66 million tCO2e over the next 100 years.",
+          "pageReference": "Page 21",
+          "context": "Large-scale project impact but reliant on long-term projections."
+        }
+      ],
+      "weight": 1,
+      "duration": 29650
+    },
+    {
+      "subcategoryId": "no_cherry_picking",
+      "subcategoryName": "No Cherry-Picking",
+      "principleId": 4,
+      "principleName": "Principle 4: Be Proportionate",
+      "score": 70,
+      "status": "Needs Attention",
+      "rationale": "The review of claims reveals that Aspen prominently features numerous positive environmental and sustainability initiatives such as improvements in governance, emission measurement, supply chain engagement, carbon offsetting projects, and certifications. However, the company does not provide balanced disclosure regarding any significant environmental negatives or challenges it faces. Many claims are framed as commitments or improvements without addressing material environmental impacts or ongoing issues. These practices risk giving an impression of disproportionate focus on positives while neglecting to discuss negative or less flattering environmental aspects, which constitutes cherry-picking under Principle 4. The lack of disclosure of environmental negatives or trade-offs reduces transparency and may mislead stakeholders about the full scope of Aspen's environmental performance.",
+      "findings": [
+        {
+          "claimId": "claim_1",
+          "issue": "General sustainability principle improvement asserted without acknowledging any associated environmental challenges or areas needing improvement.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_14",
+          "issue": "Focus on data quality and groundwork for reductions without mention of current emission levels or gaps.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_19",
+          "issue": "Promotion of high-quality carbon offsetting program lacks context regarding residual emissions or controversies with offsets.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_27",
+          "issue": "Reported reduction in emissions due to supplier data improvements is positive but omits any discussion of remaining emission risks or limitations.",
+          "severity": "Medium"
+        }
+      ],
+      "recommendations": [
+        "Disclose significant environmental negatives, challenges, or trade-offs alongside positive initiatives to provide balanced transparency.",
+        "Provide contextual data on absolute emission levels, environmental impacts, and progress toward targets including areas needing improvement.",
+        "Avoid exclusive focus on improvements or positive governance measures without equally addressing ongoing sustainability risks or deficiencies.",
+        "Enhance disclosure of negative impacts in the supply chain, carbon offset effectiveness, and other critical environmental aspects to prevent greenwashing perceptions."
+      ],
+      "evidenceUsed": [
+        {
+          "quote": "We have improved the quality and granularity of our emissions-related data, while also laying the groundwork for emissions reduction in the years ahead.",
+          "pageReference": "17",
+          "context": "No mention of current emission challenges or gaps."
+        },
+        {
+          "quote": "Continued delivery of our high-quality carbon offsetting program, focused on independently verified, nature-based solutions.",
+          "pageReference": "17",
+          "context": "No disclosure of potential limitations or concerns with carbon offsets."
+        },
+        {
+          "quote": "Improved supplier categorisation and measurement has resulted in a decrease in reported emissions under Purchased Goods & Services.",
+          "pageReference": "19",
+          "context": "Positive reporting on emission reduction without discussion of remaining risks."
+        },
+        {
+          "quote": "Over the past year, we’ve strengthened our sustainability principles, ensuring they are more closely aligned with our business strategy and supported by clearer governance.",
+          "pageReference": "3",
+          "context": "General positive statement without mention of continuing environmental issues."
+        }
+      ],
+      "weight": 1,
+      "duration": 23731
+    },
+    {
+      "subcategoryId": "avoid_vague_terms",
+      "subcategoryName": "Avoid Vague Terms",
+      "principleId": 5,
+      "principleName": "Principle 5: When in Doubt, Spell it Out",
+      "score": 62,
+      "status": "Needs Attention",
+      "rationale": "The Sustainability Report 2024 demonstrates a reasonable effort to communicate environmental and sustainability initiatives. However, multiple claims contain vague terminology without clear, specific substantiation or quantitative data to support these terms, leading to ambiguity in interpretation and potential for misleading impressions. Terms such as 'sustainability principles', 'minimize our impact', 'best practices', 'environmental stewardship', and 'high-quality' are frequently used without clarification or measurable criteria. This lack of specificity falls short of the clarity required under Principle 5 to avoid vague generalities, posing a risk of non-compliance with Bill C-59 greenwashing provisions and Competition Bureau guidelines. The report would benefit from detailed definitions, quantified metrics, or concrete examples accompanying these terms to ensure claims are clear, verifiable, and transparent.",
+      "findings": [
+        {
+          "claimId": "claim_1",
+          "issue": "Use of vague term 'sustainability principles' without explanation or metrics.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_2",
+          "issue": "'Minimize our impact' and 'best practices' lack specific descriptions or performance data.",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_3",
+          "issue": "Phrases like 'environmental stewardship' and 'low carbon economy' are undefined and unspecified.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_5",
+          "issue": "'Improved' and 'supplier-specific' are subjective and unsupported by detailed evidence.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_6",
+          "issue": "'Better assessing' and 'carbon reduction options' without quantification reduce clarity.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_8",
+          "issue": "Term 'impact support' is vague and unspecified despite exact spending figures.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_14",
+          "issue": "Terms 'granularity' and 'laying the groundwork' are ambiguous without concrete data examples.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_15",
+          "issue": "'Improved', 'supplier-specific', and 'reported reduction strategies' not clearly defined.",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_16",
+          "issue": "'Better insight' is a vague term lacking precise explanation.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_17",
+          "issue": "'Best practices' used generically without specification.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_18",
+          "issue": "'Sustainability initiatives' and 'behaviour change' are broad and unsubstantiated claims.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_19",
+          "issue": "Descriptors like 'high-quality' and 'nature-based solutions' are vague without objective benchmarks.",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_29",
+          "issue": "'Highest standards' and 'trusted partners' lack details on criteria or identity of partners.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_30",
+          "issue": "Terms like 'high-integrity', 'real, additional and measurable', and 'strong focus' are vague without evidence.",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_33",
+          "issue": "'Closer to our areas of operation' is imprecise, affecting geographic specificity.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_34",
+          "issue": "'Projected' removes certainty and might mislead on actual emission reduction results.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_35",
+          "issue": "'Long-term' is ambiguous without duration or permanence metrics specified.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_36",
+          "issue": "'Critical' suppliers and 'sustainability standards' are vague without explicit criteria or standards described.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_38",
+          "issue": "Terms 'ethical', 'integrity', and 'sustainability expectations' are not defined with measurable or enforceable parameters.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_40",
+          "issue": "'Minimum LEED certification' is vague without specifying which LEED level (Certified, Silver, Gold, Platinum).",
+          "severity": "Low"
+        }
+      ],
+      "recommendations": [
+        "Substantiate all vague terms by providing detailed definitions or quantifiable metrics (e.g., what 'sustainability principles' specifically entail).",
+        "Use verified data and specific examples to explain 'best practices', 'impact', and 'high-quality' claims.",
+        "Avoid ambiguous future-oriented terms like 'projected' or qualify them with clear caveats.",
+        "Clarify geographic references and standards applied, including exact LEED certification levels.",
+        "Detail criteria for supplier classifications and sustainability standards to allow transparent evaluation.",
+        "Include third-party verification or certification references clearly associated with qualitative claims.",
+        "Adopt consistent terminology aligned with recognized frameworks and standards to improve precision and comparability."
+      ],
+      "evidenceUsed": [
+        {
+          "quote": "Over the past year, we’ve strengthened our sustainability principles...",
+          "pageReference": "Page 3",
+          "context": "Introduction - Standing with Our Customers, Driven by Our Culture"
+        },
+        {
+          "quote": "We recognize our responsibility to the planet, and we take thoughtful, pragmatic steps to minimize our impact while also advising and working alongside our partners to promote best practices...",
+          "pageReference": "Page 3",
+          "context": "Introduction - Standing with Our Customers, Driven by Our Culture"
+        },
+        {
+          "quote": "Aspen's sustainability strategy is deeply aligned with... commitment to environmental stewardship and social responsibility...",
+          "pageReference": "Page 4",
+          "context": "Introduction - Aspen Sustainability Philosophy Statement"
+        },
+        {
+          "quote": "Improved supply chain engagement initiatives Achieving supplier-specific measurement methodologies",
+          "pageReference": "Page 5",
+          "context": "Scorecard"
+        },
+        {
+          "quote": "Continued delivery of our high-quality carbon offsetting program, focused on independently verified, nature-based solutions.",
+          "pageReference": "Page 17",
+          "context": "Our Environmental Impact"
+        },
+        {
+          "quote": "Aspen becomes signatory of United Nations Principles for Responsible Investment (UNPRI) in Q1 2023",
+          "pageReference": "Page 6",
+          "context": "Sustainability Milestones"
+        },
+        {
+          "quote": "First measurement of scope 1 & 2 emissions (2019-2021)",
+          "pageReference": "Page 18",
+          "context": "GHG Emissions: Our Journey"
+        },
+        {
+          "quote": "After recent renovations to our Zurich office, we were successfully awarded the LEED Silver ID+C certification.",
+          "pageReference": "Page 24",
+          "context": "SPOTLIGHT - Zurich Office Awarded Certification"
+        }
+      ],
+      "weight": 1,
+      "duration": 31938
+    },
+    {
+      "subcategoryId": "scope_clarity",
+      "subcategoryName": "Scope Clarity",
+      "principleId": 5,
+      "principleName": "Principle 5: When in Doubt, Spell it Out",
+      "score": 65,
+      "status": "Needs Attention",
+      "rationale": "While many claims demonstrate a commitment to or report on sustainability-related activities and metrics, there is a recurrent lack of explicit clarity regarding the precise scope to which these claims apply—whether to the entire Aspen business, a specific business unit, particular offices, or only select parts of operations. For example, statements like 'We recognize our responsibility to the planet...' (claim_2) and 'Aspen's sustainability strategy...' (claim_3) are broad and do not delineate if initiatives apply company-wide or partially. Similarly, the scope of emissions measurement expansion (claims 21, 22) and supply chain initiatives (claims 5, 15, 36) lack precise boundaries explaining the exact parts of the business or products they cover. A few claims specify their scope more explicitly, such as the office-level electricity consumption disclosures (claim_7, 25) and specific project focus (claim_34). However, the overall lack of explicit scope disclosure raises risk for misunderstanding and potential greenwashing concerns under Bill C-59 and the Competition Bureau's guidelines. This indicates a general pattern of partial compliance but with several scope clarity gaps that could confuse stakeholders or mislead them about the full breadth of Aspen’s environmental impact and sustainability efforts.",
+      "findings": [
+        {
+          "claimId": "claim_2",
+          "issue": "'Minimize our impact' and 'promote best practices throughout the supply chain' lack clear indication of whether these apply company-wide or only to parts of the operations or partners.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_3",
+          "issue": "The commitment to environmental stewardship is not clearly scoped to particular products, services, or business units.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_5",
+          "issue": "Supply chain engagement initiatives are mentioned without specifying whether they are company-wide or focused on a subset of suppliers or categories.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_15",
+          "issue": "Supplier-specific measurement methodologies and reduction strategies do not clarify scope boundaries within the supply chain.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_36",
+          "issue": "The Supplier Onboarding process mentions 'critical suppliers' and 'sustainability standards' but does not clarify what portion of all suppliers are covered.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_18",
+          "issue": "Employee engagement initiatives are described generally without specifying if these efforts cover all offices, regions, or employee groups.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_14",
+          "issue": "'Improved quality and granularity of emissions-related data' lacks detail on the scope of operations, facilities, or geographic coverage.",
+          "severity": "Medium"
+        }
+      ],
+      "recommendations": [
+        "Explicitly define the scope of each environmental or sustainability claim, specifying whether it applies to the entire company, particular business units, geographic locations, or product lines.",
+        "For supply chain-related claims, clarify which supplier categories or regions are included in improvement and measurement efforts.",
+        "Where emissions reductions or data improvements are highlighted, include clear indication of the operational or geographic boundaries covered to avoid misinterpretation.",
+        "Use consistent language throughout the report to specify scope boundaries, enhancing transparency and aligning with Competition Bureau guidelines against greenwashing.",
+        "Consider adding summary or methodology sections that explicitly state the scope of reported data and commitments."
+      ],
+      "evidenceUsed": [
+        {
+          "quote": "We recognize our responsibility to the planet, and we take thoughtful, pragmatic steps to minimize our impact while also advising and working alongside our partners to promote best practices throughout the supply chain.",
+          "pageReference": "3, Introduction - Standing with Our Customers",
+          "context": "General sustainability commitment without clear scope of application."
+        },
+        {
+          "quote": "Aspen's sustainability strategy is deeply aligned with and flows from our core values... emphasize a commitment to environmental stewardship and social responsibility. We will remain focused on our diverse group of customers and their varied transition paths towards a low carbon economy.",
+          "pageReference": "4, Introduction - Aspen Sustainability Philosophy Statement",
+          "context": "Broad sustainability principles stated without specifying scope."
+        },
+        {
+          "quote": "Improved supply chain engagement initiatives, achieving supplier-specific measurement methodologies and reported reduction strategies.",
+          "pageReference": "5 & 17, Scorecard and Our Environmental Impact",
+          "context": "Supply chain claims made without explicit coverage detail."
+        },
+        {
+          "quote": "Continued development of our emissions reduction strategy, supported by a rebaselined dataset and better insight into emissions sources.",
+          "pageReference": "17, Our Environmental Impact",
+          "context": "Emissions strategy lacks detail on scope boundaries."
+        },
+        {
+          "quote": "75% of our offices were able to disclose actual electricity consumption, increasing the accuracy of our scope 2 emissions.",
+          "pageReference": "5 & 19, Scorecard and Aspen's Greenhouse Gas (GHG) Emissions",
+          "context": "Clear office-level scope provided for this emissions data."
+        },
+        {
+          "quote": "After recent renovations to our Zurich office, we were successfully awarded the LEED Silver ID+C certification.",
+          "pageReference": "24, SPOTLIGHT - Zurich Office Awarded Certification",
+          "context": "Specific office-level certification claim with clear scope."
+        }
+      ],
+      "weight": 1,
+      "duration": 30348
+    },
+    {
+      "subcategoryId": "accessible_information",
+      "subcategoryName": "Accessible Information",
+      "principleId": 5,
+      "principleName": "Principle 5: When in Doubt, Spell it Out",
+      "score": 68,
+      "status": "Needs Attention",
+      "rationale": "While many claims provide factual data and some precise measurements (e.g., scope 2 emissions disclosure, LEED certification awarded, independent assurance per ISO 14064:2018), a significant number of claims remain vague without clear, readily accessible supporting documentation or definitions. Several important terms are ambiguous or undefined, such as 'sustainability principles,' 'best practices,' 'high-quality carbon offsetting,' and 'improved supply chain engagement initiatives.' The report references initiatives and governance structures (e.g., Carbon Footprint & Transition Plan Workstream, Sustainability Principles – Policy & Framework), but it does not explicitly indicate where consumers can access detailed substantiation or supporting evidence for the myriad commitments and data points stated. This limits transparency and consumer ability to verify or understand claims fully. Therefore, while some exemplary practices are evident, overall compliance with the 'Accessible Information' criterion is moderate, and improvements are needed to provide consumers with clear, readily accessible substantiation.",
+      "findings": [
+        {
+          "claimId": "claim_1",
+          "issue": "'sustainability principles' mentioned but without accessible supporting detail about these principles; vague and unsubstantiated",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_2",
+          "issue": "Use of vague terms such as 'minimize our impact,' 'best practices,' and 'supply chain' without accessible details or definitions",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_5",
+          "issue": "Reference to 'improved supply chain engagement initiatives' and 'supplier-specific measurement methodologies' lacks accessible data or explanatory detail",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_14",
+          "issue": "Claim of improved data 'granularity' and 'laying the groundwork' lacks clear accessible evidence or description",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_29",
+          "issue": "'highest standards' and 'trusted partners' in offset project evaluations are not linked to accessible substantiation",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_30",
+          "issue": "Complex commitment language with phrasing like 'high-integrity,' 'real, additional and measurable,' and 'strong focus' is not supported by accessible or clearly referenced documentation",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_36",
+          "issue": "Mandating extended due diligence for 'critical' suppliers and referencing 'sustainability standards' without accessible definitions or evidence",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_38",
+          "issue": "New Supplier Code of Conduct claimed but actual code or detailed expectations not linked or readily accessible",
+          "severity": "Medium"
+        }
+      ],
+      "recommendations": [
+        "Provide direct references, hyperlinks, or appendices where consumers can access the underlying policies, data, or third-party reports substantiating sustainability claims.",
+        "Define or clarify vague terms such as 'high-quality,' 'best practices,' 'critical suppliers,' and 'sustainability principles' within the report or in accessible supporting documents.",
+        "Include more detailed explanations of methodologies for measuring supply chain engagement and emissions data to enhance transparency.",
+        "Publish or make easily accessible key governance documents such as the Sustainability Principles – Policy & Framework and Supplier Code of Conduct.",
+        "Clearly disclose results and methodologies of independent verifications and carbon offset evaluations, ensuring these are accessible to consumer scrutiny."
+      ],
+      "evidenceUsed": [
+        {
+          "quote": "Over the past year, we’ve strengthened our sustainability principles, ensuring they are more closely aligned with our business strategy and supported by clearer governance.",
+          "pageReference": "Page 3, Section: Introduction - Standing with Our Customers, Driven by Our Culture",
+          "context": "Commitment claim with vague mention of 'sustainability principles' lacking accessible detailed substantiation."
+        },
+        {
+          "quote": "75% of our offices were able to disclose actual electricity consumption, increasing the accuracy of our scope 2 emissions",
+          "pageReference": "Page 5, Section: Scorecard",
+          "context": "Factual claim providing measurable data, indicative of accessible information."
+        },
+        {
+          "quote": "Independent limited-assurance on our emissions to ISO14064:2018 requirements (2024)",
+          "pageReference": "Page 18, Section: GHG Emissions: Our Journey",
+          "context": "Provision of third-party verification standard and assurance that can be independently understood."
+        },
+        {
+          "quote": "We align our offset selection strategy with the 12 core principles of high-integrity carbon offsetting. This means we prioritize projects that deliver real, additional and measurable emission reductions. We ensure that all offsets are independently verified, avoid double counting, and are selected with a strong focus on transparency, environmental integrity, and social co-benefits.",
+          "pageReference": "Page 20, Section: Carbon Reduction, Offsetting & Biodiversity",
+          "context": "Commitment full of buzzwords without accessible detailed substantiation or definitions."
+        }
+      ],
+      "weight": 1,
+      "duration": 30533
+    },
+    {
+      "subcategoryId": "concrete_plan",
+      "subcategoryName": "Concrete Plan",
+      "principleId": 6,
+      "principleName": "Principle 6: Substantiate Future Claims",
+      "score": 55,
+      "status": "Needs Attention",
+      "rationale": "The reviewed claims largely consist of general commitments, references to governance bodies, data quality improvements, and some factual disclosures without providing a detailed, clear, and concrete plan that substantiates future net-zero or other environmental commitments. While there are mentions of a 'Carbon Footprint & Transition Plan Workstream' (claim_12) and 'continued development' of emissions reduction strategies (claim_16), these lack detailed, publicly disclosed objectives, timelines, measurable targets, resource allocations, or implementation steps that define a concrete plan. Several commitments use vague language (‘laying the groundwork’, ‘better insight’, ‘high-quality’, and ‘focus on transparency’) without specific actions or milestones. This ambiguity creates a moderate risk that promises are not fully substantiated by a clear plan, which is essential per the Competition Bureau’s guidelines to avoid greenwashing under Bill C-59 provisions.",
+      "findings": [
+        {
+          "claimId": "claim_12",
+          "issue": "Mentions establishment of a Carbon Footprint & Transition Plan Workstream but lacks details on the workstream’s specific objectives, scope, timelines, or published outputs.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_16",
+          "issue": "Commitment to continued development of emissions reduction strategy is vague with no concrete targets, milestones, or resource commitments disclosed.",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_14",
+          "issue": "Refers to improved data granularity and groundwork for emissions reduction without articulation of specific plans or measurable goals.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_19",
+          "issue": "Commitment to carbon offsetting program is stated without evidence of a detailed plan ensuring scalability, verification frequency, or offset project criteria updates.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_33",
+          "issue": "Notes expansion of geographic project portfolio but fails to present a concrete plan on how this supports net-zero goals or timelines for impact.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_40",
+          "issue": "Announces planned office optimization projects targeting LEED certification but uses prospective language ('targeted') without confirmed timelines or assurance of success.",
+          "severity": "Low"
+        }
+      ],
+      "recommendations": [
+        "Publish a detailed, time-bound emissions reduction and net-zero transition plan with clear milestones and measurable targets.",
+        "Disclose resources allocated (budget, personnel) to implement sustainability commitments and workstreams.",
+        "Provide transparency on monitoring and reporting protocols to track progress against commitments.",
+        "Avoid vague language in future claims; ensure each commitment references specific, actionable steps.",
+        "Link carbon offsetting programs explicitly to emission reduction targets with schedules and verification processes.",
+        "Include concrete plans for supply chain sustainability and office optimization with defined timelines and success metrics."
+      ],
+      "evidenceUsed": [
+        {
+          "quote": "Aspen established a formal Carbon Footprint & Transition Plan Workstream as a sub-group to Aspen's Sustainability Committee in 2024.",
+          "pageReference": "6",
+          "context": "Sustainability Milestones"
+        },
+        {
+          "quote": "Continued development of our emissions reduction strategy, supported by a rebaselined dataset and better insight into emissions sources",
+          "pageReference": "17",
+          "context": "Our Environmental Impact"
+        },
+        {
+          "quote": "We have improved the quality and granularity of our emissions-related data, while also laying the groundwork for emissions reduction in the years ahead.",
+          "pageReference": "17",
+          "context": "Our Environmental Impact"
+        },
+        {
+          "quote": "Continued delivery of our high-quality carbon offsetting program, focused on independently verified, nature-based solutions.",
+          "pageReference": "17",
+          "context": "Our Environmental Impact"
+        },
+        {
+          "quote": "This year, we also began expanding the geographic reach of our project portfolio to include projects closer to our areas of operation, including the United States and United Kingdom, in addition to our long-standing support for projects in Canada.",
+          "pageReference": "20",
+          "context": "Carbon Reduction, Offsetting & Biodiversity"
+        },
+        {
+          "quote": "Going into 2025 we are excited to announce the completion of two office optimization projects in Puerto Rico (April 14th) and Bermuda (May 16th), both being targeted to achieve a minimum LEED certification.",
+          "pageReference": "23",
+          "context": "Purchase Goods & Services Business Travel Facilities"
+        }
+      ],
+      "weight": 1,
+      "duration": 29501
+    },
+    {
+      "subcategoryId": "interim_targets",
+      "subcategoryName": "Interim Targets",
+      "principleId": 6,
+      "principleName": "Principle 6: Substantiate Future Claims",
+      "score": 30,
+      "status": "High Risk",
+      "rationale": "The set of claims reviewed shows a general absence of stated interim targets or milestones for long-term environmental commitments. While there are commitments around emissions measurement, governance, supplier engagement, and carbon offsetting, none of the claims explicitly mention specific interim numerical targets, timelines, or milestones that would demonstrate a clear roadmap toward achieving long-term environmental goals. Some claims describe ongoing activities, strategy development, or improvements to data and governance, but these do not qualify as interim targets. For instance, claim_16 speaks about continued strategy development but without specifying milestones or interim steps. Claims largely state high-level commitments or retrospective data rather than forward-looking, measurable interim targets, which is critical for substantiating future claims under Principle 6. Therefore, there is a significant compliance gap with respect to the criterion of having defined interim targets within long-term commitments.",
+      "findings": [
+        {
+          "claimId": "claim_16",
+          "issue": "Broad commitment to developing emissions reduction strategy without defined interim targets or milestones.",
+          "severity": "High"
+        },
+        {
+          "claimId": "claim_23",
+          "issue": "Commitment to data quality improvement lacks any defined interim milestones or targets.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_38",
+          "issue": "Plans to introduce Supplier Code of Conduct in 2025 lack specific environmental interim targets linked to this commitment.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_40",
+          "issue": "Office optimization projects target minimum LEED certification but no interim targets or timelines beyond project completion dates.",
+          "severity": "Low"
+        }
+      ],
+      "recommendations": [
+        "Define and publicly disclose clear, measurable interim targets with timelines for all significant long-term environmental commitments, particularly in emission reduction and sustainable sourcing.",
+        "Include specific milestones for ongoing strategy development to demonstrate progress towards goals.",
+        "Enhance transparency by reporting against these interim targets regularly in future sustainability communications.",
+        "Avoid vague commitments by quantifying steps and progress to satisfy substantiation requirements under Bill C-59 and Competition Bureau guidelines."
+      ],
+      "evidenceUsed": [
+        {
+          "quote": "Continued development of our emissions reduction strategy, supported by a rebaselined dataset and better insight into emissions sources",
+          "pageReference": "17",
+          "context": "Our Environmental Impact section describing ongoing strategy improvement without specific interim targets."
+        },
+        {
+          "quote": "Data quality improvement across all global facilities emissions (2024)",
+          "pageReference": "18",
+          "context": "Commitment to improve data quality lacking defined interim targets or milestones."
+        },
+        {
+          "quote": "A new Supplier Code of Conduct will be introduced in 2025 to complement our standard terms of business and contract language",
+          "pageReference": "23",
+          "context": "Commitment indicating future action without designated interim environmental targets."
+        },
+        {
+          "quote": "Going into 2025 we are excited to announce the completion of two office optimization projects ... both being targeted to achieve a minimum LEED certification.",
+          "pageReference": "23",
+          "context": "Project completion dates mentioned but no specified interim targets relating to certification progress."
+        }
+      ],
+      "weight": 1,
+      "duration": 27920
+    },
+    {
+      "subcategoryId": "meaningful_steps",
+      "subcategoryName": "Meaningful Steps Underway",
+      "principleId": 6,
+      "principleName": "Principle 6: Substantiate Future Claims",
+      "score": 78,
+      "status": "Generally Compliant",
+      "rationale": "The organization's report and claims demonstrate multiple meaningful steps already underway to support future environmental claims. Notable are the establishment of a formal Carbon Footprint & Transition Plan Workstream (claim_12), development of Sustainability Principles (claim_13), improvements in emissions data quality and expanded scope of emissions measurement (claims 14, 20-22, 25-27), and governance enhancements (claim_17). Certification achievements (claims 10, 11, 24, 39) further support credible progress. Supplier engagement and updated onboarding processes reflect concrete action (claims 36, 37). However, several commitments (claims 1, 2, 3, 16, 18, 19, 29, 30, 33, 38, 40) are phrased with vague terms such as 'better insight', 'best practices', 'high-quality', and 'sustainability standards' without detailed evidence of implementation or measurable milestones. Some claims lack specificity on how ongoing initiatives translate into measurable, verifiable progress towards future environmental goals. Therefore, while there is clear evidence of meaningful steps underway, the report could be improved by providing more granular evidence and measurable indicators tied directly to future claims.",
+      "findings": [
+        {
+          "claimId": "claim_1",
+          "issue": "The claim refers to strengthening sustainability principles and governance but lacks concrete examples or measurable steps illustrating implementation.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_2",
+          "issue": "Commitment to minimizing impact and promoting best practices in supply chain is vague without supporting data or initiatives underway.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_3",
+          "issue": "Commitments to environmental stewardship and low carbon economy are aspirational with no substantiated ongoing actions provided.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_16",
+          "issue": "Reference to continued development of emissions reduction strategy and better insights lacks detail on concrete steps or milestones achieved.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_18",
+          "issue": "Ongoing engagement via office-based initiatives is mentioned without specifics on the type, scale, or impact of activities.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_19",
+          "issue": "Carbon offsetting program described as high-quality with nature-based solutions, but no metrics or progress indicators provided to substantiate.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_29",
+          "issue": "Evaluation of offset projects aligned with high standards is a commitment but lacks evidence of implemented reviews or corrective steps.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_30",
+          "issue": "Offset selection strategy aligns with principles, but claim remains vague about actions taken or progress in verification and transparency.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_33",
+          "issue": "Expanding geographic portfolio is positive but the claim lacks detail on specific projects underway or measurable outcomes.",
+          "severity": "Low"
+        },
+        {
+          "claimId": "claim_38",
+          "issue": "Supplier Code of Conduct planned for 2025 lacks evidence of current steps underway for implementation or development.",
+          "severity": "Medium"
+        },
+        {
+          "claimId": "claim_40",
+          "issue": "Targets for LEED certification in future projects are commitments; more concrete progress updates or milestones would strengthen substantiation.",
+          "severity": "Low"
+        }
+      ],
+      "recommendations": [
+        "Provide detailed examples of initiatives, including timelines, responsible parties, and measurable outcomes already achieved to illustrate meaningful steps underway.",
+        "Quantify progress on emissions reduction strategies, supplier engagement, and carbon offset programs with clear metrics and verified data.",
+        "Enhance transparency regarding governance improvements and their direct impact on environmental goals.",
+        "Avoid vague qualitative descriptors and instead use clear, specific language that ties actions to measurable progress.",
+        "Publish updates on upcoming initiatives (e.g., Supplier Code of Conduct, LEED certification projects) to demonstrate active steps rather than planned actions."
+      ],
+      "evidenceUsed": [
+        {
+          "quote": "Aspen established a formal Carbon Footprint & Transition Plan Workstream as a sub-group to Aspen's Sustainability Committee in 2024.",
+          "pageReference": "6",
+          "context": "Sustainability Milestones"
+        },
+        {
+          "quote": "Aspen developed its first Sustainability Principles – Policy & Framework document to articulate Aspen’s approach to sustainability for our governance bodies, regulators, and auditors (2024).",
+          "pageReference": "6",
+          "context": "Sustainability Milestones"
+        },
+        {
+          "quote": "Improved supply chain engagement initiatives achieving supplier-specific measurement methodologies and reported reduction strategies.",
+          "pageReference": "17",
+          "context": "Our Environmental Impact"
+        },
+        {
+          "quote": "Continued development of our emissions reduction strategy, supported by a rebaselined dataset and better insight into emissions sources.",
+          "pageReference": "17",
+          "context": "Our Environmental Impact"
+        },
+        {
+          "quote": "After recent renovations to our Zurich office, we were successfully awarded the LEED Silver ID+C certification.",
+          "pageReference": "24",
+          "context": "SPOTLIGHT - Zurich Office Awarded Certification"
+        },
+        {
+          "quote": "In 2024, Aspen refreshed its Supplier Onboarding process. Extended due diligence is now mandatory for suppliers deemed critical in meeting our ethical, integrity, and sustainability standards.",
+          "pageReference": "23",
+          "context": "Purchase Goods & Services Business Travel Facilities"
+        }
+      ],
+      "weight": 1,
+      "duration": 34382
+    }
+  ],
+  "metadata": {
+    "assessmentDuration": 34384,
+    "totalDuration": 34385
+  }
+}
