@@ -42,6 +42,7 @@
   let isSendingEmail = $state(false);
   let emailSent = $state(false);
   let emailError = $state('');
+  let emailAutoSent = $state(false); // Track if email was auto-sent on completion
   
   // Storage key for persisting analysis state
   const STORAGE_KEY = 'greenwash_check_analysis_state';
@@ -312,6 +313,7 @@
     isAnalyzing = true;
     analysisError = '';
     result = null;
+    emailAutoSent = false; // Reset email sent status for new analysis
     
     const isDocument = inputMode === 'document' && uploadedFilePath;
     startAnalysisProgress(isDocument);
@@ -383,26 +385,44 @@
       // Handle both direct result and wrapped assessment response
       result = responseData.assessment || responseData;
       
+      // Store full assessment data for history access
       assessmentHistory.add({
         id: crypto.randomUUID(),
         timestamp: new Date().toISOString(),
         inputType: isDocument ? 'document' : 'text',
         inputPreview: isDocument ? uploadedFile?.name || 'Document' : inputText.slice(0, 100),
+        fileName: uploadedFile?.name,
         overallScore: result.overallScore,
         riskLevel: result.riskLevel,
         summary: result.executiveSummary || result.summary,
+        executiveSummary: result.executiveSummary,
+        // Store full assessment data
+        principleScores: result.principleScores,
+        top20Issues: result.top20Issues,
+        positiveFindings: result.positiveFindings,
+        claimsAnalyzed: result.claimsAnalyzed,
+        // Legacy fields
         dimensions: result.principleScores || result.dimensions,
         keyFindings: result.top20Issues?.slice(0, 5).map((i: any) => i.title) || result.keyFindings,
-        recommendations: result.top20Issues?.slice(0, 5).map((i: any) => i.recommendation) || result.recommendations
+        recommendations: result.top20Issues?.slice(0, 5).map((i: any) => i.recommendation) || result.recommendations,
+        // Metadata
+        metadata: {
+          fileName: uploadedFile?.name,
+          pageCount: result.metadata?.pageCount,
+          analysisMode: analysisMode,
+          processingTime: result.metadata?.processingTime
+        }
       });
       
       // Automatically send email if address was provided
       if (emailAddress && emailAddress.includes('@')) {
         try {
           await sendReportEmailAuto();
+          emailAutoSent = true; // Mark as auto-sent for UI feedback
         } catch (emailErr) {
           console.error('Failed to send email automatically:', emailErr);
           // Don't show error to user - they can still manually send
+          emailAutoSent = false;
         }
       }
       
@@ -455,23 +475,50 @@
   async function downloadReportAsPdf() {
     if (!result) return;
     
-    // Create a printable version of the report
-    const reportContent = generateReportHtml();
-    
-    // Open in new window for printing/saving as PDF
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) {
-      alert('Please allow popups to download the PDF report.');
-      return;
+    try {
+      // Use the structured PDF generation API
+      const response = await fetch('/api/generate-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fileName: result.metadata?.fileName || uploadedFile?.name || 'Document',
+          timestamp: new Date().toISOString(),
+          overallScore: result.overallScore,
+          riskLevel: result.riskLevel,
+          executiveSummary: result.executiveSummary,
+          summary: result.summary,
+          principleScores: result.principleScores,
+          top20Issues: result.top20Issues,
+          positiveFindings: result.positiveFindings,
+          claimsAnalyzed: result.claimsAnalyzed,
+          metadata: result.metadata
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF');
+      }
+      
+      const { html, fileName } = await response.json();
+      
+      // Open in new window for printing/saving as PDF
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        alert('Please allow popups to download the PDF report.');
+        return;
+      }
+      
+      printWindow.document.write(html);
+      printWindow.document.close();
+      
+      // Wait for content to load then trigger print
+      printWindow.onload = () => {
+        printWindow.print();
+      };
+    } catch (err) {
+      console.error('PDF generation error:', err);
+      alert('Failed to generate PDF. Please try again.');
     }
-    
-    printWindow.document.write(reportContent);
-    printWindow.document.close();
-    
-    // Wait for content to load then trigger print
-    printWindow.onload = () => {
-      printWindow.print();
-    };
   }
   
   async function sendReportEmail() {
@@ -546,8 +593,8 @@
       throw new Error(data.error || 'Failed to send email');
     }
     
-    // Clear email address after successful send
-    emailAddress = '';
+    // Don't clear email address - keep it visible for user reference
+    // emailAddress = '';
   }
   
   function generateReportHtml(): string {
@@ -850,14 +897,26 @@
         <div class="email-delivery-header">
           <Mail size={18} />
           <span>Get your report via email (optional)</span>
+          {#if emailAutoSent}
+            <span class="email-sent-badge">
+              <CheckCircle size={14} />
+              Sent!
+            </span>
+          {/if}
         </div>
-        <input
-          type="email"
-          class="email-delivery-input"
-          placeholder="Enter your email address"
-          bind:value={emailAddress}
-          disabled={isAnalyzing}
-        />
+        <div class="email-input-wrapper">
+          <input
+            type="email"
+            class="email-delivery-input"
+            class:email-sent={emailAutoSent}
+            placeholder="Enter your email address"
+            bind:value={emailAddress}
+            disabled={isAnalyzing || emailAutoSent}
+          />
+          {#if emailAutoSent}
+            <span class="email-sent-text">Report sent to this email</span>
+          {/if}
+        </div>
         <div class="assessment-info-box">
           <Info size={16} />
           <div class="assessment-info-text">
@@ -3288,6 +3347,38 @@
   .email-delivery-input:disabled {
     background: #f3f4f6;
     cursor: not-allowed;
+  }
+  
+  .email-delivery-input.email-sent {
+    background: #dcfce7;
+    border-color: #22c55e;
+    color: #166534;
+  }
+  
+  .email-input-wrapper {
+    position: relative;
+  }
+  
+  .email-sent-text {
+    display: block;
+    font-size: 0.8rem;
+    color: #166534;
+    margin-top: -0.75rem;
+    margin-bottom: 1rem;
+    padding-left: 0.25rem;
+  }
+  
+  .email-sent-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: #22c55e;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: auto;
   }
   
   .assessment-info-box {

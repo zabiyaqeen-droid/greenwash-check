@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request }) => {
     `;
 
     const { data, error } = await getResend().emails.send({
-      from: 'Greenwash Check <reports@greenwash-check.com>',
+      from: 'Greenwash Check <reports@greenwashcheck.com>',
       to: [email],
       subject: `Your Greenwash Check Report - ${documentName || 'Assessment'} (Score: ${overallScore}/100)`,
       html: emailHtml,
