@@ -5,21 +5,25 @@
   import { goto } from '$app/navigation';
   import { ChevronDown, ChevronUp, Trash2, Eye, Download, FileText, AlertTriangle, CheckCircle, X } from 'lucide-svelte';
 
-  let history: AssessmentResult[] = [];
+  let history: AssessmentResult[] = $state([]);
   let selectedAssessment: AssessmentResult | null = $state(null);
   let showDeleteConfirm = $state(false);
   let assessmentToDelete: string | null = $state(null);
 
   onMount(() => {
+    console.log('[History Page] onMount called');
     user.init();
     assessmentHistory.init();
+    console.log('[History Page] Stores initialized');
     
     const unsubUser = user.subscribe(u => {
+      console.log('[History Page] User subscription update:', !!u);
       if (!u) goto('/login');
     });
 
     const unsubHistory = assessmentHistory.subscribe(h => {
-      history = h;
+      console.log('[History Page] History subscription update, items:', h?.length);
+      history = h || [];
     });
 
     return () => {
