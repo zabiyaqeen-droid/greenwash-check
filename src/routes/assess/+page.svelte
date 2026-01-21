@@ -989,7 +989,7 @@
             <Sparkles size={32} class="cta-icon" />
             <div class="cta-text">
               <h3>Ready to Take Action on These Findings?</h3>
-              <p>Learn why the most advanced sustainability teams are using <strong>Muuvment IQ</strong> to reclaim their time and deliver exceptional sustainability results.</p>
+              <p>Learn why the most innovative sustainability teams are using <strong>Muuvment IQ</strong> to reclaim their time and deliver exceptional sustainability results.</p>
               <p class="value-prop">Get personalised guidance on addressing compliance gaps, improving environmental communications, and maintaining ongoing Bill C-59 compliance.</p>
             </div>
           </div>

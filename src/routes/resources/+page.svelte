@@ -313,7 +313,7 @@
         <div class="cta-divider"></div>
         <div class="cta-block cta-secondary-block">
           <h3>Need More Comprehensive ESG Support?</h3>
-          <p>Learn why the most advanced sustainability teams are using <strong>Muuvment IQ</strong> to reclaim their time and deliver exceptional sustainability results.</p>
+          <p>Learn why the most innovative sustainability teams are using <strong>Muuvment IQ</strong> to reclaim their time and deliver exceptional sustainability results.</p>
           <a href="https://app.muuvment.com/ai/assistant" target="_blank" rel="noopener noreferrer" class="cta-secondary">
             Try Muuvment IQ
             <ExternalLink size={16} />
