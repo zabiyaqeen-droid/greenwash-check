@@ -28,8 +28,9 @@
 <header class="header">
   <div class="header-content">
     <a href="/" class="logo">
+        <span class="logo-title">Greenwash Check</span>
+        <span class="logo-by">by</span>
         <img src="/muuvment-logo-header.png" alt="Muuvment" class="logo-img" />
-        <span class="logo-text">Greenwash Check</span>
       </a>
     
     <nav class="nav-desktop">
@@ -117,16 +118,23 @@
     text-decoration: none;
   }
   
-  .logo-img {
-    height: 32px;
-    width: auto;
+  .logo-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0F172A;
+    letter-spacing: -0.02em;
   }
   
-  .logo-text {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #0D9488;
-    margin-left: 0.5rem;
+  .logo-by {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: #64748B;
+    margin: 0 0.5rem;
+  }
+  
+  .logo-img {
+    height: 28px;
+    width: auto;
   }
   
   .nav-desktop {
