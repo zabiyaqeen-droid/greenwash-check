@@ -32,6 +32,8 @@
 		"@sveltejs/adapter-vercel": "^6.3.0",
 		"@vercel/blob": "^2.0.0",
 		"express": "^5.2.1",
+		"html2canvas": "^1.4.1",
+		"jspdf": "^4.0.0",
 		"lucide-svelte": "^0.562.0",
 		"multer": "^2.0.2",
 		"openai": "^6.16.0",

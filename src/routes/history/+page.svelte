@@ -86,39 +86,183 @@
 
   async function downloadPDF(assessment: AssessmentResult) {
     try {
-      // Prepare the data for PDF generation
-      const pdfData = {
-        overallScore: assessment.overallScore,
-        riskLevel: assessment.riskLevel?.replace(/ Risk$/i, '') || 'Unknown',
-        executiveSummary: assessment.executiveSummary || assessment.summary || '',
-        principleScores: assessment.principleScores || [],
-        top20Issues: assessment.top20Issues || [],
-        positiveFindings: assessment.positiveFindings || [],
-        fileName: assessment.fileName || assessment.inputPreview || 'Assessment',
-        timestamp: assessment.timestamp
-      };
+      // Dynamically import jsPDF for client-side PDF generation
+      const { jsPDF } = await import('jspdf');
+      
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 20;
+      const contentWidth = pageWidth - (margin * 2);
+      let y = margin;
 
-      const response = await fetch('/api/generate-pdf', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(pdfData)
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate PDF');
+      // Helper function to add a new page if needed
+      function checkNewPage(neededHeight: number = 20) {
+        if (y + neededHeight > pageHeight - margin) {
+          doc.addPage();
+          y = margin;
+          return true;
+        }
+        return false;
       }
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `greenwash-report-${new Date(assessment.timestamp).toISOString().split('T')[0]}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
+      // Helper to wrap text
+      function addWrappedText(text: string, fontSize: number = 10, isBold: boolean = false) {
+        doc.setFontSize(fontSize);
+        doc.setFont('helvetica', isBold ? 'bold' : 'normal');
+        const lines = doc.splitTextToSize(text, contentWidth);
+        for (const line of lines) {
+          checkNewPage(fontSize * 0.5);
+          doc.text(line, margin, y);
+          y += fontSize * 0.5;
+        }
+        y += 2;
+      }
+
+      // Title
+      doc.setFillColor(26, 54, 93); // Dark blue
+      doc.rect(0, 0, pageWidth, 40, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(24);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Greenwash Check Report', margin, 25);
+      
+      y = 50;
+      doc.setTextColor(0, 0, 0);
+
+      // Document info
+      const fileName = assessment.fileName || assessment.inputPreview?.slice(0, 50) || 'Assessment';
+      const dateStr = new Date(assessment.timestamp).toLocaleDateString('en-CA', {
+        year: 'numeric', month: 'long', day: 'numeric'
+      });
+      
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Document: ${fileName}`, margin, y);
+      y += 7;
+      doc.text(`Date: ${dateStr}`, margin, y);
+      y += 15;
+
+      // Score box
+      const scoreColor = assessment.overallScore >= 70 ? [39, 174, 96] : 
+                         assessment.overallScore >= 40 ? [243, 156, 18] : [231, 76, 60];
+      doc.setFillColor(scoreColor[0], scoreColor[1], scoreColor[2]);
+      doc.roundedRect(margin, y, 60, 30, 3, 3, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(24);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`${assessment.overallScore}/100`, margin + 10, y + 20);
+      
+      // Risk level
+      const riskLevel = assessment.riskLevel?.replace(/ Risk$/i, '') || 'Unknown';
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(14);
+      doc.text(`Risk Level: ${riskLevel} Risk`, margin + 70, y + 15);
+      y += 45;
+
+      // Executive Summary
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Executive Summary', margin, y);
+      y += 8;
+      
+      doc.setTextColor(80, 80, 80);
+      const summary = assessment.executiveSummary || assessment.summary || 'No summary available.';
+      addWrappedText(summary, 10);
+      y += 10;
+
+      // Principle Scores
+      if (assessment.principleScores && assessment.principleScores.length > 0) {
+        checkNewPage(40);
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Principle Scores', margin, y);
+        y += 10;
+
+        for (const principle of assessment.principleScores) {
+          checkNewPage(20);
+          const pColor = principle.score >= 70 ? [39, 174, 96] : 
+                         principle.score >= 40 ? [243, 156, 18] : [231, 76, 60];
+          
+          doc.setFontSize(11);
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(0, 0, 0);
+          doc.text(`${principle.principle}`, margin, y);
+          
+          doc.setTextColor(pColor[0], pColor[1], pColor[2]);
+          doc.text(`${principle.score}/100`, pageWidth - margin - 20, y);
+          y += 6;
+          
+          if (principle.description) {
+            doc.setTextColor(100, 100, 100);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            const descLines = doc.splitTextToSize(principle.description, contentWidth - 30);
+            doc.text(descLines[0], margin + 5, y);
+            y += 8;
+          }
+        }
+        y += 5;
+      }
+
+      // Top Issues
+      if (assessment.top20Issues && assessment.top20Issues.length > 0) {
+        checkNewPage(40);
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`Key Issues (${assessment.top20Issues.length})`, margin, y);
+        y += 10;
+
+        for (let i = 0; i < Math.min(assessment.top20Issues.length, 10); i++) {
+          const issue = assessment.top20Issues[i];
+          checkNewPage(25);
+          
+          // Issue title
+          doc.setFontSize(10);
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(0, 0, 0);
+          doc.text(`${i + 1}. ${issue.title}`, margin, y);
+          
+          // Severity badge
+          const sevColor = issue.severity === 'High' ? [231, 76, 60] : 
+                          issue.severity === 'Medium' ? [243, 156, 18] : [39, 174, 96];
+          doc.setTextColor(sevColor[0], sevColor[1], sevColor[2]);
+          doc.setFontSize(8);
+          doc.text(`[${issue.severity}]`, pageWidth - margin - 15, y);
+          y += 5;
+          
+          // Issue description
+          doc.setTextColor(80, 80, 80);
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9);
+          const issueLines = doc.splitTextToSize(issue.description, contentWidth - 10);
+          for (let j = 0; j < Math.min(issueLines.length, 2); j++) {
+            doc.text(issueLines[j], margin + 5, y);
+            y += 4;
+          }
+          y += 4;
+        }
+      }
+
+      // Footer
+      const totalPages = doc.getNumberOfPages();
+      for (let i = 1; i <= totalPages; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150, 150, 150);
+        doc.text(
+          `Generated by Greenwash Check | www.greenwashcheck.com | Page ${i} of ${totalPages}`,
+          pageWidth / 2,
+          pageHeight - 10,
+          { align: 'center' }
+        );
+      }
+
+      // Save the PDF
+      const filename = `greenwash-report-${new Date(assessment.timestamp).toISOString().split('T')[0]}.pdf`;
+      doc.save(filename);
     } catch (error) {
       console.error('Error downloading PDF:', error);
       alert('Failed to download PDF. Please try again.');
