@@ -3,8 +3,8 @@
   import { criteria, defaultDimensions, type Dimension, type Criterion } from '$lib/stores/criteria';
   import { assessmentHistory } from '$lib/stores/assessment';
   import { goto } from '$app/navigation';
-  import { onMount, onDestroy } from 'svelte';
-  import { Upload, FileText, Settings2, Play, Loader2, ChevronDown, ChevronUp, RotateCcw, AlertCircle, CheckCircle, Info, X, File, Award, AlertTriangle, ExternalLink, Sparkles, Shield, DollarSign, Scale, TrendingDown, Square, Mail, Send, StopCircle } from 'lucide-svelte';
+  import { onMount } from 'svelte';
+  import { Upload, FileText, Settings2, Play, Loader2, ChevronDown, ChevronUp, RotateCcw, AlertCircle, CheckCircle, Info, X, File, Award, AlertTriangle, ExternalLink, Sparkles, Shield, DollarSign, Scale, TrendingDown, Square, Mail, Send } from 'lucide-svelte';
   import PromptsPanel from '$lib/components/PromptsPanel.svelte';
   
   let inputText = $state('');
@@ -28,13 +28,6 @@
   let abortController: AbortController | null = null;
   let analysisId = $state<string | null>(null);
   
-  // Background job state
-  let currentJobId = $state<string | null>(null);
-  let jobPollingInterval: ReturnType<typeof setInterval> | null = null;
-  
-  // Storage key for persisting job state
-  const JOB_STORAGE_KEY = 'greenwash_check_job_state';
-  
   let result = $state<any>(null);
   let currentUser = $state<any>(null);
   let dimensions = $state<Dimension[]>(JSON.parse(JSON.stringify(defaultDimensions)));
@@ -52,27 +45,37 @@
   let emailAutoSent = $state(false); // Track if email was auto-sent on completion
 let emailSubmitted = $state(false); // Track if user clicked submit to confirm email
   
-  // Save job state to localStorage
-  function saveJobState() {
-    if (typeof window === 'undefined' || !currentJobId) return;
+  // Storage key for persisting analysis state
+  const STORAGE_KEY = 'greenwash_check_analysis_state';
+  
+  // Save analysis state to localStorage
+  function saveAnalysisState() {
+    if (typeof window === 'undefined') return;
     const state = {
-      jobId: currentJobId,
-      documentName: uploadedFile?.name || 'Document',
+      isAnalyzing,
+      analysisProgress,
+      analysisStage,
+      analysisId,
+      inputText,
+      inputMode,
+      uploadedFilePath,
+      uploadedFileId,
+      uploadedFileName: uploadedFile?.name || null,
       timestamp: Date.now()
     };
-    localStorage.setItem(JOB_STORAGE_KEY, JSON.stringify(state));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
   
-  // Load job state from localStorage
-  function loadJobState() {
+  // Load analysis state from localStorage
+  function loadAnalysisState() {
     if (typeof window === 'undefined') return null;
-    const saved = localStorage.getItem(JOB_STORAGE_KEY);
+    const saved = localStorage.getItem(STORAGE_KEY);
     if (!saved) return null;
     try {
       const state = JSON.parse(saved);
-      // Only restore if less than 60 minutes old
-      if (Date.now() - state.timestamp > 60 * 60 * 1000) {
-        clearJobState();
+      // Only restore if less than 15 minutes old
+      if (Date.now() - state.timestamp > 15 * 60 * 1000) {
+        clearAnalysisState();
         return null;
       }
       return state;
@@ -81,142 +84,15 @@ let emailSubmitted = $state(false); // Track if user clicked submit to confirm e
     }
   }
   
-  // Clear job state from localStorage
-  function clearJobState() {
+  // Clear analysis state from localStorage
+  function clearAnalysisState() {
     if (typeof window === 'undefined') return;
-    localStorage.removeItem(JOB_STORAGE_KEY);
-  }
-  
-  // Poll job status
-  async function pollJobStatus() {
-    if (!currentJobId) return;
-    
-    try {
-      const response = await fetch(`/api/job-status?jobId=${currentJobId}`);
-      if (!response.ok) {
-        console.error('Failed to fetch job status');
-        return;
-      }
-      
-      const job = await response.json();
-      
-      // Update progress
-      analysisProgress = job.progress || 0;
-      analysisStage = job.currentStep || 'Processing...';
-      
-      if (job.status === 'completed') {
-        // Job completed successfully
-        stopJobPolling();
-        clearJobState();
-        
-        result = job.result;
-        isAnalyzing = false;
-        analysisProgress = 100;
-        
-        // Save to history
-        if (result) {
-          assessmentHistory.add({
-            id: crypto.randomUUID(),
-            timestamp: new Date().toISOString(),
-            inputType: inputMode === 'document' ? 'document' : 'text',
-            inputPreview: job.documentName || 'Document',
-            fileName: job.documentName,
-            overallScore: result.overallScore,
-            riskLevel: result.riskLevel,
-            summary: result.executiveSummary || result.summary,
-            executiveSummary: result.executiveSummary,
-            principleScores: result.principleScores,
-            top20Issues: result.top20Issues,
-            positiveFindings: result.positiveFindings,
-            claimsAnalyzed: result.claimsAnalyzed,
-            dimensions: result.principleScores || result.dimensions,
-            keyFindings: result.top20Issues?.slice(0, 5).map((i: any) => i.title) || result.keyFindings,
-            recommendations: result.top20Issues?.slice(0, 5).map((i: any) => i.recommendation) || result.recommendations,
-            metadata: {
-              fileName: job.documentName,
-              analysisMode: result.analysisMode,
-              processingTime: result.metadata?.processingTime
-            }
-          });
-          
-          // Auto-send email if provided
-          if (emailAddress && emailAddress.includes('@')) {
-            try {
-              await sendReportEmailAuto();
-              emailAutoSent = true;
-            } catch (emailErr) {
-              console.error('Failed to send email automatically:', emailErr);
-            }
-          }
-        }
-        
-      } else if (job.status === 'failed') {
-        // Job failed
-        stopJobPolling();
-        clearJobState();
-        
-        isAnalyzing = false;
-        analysisError = job.error || 'Assessment failed. Please try again.';
-        currentJobId = null;
-        
-      } else if (job.status === 'pending' || job.status === 'processing') {
-        // Still processing - continue polling
-        saveJobState();
-      }
-      
-    } catch (error) {
-      console.error('Error polling job status:', error);
-    }
-  }
-  
-  // Start polling for job status
-  function startJobPolling() {
-    if (jobPollingInterval) {
-      clearInterval(jobPollingInterval);
-    }
-    // Poll every 3 seconds
-    jobPollingInterval = setInterval(pollJobStatus, 3000);
-    // Also poll immediately
-    pollJobStatus();
-  }
-  
-  // Stop polling
-  function stopJobPolling() {
-    if (jobPollingInterval) {
-      clearInterval(jobPollingInterval);
-      jobPollingInterval = null;
-    }
-  }
-  
-  // Cancel the current job
-  async function cancelJob() {
-    if (!currentJobId) return;
-    
-    try {
-      const response = await fetch('/api/cancel-job', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          jobId: currentJobId,
-          userId: currentUser?.id 
-        })
-      });
-      
-      if (response.ok) {
-        stopJobPolling();
-        clearJobState();
-        isAnalyzing = false;
-        currentJobId = null;
-        analysisError = 'Assessment cancelled.';
-      }
-    } catch (error) {
-      console.error('Error cancelling job:', error);
-    }
+    localStorage.removeItem(STORAGE_KEY);
   }
   
   onMount(() => {
     user.init();
-    assessmentHistory.init();
+    assessmentHistory.init(); // Initialize history store to ensure localStorage sync
     user.subscribe(u => {
       currentUser = u;
       if (!u) goto('/login');
@@ -225,20 +101,13 @@ let emailSubmitted = $state(false); // Track if user clicked submit to confirm e
       dimensions = d;
     });
     
-    // Check for any active job from previous session
-    const savedJobState = loadJobState();
-    if (savedJobState && savedJobState.jobId) {
-      currentJobId = savedJobState.jobId;
-      isAnalyzing = true;
-      analysisStage = 'Resuming assessment...';
-      startJobPolling();
-    }
-  });
-  
-  onDestroy(() => {
-    stopJobPolling();
-    if (analysisTimer) {
-      clearInterval(analysisTimer);
+    // Check for any incomplete analysis state (user navigated away)
+    const savedState = loadAnalysisState();
+    if (savedState && savedState.isAnalyzing) {
+      // Clear the stale state - analysis was cancelled when user left
+      clearAnalysisState();
+      // Show a message that the previous analysis was cancelled
+      analysisError = 'Your previous analysis was cancelled because you left the page. Please start a new assessment.';
     }
   });
   
@@ -446,46 +315,129 @@ let emailSubmitted = $state(false); // Track if user clicked submit to confirm e
     isAnalyzing = true;
     analysisError = '';
     result = null;
-    emailAutoSent = false;
+    emailAutoSent = false; // Reset email sent status for new analysis
     
     const isDocument = inputMode === 'document' && uploadedFilePath;
+    startAnalysisProgress(isDocument);
     
     try {
-      // Start the assessment as a background job
-      const response = await fetch('/api/start-assessment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: currentUser?.id || 'anonymous',
-          documentId: uploadedFileId,
-          documentName: uploadedFile?.name || (isDocument ? 'Document' : 'Text Input'),
-          filePath: uploadedFilePath,
-          inputType: isDocument ? 'document' : 'text',
-          inputText: isDocument ? undefined : inputText,
-          analysisMode: analysisMode,
-          emailAddress: emailAddress || undefined
-        })
-      });
+      const enabledCriteria = dimensions
+        .filter(d => d.enabled)
+        .flatMap(d => d.criteria.filter(c => c.enabled));
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to start assessment');
+      let response;
+      if (isDocument) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 3600000); // 60 minute timeout
+        
+        const endpoint = analysisMode === 'hybrid' 
+            ? '/api/analyze-document-hybrid' 
+            : '/api/analyze-document';
+        response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filePath: uploadedFilePath,
+            fileId: uploadedFileId,
+            fileName: uploadedFile?.name || 'document.pdf',
+            dimensions: dimensions.filter(d => d.enabled),
+            userId: currentUser?.id
+          }),
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeout);
+      } else {
+        response = await fetch('/api/assess', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: inputText,
+            criteria: enabledCriteria
+          })
+        });
       }
       
-      const { jobId } = await response.json();
-      currentJobId = jobId;
+      if (!response.ok) {
+        // Check if response is JSON before parsing
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Assessment failed');
+        } else {
+          // Server returned HTML error page (e.g., 504 Gateway Timeout)
+          if (response.status === 504) {
+            throw new Error('The server took too long to respond. Please try again or use a smaller document.');
+          } else if (response.status === 502) {
+            throw new Error('Server temporarily unavailable. Please try again in a moment.');
+          } else {
+            throw new Error(`Server error (${response.status}). Please try again.`);
+          }
+        }
+      }
       
-      // Save job state and start polling
-      saveJobState();
-      startJobPolling();
+      // Check if response is JSON before parsing
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Server returned an invalid response. Please try again.');
+      }
       
-      // Show initial progress
-      analysisStage = 'Assessment started. You can navigate away and return later.';
-      analysisProgress = 5;
+      const responseData = await response.json();
+      
+      // Handle both direct result and wrapped assessment response
+      result = responseData.assessment || responseData;
+      
+      // Store full assessment data for history access
+      console.log('[Assess] Saving assessment to history, overallScore:', result.overallScore);
+      assessmentHistory.add({
+        id: crypto.randomUUID(),
+        timestamp: new Date().toISOString(),
+        inputType: isDocument ? 'document' : 'text',
+        inputPreview: isDocument ? uploadedFile?.name || 'Document' : inputText.slice(0, 100),
+        fileName: uploadedFile?.name,
+        overallScore: result.overallScore,
+        riskLevel: result.riskLevel,
+        summary: result.executiveSummary || result.summary,
+        executiveSummary: result.executiveSummary,
+        // Store full assessment data
+        principleScores: result.principleScores,
+        top20Issues: result.top20Issues,
+        positiveFindings: result.positiveFindings,
+        claimsAnalyzed: result.claimsAnalyzed,
+        // Legacy fields
+        dimensions: result.principleScores || result.dimensions,
+        keyFindings: result.top20Issues?.slice(0, 5).map((i: any) => i.title) || result.keyFindings,
+        recommendations: result.top20Issues?.slice(0, 5).map((i: any) => i.recommendation) || result.recommendations,
+        // Metadata
+        metadata: {
+          fileName: uploadedFile?.name,
+          pageCount: result.metadata?.pageCount,
+          analysisMode: analysisMode,
+          processingTime: result.metadata?.processingTime
+        }
+      });
+      
+      // Automatically send email if address was provided
+      if (emailAddress && emailAddress.includes('@')) {
+        try {
+          await sendReportEmailAuto();
+          emailAutoSent = true; // Mark as auto-sent for UI feedback
+        } catch (emailErr) {
+          console.error('Failed to send email automatically:', emailErr);
+          // Don't show error to user - they can still manually send
+          emailAutoSent = false;
+        }
+      }
       
     } catch (err) {
+      if (err instanceof Error && err.name === 'AbortError') {
+        analysisError = 'Analysis timed out. Please try with a smaller document.';
+      } else {
+        analysisError = err instanceof Error ? err.message : 'Assessment failed';
+      }
+    } finally {
+      stopAnalysisProgress();
       isAnalyzing = false;
-      analysisError = err instanceof Error ? err.message : 'Assessment failed';
     }
   }
   
@@ -497,8 +449,6 @@ let emailSubmitted = $state(false); // Track if user clicked submit to confirm e
     analysisError = '';
     expandedIssues = new Set();
     expandedPositives = new Set();
-    currentJobId = null;
-    clearJobState();
   }
   
   function getRiskColor(level: string) {
@@ -513,43 +463,21 @@ let emailSubmitted = $state(false); // Track if user clicked submit to confirm e
     return '#E74C3C';
   }
   
+  // Format rationale text with proper line breaks for Step X: patterns
+  function formatRationale(text: string): string {
+    if (!text) return '';
+    // Add line breaks before "Step X:" patterns (but not the first one)
+    let formatted = text.replace(/(?<!^)\s*(Step \d+:)/gi, '\n\n$1');
+    // Also handle "Red flags" and "Therefore" as new paragraphs
+    formatted = formatted.replace(/(?<!^)\s*(Red flags[^:]*:)/gi, '\n\n$1');
+    formatted = formatted.replace(/(?<!^)\s*(Therefore,)/gi, '\n\n$1');
+    return formatted;
+  }
+  
   function getStatusColor(status: string) {
     if (status === 'Compliant') return '#27AE60';
     if (status === 'Needs Attention') return '#F39C12';
     return '#E74C3C';
-  }
-  
-  // Format rationale text with proper line breaks for Step X: patterns
-  function formatRationale(text: string): string {
-    if (!text) return '';
-    
-    // Escape HTML to prevent XSS
-    const escaped = text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-    
-    // Split on "Step X:" patterns and format as separate paragraphs
-    let formatted = escaped
-      // Add line breaks before Step patterns
-      .replace(/\s*(Step\s*\d+:)/gi, '</p><p class="rationale-step"><strong>$1</strong>')
-      // Add line breaks before "Red flags" or "Therefore" conclusions
-      .replace(/\s*(Red flags are present:)/gi, '</p><p class="rationale-flags"><strong>$1</strong>')
-      .replace(/\s*(Therefore,)/gi, '</p><p class="rationale-conclusion"><strong>$1</strong>')
-      // Clean up any empty paragraphs at the start
-      .replace(/^<\/p>/, '');
-    
-    // Wrap in paragraph if not already
-    if (!formatted.startsWith('<p')) {
-      formatted = '<p>' + formatted;
-    }
-    if (!formatted.endsWith('</p>')) {
-      formatted = formatted + '</p>';
-    }
-    
-    return formatted;
   }
   
   function getRiskLevelColor(level: string) {
@@ -1048,7 +976,7 @@ let emailSubmitted = $state(false); // Track if user clicked submit to confirm e
             <p><strong>Before you start:</strong></p>
             <ul>
               <li>Analysis can take up to <strong>30 minutes</strong> for large documents</li>
-              <li>You can <strong>navigate away</strong> and return later - your assessment will continue in the background</li>
+              <li><strong>Do not leave this page</strong> until the assessment is complete</li>
               <li>If you provide an email, the report will be sent automatically when ready</li>
             </ul>
           </div>
@@ -1073,21 +1001,15 @@ let emailSubmitted = $state(false); // Track if user clicked submit to confirm e
     <!-- Progress Section (moved above disclaimer) -->
     {#if isAnalyzing}
       <div class="progress-section">
-        <div class="stay-on-page-info">
-          <Info size={20} />
-          <span><strong>Assessment in progress.</strong> You can safely navigate away and return later - your assessment will continue processing in the background.</span>
+        <div class="stay-on-page-warning">
+          <AlertTriangle size={20} />
+          <span><strong>Important:</strong> Please stay on this page until the analysis is complete. Navigating away will cancel the assessment.</span>
         </div>
         <div class="progress-bar">
           <div class="progress-fill" style="width: {analysisProgress}%"></div>
         </div>
         <p class="progress-stage">{analysisStage}</p>
-        <p class="progress-note">Large documents may take several minutes to analyse thoroughly.</p>
-        {#if currentJobId}
-          <button class="cancel-btn" onclick={cancelJob}>
-            <StopCircle size={16} />
-            Cancel Assessment
-          </button>
-        {/if}
+        <p class="progress-note">Large documents may take several minutes to analyse thoroughly. You can minimise this window but please do not close it.</p>
       </div>
     {/if}
     
@@ -1260,9 +1182,7 @@ let emailSubmitted = $state(false); // Track if user clicked submit to confirm e
                             
                             <div class="subcategory-rationale">
                               <h5>Assessment Rationale</h5>
-                              <div class="rationale-content">
-                                {@html formatRationale(sub.rationale)}
-                              </div>
+                              <p style="white-space: pre-wrap;">{formatRationale(sub.rationale)}</p>
                             </div>
                             
                             {#if sub.evidence && sub.evidence.length > 0}
@@ -2326,50 +2246,6 @@ let emailSubmitted = $state(false); // Track if user clicked submit to confirm e
     color: #78350F;
   }
   
-  .stay-on-page-info {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1rem;
-    background: #DCFCE7;
-    border: 1px solid #86EFAC;
-    border-radius: 8px;
-    color: #166534;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-  }
-  
-  .stay-on-page-info :global(svg) {
-    flex-shrink: 0;
-    color: #22C55E;
-  }
-  
-  .stay-on-page-info strong {
-    color: #15803D;
-  }
-  
-  .cancel-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: #FEE2E2;
-    border: 1px solid #FECACA;
-    border-radius: 6px;
-    color: #DC2626;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-top: 1rem;
-  }
-  
-  .cancel-btn:hover {
-    background: #DC2626;
-    color: white;
-    border-color: #DC2626;
-  }
-  
   .error-section, .error-message {
     display: flex;
     align-items: center;
@@ -2785,52 +2661,6 @@ let emailSubmitted = $state(false); // Track if user clicked submit to confirm e
     margin: 0;
     color: #2C3E50;
     line-height: 1.6;
-  }
-  
-  .rationale-content {
-    color: #2C3E50;
-    line-height: 1.7;
-  }
-  
-  .rationale-content p {
-    margin: 0 0 1rem 0;
-  }
-  
-  .rationale-content p:last-child {
-    margin-bottom: 0;
-  }
-  
-  .rationale-content .rationale-step {
-    padding-left: 0;
-    border-left: none;
-  }
-  
-  .rationale-content .rationale-step strong {
-    color: #1a365d;
-    display: inline;
-  }
-  
-  .rationale-content .rationale-flags {
-    background: #FEF3C7;
-    padding: 0.75rem 1rem;
-    border-radius: 6px;
-    border-left: 3px solid #F39C12;
-  }
-  
-  .rationale-content .rationale-flags strong {
-    color: #92400E;
-  }
-  
-  .rationale-content .rationale-conclusion {
-    background: #F0FDF4;
-    padding: 0.75rem 1rem;
-    border-radius: 6px;
-    border-left: 3px solid #27AE60;
-    font-weight: 500;
-  }
-  
-  .rationale-content .rationale-conclusion strong {
-    color: #166534;
   }
   
   .evidence-item {
