@@ -1,27 +1,10 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { appendFileSync, existsSync, mkdirSync } from 'fs';
-import { dirname } from 'path';
+import { upsertUser, trackUserLogin } from '$lib/supabase';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { name, email, company, isNewUser } = await request.json();
-
-    const csvPath = 'static/registrations.csv';
-    const dir = dirname(csvPath);
-    
-    if (!existsSync(dir)) {
-      mkdirSync(dir, { recursive: true });
-    }
-
-    if (!existsSync(csvPath)) {
-      appendFileSync(csvPath, 'Timestamp,Name,Email,Company,JobTitle,LinkedIn,Event\n');
-    }
-
-    const timestamp = new Date().toISOString();
-    const event = isNewUser ? 'NEW_SIGNUP' : 'RETURNING_LOGIN';
-    const csvLine = `"${timestamp}","${name}","${email}","${company}","","","${event}"\n`;
-    appendFileSync(csvPath, csvLine);
+    const { name, email, company, isNewUser, jobTitle, linkedIn } = await request.json();
 
     const now = new Date().toLocaleString('en-US', {
       weekday: 'long',
@@ -31,6 +14,22 @@ export const POST: RequestHandler = async ({ request }) => {
       hour: 'numeric',
       minute: 'numeric'
     });
+
+    const event = isNewUser ? 'NEW_SIGNUP' : 'RETURNING_LOGIN';
+
+    if (isNewUser) {
+      // For new users, upsert to database
+      await upsertUser({
+        email: email.toLowerCase(),
+        name,
+        company,
+        job_title: jobTitle,
+        linkedin: linkedIn
+      });
+    } else {
+      // For returning users, just track the login
+      await trackUserLogin(email);
+    }
 
     console.log(`=== USER LOGIN TRACKED ===`);
     console.log(`Event: ${event}`);
@@ -42,6 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ success: true });
   } catch (error) {
     console.error('Track login error:', error);
-    return json({ error: 'Failed to track login' }, { status: 500 });
+    // Don't fail the login if tracking fails
+    return json({ success: true, warning: 'Login tracking failed' });
   }
 };

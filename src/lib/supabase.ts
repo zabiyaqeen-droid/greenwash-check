@@ -332,3 +332,253 @@ export async function deleteDocumentChunks(documentId: string): Promise<boolean>
   }
   return true;
 }
+
+
+// ============================================
+// User Management Functions
+// ============================================
+
+export interface User {
+  id?: string;
+  email: string;
+  name: string;
+  company?: string;
+  job_title?: string;
+  linkedin?: string;
+  registered_at?: string;
+  last_login_at?: string;
+  login_count?: number;
+  is_admin?: boolean;
+  metadata?: Record<string, any>;
+}
+
+// Register or update a user
+export async function upsertUser(user: Omit<User, 'id' | 'registered_at' | 'login_count'>): Promise<User | null> {
+  const supabase = getSupabaseAdmin();
+  
+  // Check if user already exists
+  const { data: existing } = await supabase
+    .from('users')
+    .select('*')
+    .eq('email', user.email.toLowerCase())
+    .single();
+  
+  if (existing) {
+    // Update existing user's login info
+    const { data, error } = await supabase
+      .from('users')
+      .update({
+        name: user.name || existing.name,
+        company: user.company || existing.company,
+        job_title: user.job_title || existing.job_title,
+        linkedin: user.linkedin || existing.linkedin,
+        last_login_at: new Date().toISOString(),
+        login_count: (existing.login_count || 0) + 1
+      })
+      .eq('id', existing.id)
+      .select()
+      .single();
+    
+    if (error) {
+      console.error('Error updating user:', error);
+      return null;
+    }
+    return data;
+  } else {
+    // Create new user
+    const { data, error } = await supabase
+      .from('users')
+      .insert({
+        email: user.email.toLowerCase(),
+        name: user.name,
+        company: user.company,
+        job_title: user.job_title,
+        linkedin: user.linkedin,
+        registered_at: new Date().toISOString(),
+        last_login_at: new Date().toISOString(),
+        login_count: 1
+      })
+      .select()
+      .single();
+    
+    if (error) {
+      console.error('Error creating user:', error);
+      return null;
+    }
+    return data;
+  }
+}
+
+// Get all users (for admin)
+export async function getAllUsers(): Promise<User[]> {
+  const { data, error } = await getSupabaseAdmin()
+    .from('users')
+    .select('*')
+    .order('registered_at', { ascending: false });
+  
+  if (error) {
+    console.error('Error fetching users:', error);
+    return [];
+  }
+  return data || [];
+}
+
+// Get user by email
+export async function getUserByEmail(email: string): Promise<User | null> {
+  const { data, error } = await getSupabaseAdmin()
+    .from('users')
+    .select('*')
+    .eq('email', email.toLowerCase())
+    .single();
+  
+  if (error) {
+    console.error('Error fetching user:', error);
+    return null;
+  }
+  return data;
+}
+
+// Track user login
+export async function trackUserLogin(email: string): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  
+  const { data: existing } = await supabase
+    .from('users')
+    .select('id, login_count')
+    .eq('email', email.toLowerCase())
+    .single();
+  
+  if (existing) {
+    await supabase
+      .from('users')
+      .update({
+        last_login_at: new Date().toISOString(),
+        login_count: (existing.login_count || 0) + 1
+      })
+      .eq('id', existing.id);
+  }
+}
+
+// ============================================
+// Assessment Job Functions (for background processing)
+// ============================================
+
+export interface AssessmentJob {
+  id?: string;
+  user_id: string;
+  document_id: string;
+  document_name?: string;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  progress: number;
+  current_step?: string;
+  result?: Record<string, any>;
+  error?: string;
+  created_at?: string;
+  updated_at?: string;
+  completed_at?: string;
+}
+
+// Create a new assessment job
+export async function createAssessmentJob(
+  userId: string,
+  documentId: string,
+  documentName?: string
+): Promise<string | null> {
+  const { data, error } = await getSupabaseAdmin()
+    .from('assessment_jobs')
+    .insert({
+      user_id: userId,
+      document_id: documentId,
+      document_name: documentName,
+      status: 'pending',
+      progress: 0
+    })
+    .select('id')
+    .single();
+  
+  if (error) {
+    console.error('Error creating assessment job:', error);
+    return null;
+  }
+  return data?.id || null;
+}
+
+// Update assessment job progress
+export async function updateAssessmentJobProgress(
+  jobId: string,
+  progress: number,
+  currentStep?: string
+): Promise<void> {
+  await getSupabaseAdmin()
+    .from('assessment_jobs')
+    .update({
+      progress,
+      current_step: currentStep,
+      status: 'processing',
+      updated_at: new Date().toISOString()
+    })
+    .eq('id', jobId);
+}
+
+// Complete assessment job
+export async function completeAssessmentJob(
+  jobId: string,
+  result: Record<string, any>
+): Promise<void> {
+  await getSupabaseAdmin()
+    .from('assessment_jobs')
+    .update({
+      status: 'completed',
+      progress: 100,
+      result,
+      completed_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    })
+    .eq('id', jobId);
+}
+
+// Fail assessment job
+export async function failAssessmentJob(
+  jobId: string,
+  error: string
+): Promise<void> {
+  await getSupabaseAdmin()
+    .from('assessment_jobs')
+    .update({
+      status: 'failed',
+      error,
+      updated_at: new Date().toISOString()
+    })
+    .eq('id', jobId);
+}
+
+// Get assessment job by ID
+export async function getAssessmentJob(jobId: string): Promise<AssessmentJob | null> {
+  const { data, error } = await getSupabaseAdmin()
+    .from('assessment_jobs')
+    .select('*')
+    .eq('id', jobId)
+    .single();
+  
+  if (error) {
+    console.error('Error fetching assessment job:', error);
+    return null;
+  }
+  return data;
+}
+
+// Get user's pending/processing jobs
+export async function getUserActiveJobs(userId: string): Promise<AssessmentJob[]> {
+  const { data, error } = await getSupabaseAdmin()
+    .from('assessment_jobs')
+    .select('*')
+    .eq('user_id', userId)
+    .in('status', ['pending', 'processing'])
+    .order('created_at', { ascending: false });
+  
+  if (error) {
+    console.error('Error fetching active jobs:', error);
+    return [];
+  }
+  return data || [];
+}

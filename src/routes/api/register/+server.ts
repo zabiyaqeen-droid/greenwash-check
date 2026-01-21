@@ -1,14 +1,6 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-
-// In-memory storage for users (shared with admin endpoint)
-declare global {
-  var registeredUsers: any[];
-}
-
-if (!globalThis.registeredUsers) {
-  globalThis.registeredUsers = [];
-}
+import { upsertUser } from '$lib/supabase';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -20,28 +12,31 @@ export const POST: RequestHandler = async ({ request }) => {
 
     const timestamp = new Date().toISOString();
     
-    // Store user in global array
-    const newUser = {
-      id: crypto.randomUUID(),
+    // Save user to Supabase
+    const user = await upsertUser({
+      email: email.toLowerCase(),
       name,
-      email,
       company,
-      jobTitle: jobTitle || null,
-      linkedin: linkedIn || null,
-      registeredAt: timestamp
-    };
-    
-    // Check if user already exists
-    const existingIndex = globalThis.registeredUsers.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
-    if (existingIndex >= 0) {
-      // Update existing user
-      globalThis.registeredUsers[existingIndex] = { ...globalThis.registeredUsers[existingIndex], ...newUser, registeredAt: globalThis.registeredUsers[existingIndex].registeredAt };
-    } else {
-      // Add new user
-      globalThis.registeredUsers.push(newUser);
+      job_title: jobTitle || undefined,
+      linkedin: linkedIn || undefined
+    });
+
+    if (!user) {
+      // Log to console as fallback
+      console.log(`=== USER REGISTRATION (DB FAILED) ===`);
+      console.log(`Timestamp: ${timestamp}`);
+      console.log(`Name: ${name}`);
+      console.log(`Email: ${email}`);
+      console.log(`Company: ${company}`);
+      console.log(`Job Title: ${jobTitle || 'N/A'}`);
+      console.log(`LinkedIn: ${linkedIn || 'N/A'}`);
+      console.log(`=========================`);
+      
+      // Still return success - we don't want to block registration
+      return json({ success: true, warning: 'User saved to logs only' });
     }
 
-    // Log registration to console (Vercel logs)
+    // Log registration to console
     console.log(`=== USER REGISTRATION ===`);
     console.log(`Timestamp: ${timestamp}`);
     console.log(`Name: ${name}`);
@@ -49,10 +44,10 @@ export const POST: RequestHandler = async ({ request }) => {
     console.log(`Company: ${company}`);
     console.log(`Job Title: ${jobTitle || 'N/A'}`);
     console.log(`LinkedIn: ${linkedIn || 'N/A'}`);
-    console.log(`Total Users: ${globalThis.registeredUsers.length}`);
+    console.log(`User ID: ${user.id}`);
     console.log(`=========================`);
 
-    return json({ success: true });
+    return json({ success: true, userId: user.id });
   } catch (error) {
     console.error('Registration error:', error);
     return json({ error: 'Registration failed' }, { status: 500 });

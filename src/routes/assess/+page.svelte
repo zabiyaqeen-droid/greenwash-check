@@ -4,7 +4,7 @@
   import { assessmentHistory } from '$lib/stores/assessment';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
-  import { Upload, FileText, Settings2, Play, Loader2, ChevronDown, ChevronUp, RotateCcw, AlertCircle, CheckCircle, Info, X, File, Award, AlertTriangle, ExternalLink, Sparkles, Shield, DollarSign, Scale, TrendingDown, Square } from 'lucide-svelte';
+  import { Upload, FileText, Settings2, Play, Loader2, ChevronDown, ChevronUp, RotateCcw, AlertCircle, CheckCircle, Info, X, File, Award, AlertTriangle, ExternalLink, Sparkles, Shield, DollarSign, Scale, TrendingDown, Square, Mail, Send } from 'lucide-svelte';
   import PromptsPanel from '$lib/components/PromptsPanel.svelte';
   
   let inputText = $state('');
@@ -35,6 +35,13 @@
   // Expanded sections state
   let expandedIssues = $state<Set<number>>(new Set());
   let expandedPositives = $state<Set<number>>(new Set());
+  
+  // Email modal state
+  let showEmailModal = $state(false);
+  let emailAddress = $state('');
+  let isSendingEmail = $state(false);
+  let emailSent = $state(false);
+  let emailError = $state('');
   
   // Storage key for persisting analysis state
   const STORAGE_KEY = 'greenwash_check_analysis_state';
@@ -91,23 +98,13 @@
       dimensions = d;
     });
     
-    // Restore analysis state if returning to page
+    // Check for any incomplete analysis state (user navigated away)
     const savedState = loadAnalysisState();
     if (savedState && savedState.isAnalyzing) {
-      // Show that analysis is in progress
-      isAnalyzing = true;
-      analysisProgress = savedState.analysisProgress;
-      analysisStage = savedState.analysisStage || 'Analysis in progress...';
-      analysisId = savedState.analysisId;
-      inputText = savedState.inputText || '';
-      inputMode = savedState.inputMode || 'document';
-      uploadedFilePath = savedState.uploadedFilePath;
-      uploadedFileId = savedState.uploadedFileId;
-      
-      // Continue polling for result if we have an analysis ID
-      if (savedState.analysisId) {
-        pollForResult(savedState.analysisId);
-      }
+      // Clear the stale state - analysis was cancelled when user left
+      clearAnalysisState();
+      // Show a message that the previous analysis was cancelled
+      analysisError = 'Your previous analysis was cancelled because you left the page. Please start a new assessment.';
     }
   });
   
@@ -327,7 +324,7 @@
       let response;
       if (isDocument) {
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 1800000); // 30 minute timeout
+        const timeout = setTimeout(() => controller.abort(), 3600000); // 60 minute timeout
         
         const endpoint = analysisMode === 'hybrid' ? '/api/analyze-document-hybrid' : '/api/analyze-document';
         response = await fetch(endpoint, {
@@ -441,6 +438,196 @@
     if (level === 'Low') return '#27AE60';
     if (level === 'Medium') return '#F39C12';
     return '#E74C3C';
+  }
+  
+  async function downloadReportAsPdf() {
+    if (!result) return;
+    
+    // Create a printable version of the report
+    const reportContent = generateReportHtml();
+    
+    // Open in new window for printing/saving as PDF
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      alert('Please allow popups to download the PDF report.');
+      return;
+    }
+    
+    printWindow.document.write(reportContent);
+    printWindow.document.close();
+    
+    // Wait for content to load then trigger print
+    printWindow.onload = () => {
+      printWindow.print();
+    };
+  }
+  
+  async function sendReportEmail() {
+    if (!result || !emailAddress) return;
+    
+    isSendingEmail = true;
+    emailError = '';
+    
+    try {
+      const reportHtml = generateReportHtml();
+      const documentName = result.metadata?.fileName || uploadedFile?.name || 'Document';
+      
+      const response = await fetch('/api/send-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: emailAddress,
+          reportHtml,
+          documentName,
+          overallScore: result.overallScore,
+          riskLevel: result.riskLevel
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send email');
+      }
+      
+      emailSent = true;
+      setTimeout(() => {
+        showEmailModal = false;
+        emailSent = false;
+        emailAddress = '';
+      }, 3000);
+    } catch (err) {
+      emailError = err instanceof Error ? err.message : 'Failed to send email';
+    } finally {
+      isSendingEmail = false;
+    }
+  }
+  
+  function closeEmailModal() {
+    showEmailModal = false;
+    emailAddress = '';
+    emailError = '';
+    emailSent = false;
+  }
+  
+  function generateReportHtml(): string {
+    const documentName = result.metadata?.fileName || uploadedFile?.name || 'Document';
+    const date = new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
+    
+    // Pre-compute colors to avoid issues with template literals in style tags
+    const scoreColor = getScoreColor(result.overallScore);
+    const riskColor = getRiskColor(result.riskLevel);
+    
+    let issuesHtml = '';
+    if (result.top20Issues && result.top20Issues.length > 0) {
+      issuesHtml = result.top20Issues.map((issue: any, idx: number) => `
+        <div class="issue-item">
+          <h4>${idx + 1}. ${issue.title}</h4>
+          <p><strong>Severity:</strong> ${issue.severity}</p>
+          <p><strong>Location:</strong> ${issue.location || 'Not specified'}</p>
+          <p><strong>Quote:</strong> "${issue.quote || 'N/A'}"</p>
+          <p><strong>Issue:</strong> ${issue.issue}</p>
+          <p><strong>Recommendation:</strong> ${issue.recommendation}</p>
+        </div>
+      `).join('');
+    }
+    
+    let positivesHtml = '';
+    if (result.positiveFindings && result.positiveFindings.length > 0) {
+      positivesHtml = result.positiveFindings.map((pos: any, idx: number) => `
+        <div class="positive-item">
+          <h4>${idx + 1}. ${pos.title}</h4>
+          <p>${pos.description}</p>
+        </div>
+      `).join('');
+    }
+    
+    let principlesHtml = '';
+    if (result.principleScores && result.principleScores.length > 0) {
+      principlesHtml = result.principleScores.map((p: any, idx: number) => `
+        <div class="principle-item">
+          <h4>Principle ${idx + 1}: ${p.name}</h4>
+          <p><strong>Score:</strong> ${p.overallScore || p.score}/100</p>
+          <p><strong>Status:</strong> ${p.status}</p>
+          ${p.subcategories ? p.subcategories.map((sub: any) => `
+            <div class="subcategory">
+              <p><strong>${sub.name}:</strong> ${sub.score}/50</p>
+              <p>${sub.findings || ''}</p>
+            </div>
+          `).join('') : ''}
+        </div>
+      `).join('');
+    }
+    
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Greenwash Check Report - ${documentName}</title>
+        <style>
+          * { box-sizing: border-box; }
+          body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 40px; color: #333; line-height: 1.6; }
+          h1 { color: #1a365d; border-bottom: 3px solid #27AE60; padding-bottom: 10px; }
+          h2 { color: #2d3748; margin-top: 30px; }
+          h3 { color: #4a5568; }
+          h4 { color: #2d3748; margin-bottom: 8px; }
+          .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+          .logo { font-size: 24px; font-weight: bold; color: #27AE60; }
+          .date { color: #718096; }
+          .score-box { background: #f7fafc; border-left: 4px solid ` + scoreColor + `; padding: 20px; margin: 20px 0; }
+          .score-number { font-size: 48px; font-weight: bold; color: ` + scoreColor + `; }
+          .risk-badge { display: inline-block; padding: 4px 12px; border-radius: 4px; color: white; background: ` + riskColor + `; }
+          .issue-item, .positive-item, .principle-item { background: #f7fafc; padding: 15px; margin: 10px 0; border-radius: 8px; }
+          .subcategory { margin-left: 20px; padding: 10px; background: #edf2f7; border-radius: 4px; margin-top: 8px; }
+          .legal-section { background: #fff5f5; border-left: 4px solid #e53e3e; padding: 20px; margin: 20px 0; }
+          .disclaimer { font-size: 12px; color: #718096; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
+          @media print { body { padding: 20px; } }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div class="logo">Greenwash Check</div>
+          <div class="date">${date}</div>
+        </div>
+        
+        <h1>Assessment Report</h1>
+        <p><strong>Document:</strong> ${documentName}</p>
+        ${result.metadata ? `<p><strong>Pages Analyzed:</strong> ${result.metadata.pagesAnalyzed}/${result.metadata.totalPages}</p>` : ''}
+        
+        <div class="score-box">
+          <div class="score-number">${result.overallScore}/100</div>
+          <span class="risk-badge">${result.riskLevel}</span>
+          <p>${result.executiveSummary || result.summary || ''}</p>
+        </div>
+        
+        ${result.legalRiskAssessment ? `
+          <div class="legal-section">
+            <h2>Legal Risk Assessment</h2>
+            <p><strong>Potential Penalty Exposure:</strong> ${result.legalRiskAssessment.penaltyExposure}</p>
+            <p><strong>Enforcement Risk Level:</strong> ${result.legalRiskAssessment.enforcementRisk}</p>
+            ${result.legalRiskAssessment.priorityActions ? `
+              <h3>Priority Actions</h3>
+              <ol>${result.legalRiskAssessment.priorityActions.map((a: string) => `<li>${a}</li>`).join('')}</ol>
+            ` : ''}
+          </div>
+        ` : ''}
+        
+        <h2>Competition Bureau 6 Principles Assessment</h2>
+        ${principlesHtml}
+        
+        <h2>Top Issues Identified</h2>
+        ${issuesHtml || '<p>No significant issues identified.</p>'}
+        
+        <h2>Positive Findings</h2>
+        ${positivesHtml || '<p>No specific positive findings noted.</p>'}
+        
+        <div class="disclaimer">
+          <p><strong>Disclaimer:</strong> This report is generated by Greenwash Check, an AI-powered assessment tool. It provides informational analysis only and does not constitute legal or compliance advice. By using this service, you acknowledge that Muuvment Ltd. and its affiliates shall not be held liable for any damages arising from reliance on this assessment. This service is governed by the laws of the Province of Ontario, Canada.</p>
+          <p>Generated by Greenwash Check | greenwash-check.onrender.com | © ${new Date().getFullYear()} Muuvment Ltd.</p>
+        </div>
+      </body>
+      </html>
+    `;
   }
 </script>
 
@@ -636,11 +823,15 @@
     <!-- Progress Section -->
     {#if isAnalyzing}
       <div class="progress-section">
+        <div class="stay-on-page-warning">
+          <AlertTriangle size={20} />
+          <span><strong>Important:</strong> Please stay on this page until the analysis is complete. Navigating away will cancel the assessment.</span>
+        </div>
         <div class="progress-bar">
           <div class="progress-fill" style="width: {analysisProgress}%"></div>
         </div>
         <p class="progress-stage">{analysisStage}</p>
-        <p class="progress-note">Large documents may take several minutes to analyse thoroughly.</p>
+        <p class="progress-note">Large documents may take several minutes to analyse thoroughly. You can minimise this window but please do not close it.</p>
       </div>
     {/if}
     
@@ -657,10 +848,20 @@
       <div class="results-section">
         <div class="results-header">
           <h2>Assessment Report Card</h2>
-          <button class="new-assessment-btn" onclick={startNewAssessment}>
-            <RotateCcw size={16} />
-            New Assessment
-          </button>
+          <div class="results-actions">
+            <button class="download-pdf-btn" onclick={downloadReportAsPdf}>
+              <FileText size={16} />
+              Download PDF
+            </button>
+            <button class="email-report-btn" onclick={() => showEmailModal = true}>
+              <Mail size={16} />
+              Email Report
+            </button>
+            <button class="new-assessment-btn" onclick={startNewAssessment}>
+              <RotateCcw size={16} />
+              New Assessment
+            </button>
+          </div>
         </div>
         
         <!-- Metadata -->
@@ -1004,6 +1205,69 @@
 
   </div>
 </div>
+
+<!-- Email Report Modal -->
+{#if showEmailModal}
+  <div class="modal-overlay" onclick={closeEmailModal}>
+    <div class="email-modal" onclick={(e) => e.stopPropagation()}>
+      <div class="modal-header">
+        <h3><Mail size={20} /> Email Report</h3>
+        <button class="modal-close" onclick={closeEmailModal}>
+          <X size={20} />
+        </button>
+      </div>
+      
+      {#if emailSent}
+        <div class="email-success">
+          <CheckCircle size={48} />
+          <h4>Report Sent Successfully!</h4>
+          <p>The assessment report has been sent to <strong>{emailAddress}</strong></p>
+        </div>
+      {:else}
+        <div class="modal-body">
+          <p>Enter the email address where you'd like to receive the full assessment report.</p>
+          
+          <div class="email-input-group">
+            <label for="email-input">Email Address</label>
+            <input 
+              id="email-input"
+              type="email" 
+              bind:value={emailAddress}
+              placeholder="recipient@example.com"
+              disabled={isSendingEmail}
+            />
+          </div>
+          
+          {#if emailError}
+            <div class="email-error">
+              <AlertCircle size={16} />
+              <span>{emailError}</span>
+            </div>
+          {/if}
+          
+          <div class="modal-actions">
+            <button class="cancel-btn" onclick={closeEmailModal} disabled={isSendingEmail}>
+              Cancel
+            </button>
+            <button 
+              class="send-btn" 
+              onclick={sendReportEmail}
+              disabled={isSendingEmail || !emailAddress}
+            >
+              {#if isSendingEmail}
+                <Loader2 size={16} class="spin" />
+                Sending...
+              {:else}
+                <Send size={16} />
+                Send Report
+              {/if}
+            </button>
+          </div>
+        </div>
+      {/if}
+    </div>
+  </div>
+{/if}
 
 <style>
   .assess-page {
@@ -1737,6 +2001,28 @@
     margin: 0;
   }
   
+  .stay-on-page-warning {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: #FEF3C7;
+    border: 1px solid #FCD34D;
+    border-radius: 8px;
+    color: #92400E;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .stay-on-page-warning :global(svg) {
+    flex-shrink: 0;
+    color: #D97706;
+  }
+  
+  .stay-on-page-warning strong {
+    color: #78350F;
+  }
+  
   .error-section, .error-message {
     display: flex;
     align-items: center;
@@ -1766,6 +2052,30 @@
   
   .results-header h2 {
     margin: 0;
+  }
+  
+  .results-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+  
+  .download-pdf-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #2563EB;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+  }
+  
+  .download-pdf-btn:hover {
+    background: #1D4ED8;
   }
   
   .new-assessment-btn {
@@ -2680,5 +2990,202 @@
     padding-top: 1rem;
     border-top: 1px solid #E0E0E0;
     font-style: italic;
+  }
+  
+  /* Email Report Button */
+  .email-report-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #059669;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+  }
+  
+  .email-report-btn:hover {
+    background: #047857;
+  }
+  
+  /* Email Modal */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+  }
+  
+  .email-modal {
+    background: white;
+    border-radius: 12px;
+    max-width: 450px;
+    width: 100%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    background: #F8FAF8;
+    border-bottom: 1px solid #E0E0E0;
+  }
+  
+  .modal-header h3 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #2C3E50;
+    font-size: 1.1rem;
+  }
+  
+  .modal-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #7F8C8D;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+  
+  .modal-close:hover {
+    background: #E0E0E0;
+    color: #2C3E50;
+  }
+  
+  .modal-body {
+    padding: 1.5rem;
+  }
+  
+  .modal-body > p {
+    margin: 0 0 1.25rem;
+    color: #5A6A7A;
+    font-size: 0.95rem;
+  }
+  
+  .email-input-group {
+    margin-bottom: 1rem;
+  }
+  
+  .email-input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #2C3E50;
+    font-size: 0.9rem;
+  }
+  
+  .email-input-group input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  
+  .email-input-group input:focus {
+    outline: none;
+    border-color: #6B8E6B;
+    box-shadow: 0 0 0 3px rgba(107, 142, 107, 0.1);
+  }
+  
+  .email-input-group input:disabled {
+    background: #F3F4F6;
+    cursor: not-allowed;
+  }
+  
+  .email-error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: #FEE2E2;
+    border: 1px solid #FECACA;
+    border-radius: 6px;
+    color: #DC2626;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+  
+  .email-success {
+    padding: 2rem;
+    text-align: center;
+    color: #059669;
+  }
+  
+  .email-success h4 {
+    margin: 1rem 0 0.5rem;
+    color: #2C3E50;
+  }
+  
+  .email-success p {
+    margin: 0;
+    color: #5A6A7A;
+  }
+  
+  .modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+  }
+  
+  .cancel-btn {
+    padding: 0.6rem 1.25rem;
+    background: #F3F4F6;
+    color: #4B5563;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+  }
+  
+  .cancel-btn:hover:not(:disabled) {
+    background: #E5E7EB;
+  }
+  
+  .cancel-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .send-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.25rem;
+    background: #059669;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+  }
+  
+  .send-btn:hover:not(:disabled) {
+    background: #047857;
+  }
+  
+  .send-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 </style>

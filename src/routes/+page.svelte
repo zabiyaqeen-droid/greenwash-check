@@ -81,6 +81,15 @@
           <CheckCircle size={16} />
           <span>Based on Competition Bureau's 6 Principles & Bill C-59</span>
         </div>
+        
+        <!-- Privacy Promise -->
+        <div class="privacy-promise">
+          <Shield size={20} />
+          <div class="privacy-text">
+            <strong>Your Privacy Matters</strong>
+            <span>We respect your privacy and do not use your documents or data to train AI models. Your assessments remain confidential.</span>
+          </div>
+        </div>
       </div>
     </section>
     
@@ -305,6 +314,44 @@
     gap: 0.5rem;
     color: #4A428E;
     font-size: 0.9rem;
+  }
+  
+  .privacy-promise {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-top: 2rem;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+    border: 1px solid #86EFAC;
+    border-radius: 12px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .privacy-promise :global(svg) {
+    flex-shrink: 0;
+    color: #16A34A;
+    margin-top: 2px;
+  }
+  
+  .privacy-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    text-align: left;
+  }
+  
+  .privacy-text strong {
+    color: #166534;
+    font-size: 0.95rem;
+  }
+  
+  .privacy-text span {
+    color: #15803D;
+    font-size: 0.85rem;
+    line-height: 1.4;
   }
   
   .btn {

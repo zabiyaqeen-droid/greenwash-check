@@ -174,6 +174,23 @@ async function analyzeTextChunks(
 
 ${framework}
 
+CRITICAL INSTRUCTION - EXTRACT ALL CLAIMS:
+You MUST extract EVERY environmental or sustainability-related claim. Look for:
+- Emission reduction claims (carbon, GHG, CO2)
+- Net-zero or carbon neutral commitments
+- Renewable energy claims
+- Recycling or waste reduction claims
+- Water conservation claims
+- Biodiversity or nature-positive claims
+- Sustainable sourcing claims
+- ESG performance claims
+- Any percentage improvements mentioned
+- Future commitments or targets
+- Certifications mentioned (ISO, B Corp, etc.)
+- Awards or recognition for sustainability
+
+Even if a claim seems minor or well-substantiated, EXTRACT IT. We need to assess ALL claims.
+
 DOCUMENT TEXT:
 ${combinedText}
 
@@ -382,18 +399,36 @@ async function aggregateHybridResults(
   
   const enabledDimensions = dimensions.filter((d: any) => d.enabled !== false);
   
+  // CRITICAL: If no claims were found, this is a problem
+  const noClaimsWarning = allClaims.length === 0 ? `
+
+CRITICAL WARNING: No environmental claims were extracted from this document.
+This is UNUSUAL for a sustainability report. Possible reasons:
+1. The document may not contain environmental claims (unlikely for a sustainability report)
+2. The document analysis may have failed to extract claims properly
+3. The document may be image-heavy with text that couldn't be read
+
+IF THIS IS A SUSTAINABILITY REPORT, you should:
+- Score lower (50-70 range) due to inability to verify claims
+- Note in rationale that claims could not be extracted for analysis
+- Recommend manual review of the document
+- Flag this as a limitation of the automated analysis
+
+DO NOT give 100% scores when no claims were found - this indicates analysis failure, not compliance.` : '';
+  
   // Build aggregation prompt
   const aggregationPrompt = `Based on analyzing a sustainability report with BOTH text and visual content, here are ALL findings:
 
 TOTAL CLAIMS FOUND: ${allClaims.length}
 Text Claims: ${textResults.claims.length}
 Visual Claims: ${visionResults.visualClaims.length}
+${noClaimsWarning}
 
 CLAIMS:
-${JSON.stringify(allClaims.slice(0, 30), null, 2)}
+${allClaims.length > 0 ? JSON.stringify(allClaims.slice(0, 30), null, 2) : 'NO CLAIMS EXTRACTED - See warning above'}
 
 FINDINGS:
-${JSON.stringify(allFindings, null, 2)}
+${allFindings.length > 0 ? JSON.stringify(allFindings, null, 2) : 'NO FINDINGS EXTRACTED'}
 
 VISUAL ELEMENTS ANALYZED:
 ${JSON.stringify(visionResults.visualClaims, null, 2)}

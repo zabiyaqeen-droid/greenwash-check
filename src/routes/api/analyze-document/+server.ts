@@ -278,6 +278,24 @@ LEGAL CONTEXT:
 - Both literal meaning AND general impression are assessed
 - Claims must be substantiated BEFORE being made using internationally recognised methodology
 
+CRITICAL INSTRUCTION - EXTRACT ALL CLAIMS:
+You MUST extract EVERY environmental or sustainability-related claim from these pages. Look for:
+- Emission reduction claims (carbon, GHG, CO2)
+- Net-zero or carbon neutral commitments
+- Renewable energy claims
+- Recycling or waste reduction claims
+- Water conservation claims
+- Biodiversity or nature-positive claims
+- Sustainable sourcing claims
+- ESG performance claims
+- Any percentage improvements mentioned
+- Future commitments or targets
+- Certifications mentioned (ISO, B Corp, etc.)
+- Awards or recognition for sustainability
+
+Even if a claim seems minor or well-substantiated, EXTRACT IT. We need to assess ALL claims.
+If you see text about sustainability, environment, climate, emissions, or ESG - extract it as a claim.
+
 SCORING METHODOLOGY:
 You are scoring against the Competition Bureau's 6 Principles, each with 3 subcategories (18 total):
 
@@ -337,7 +355,21 @@ Provide a JSON response:
         {
           role: 'user',
           content: [
-            { type: 'text', text: `Analyze these document pages for environmental claims and assess them against the Competition Bureau's 6 Principles. Be thorough - extract ALL environmental claims and provide specific page references.` },
+            { type: 'text', text: `CAREFULLY ANALYZE these document pages. This appears to be a sustainability or ESG report.
+
+YOU MUST:
+1. READ ALL TEXT visible in these images
+2. EXTRACT EVERY environmental, sustainability, or ESG-related claim
+3. Include claims about emissions, energy, water, waste, biodiversity, social impact, governance
+4. Include any percentages, targets, or metrics mentioned
+5. Include any certifications, awards, or third-party validations
+6. Include any future commitments or net-zero pledges
+
+For EACH claim found, assess it against the Competition Bureau's 6 Principles.
+
+IMPORTANT: A 46-page sustainability report should have MANY claims. If you're finding zero claims, look harder - check headings, infographics, charts, and body text.
+
+Provide specific page references for each claim.` },
             ...imageContents
           ]
         }
@@ -371,20 +403,39 @@ Provide a JSON response:
 }
 
 // Aggregate all chunk results into detailed principle and subcategory scores
-async function aggregateResults(chunks: ChunkResult[], dimensions: any[]): Promise<any> {
+async function aggregateResults(chunks: ChunkResult[], dimensions: any[], customPrompts?: AssessmentPrompt[]): Promise<any> {
   const allClaims = chunks.flatMap(c => c.claims);
   const allFindings = chunks.flatMap(c => c.findings);
   
   const enabledDimensions = dimensions.filter((d: any) => d.enabled !== false);
 
+  // CRITICAL: If no claims were found in a sustainability report, this is a problem
+  // Either the document wasn't read properly, or the AI failed to extract claims
+  const noClaimsWarning = allClaims.length === 0 ? `
+
+CRITICAL WARNING: No environmental claims were extracted from this document.
+This is UNUSUAL for a sustainability report. Possible reasons:
+1. The document may not contain environmental claims (unlikely for a sustainability report)
+2. The document analysis may have failed to extract claims properly
+3. The document may be image-heavy with text that couldn't be read
+
+IF THIS IS A SUSTAINABILITY REPORT, you should:
+- Score lower (50-70 range) due to inability to verify claims
+- Note in rationale that claims could not be extracted for analysis
+- Recommend manual review of the document
+- Flag this as a limitation of the automated analysis
+
+DO NOT give 100% scores when no claims were found - this indicates analysis failure, not compliance.` : '';
+
   // Build a detailed prompt for final aggregation
   const aggregationPrompt = `Based on analyzing a sustainability report, here are ALL the findings from ${chunks.length} sections:
 
 TOTAL ENVIRONMENTAL CLAIMS FOUND: ${allClaims.length}
-${JSON.stringify(allClaims.slice(0, 50), null, 2)}
+${allClaims.length > 0 ? JSON.stringify(allClaims.slice(0, 50), null, 2) : 'NO CLAIMS EXTRACTED - See warning below'}
+${noClaimsWarning}
 
 DETAILED FINDINGS BY PRINCIPLE (${allFindings.length} total):
-${JSON.stringify(allFindings, null, 2)}
+${allFindings.length > 0 ? JSON.stringify(allFindings, null, 2) : 'NO FINDINGS EXTRACTED'}
 
 Now provide a COMPREHENSIVE assessment scoring EACH of the 6 Principles AND EACH of their subcategories.
 
