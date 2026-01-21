@@ -548,14 +548,66 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     const html = generateStructuredPdfHtml(data);
+    const fileName = `GreenwashCheck-Report-${data.fileName?.replace(/\.[^/.]+$/, '') || 'Assessment'}-${new Date().toISOString().split('T')[0]}.pdf`;
 
-    return json({ 
-      success: true, 
-      html,
-      fileName: `GreenwashCheck-Report-${data.fileName?.replace(/\.[^/.]+$/, '') || 'Assessment'}-${new Date().toISOString().split('T')[0]}.pdf`
+    // Use dynamic import for child_process and fs
+    const { spawn } = await import('child_process');
+    const { writeFileSync, readFileSync, unlinkSync, mkdtempSync } = await import('fs');
+    const { join } = await import('path');
+    const { tmpdir } = await import('os');
+
+    // Create temp directory and files
+    const tempDir = mkdtempSync(join(tmpdir(), 'pdf-'));
+    const htmlPath = join(tempDir, 'input.html');
+    const pdfPath = join(tempDir, 'output.pdf');
+
+    // Write HTML to temp file
+    writeFileSync(htmlPath, html, 'utf-8');
+
+    // Convert HTML to PDF using weasyprint
+    const pdfBuffer = await new Promise<Buffer>((resolve, reject) => {
+      const weasyprint = spawn('weasyprint', [htmlPath, pdfPath]);
+      
+      let stderr = '';
+      weasyprint.stderr.on('data', (data) => {
+        stderr += data.toString();
+      });
+
+      weasyprint.on('close', (code) => {
+        if (code === 0) {
+          try {
+            const pdf = readFileSync(pdfPath);
+            // Clean up temp files
+            try {
+              unlinkSync(htmlPath);
+              unlinkSync(pdfPath);
+            } catch (e) {
+              // Ignore cleanup errors
+            }
+            resolve(pdf);
+          } catch (e) {
+            reject(new Error('Failed to read generated PDF'));
+          }
+        } else {
+          reject(new Error(`WeasyPrint failed with code ${code}: ${stderr}`));
+        }
+      });
+
+      weasyprint.on('error', (err) => {
+        reject(new Error(`Failed to spawn weasyprint: ${err.message}`));
+      });
+    });
+
+    return new Response(pdfBuffer, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="${fileName}"`,
+        'Content-Length': pdfBuffer.length.toString()
+      }
     });
   } catch (error) {
     console.error('PDF generation error:', error);
-    return json({ error: 'Failed to generate PDF' }, { status: 500 });
+    return json({ error: 'Failed to generate PDF: ' + (error instanceof Error ? error.message : 'Unknown error') }, { status: 500 });
   }
 };
