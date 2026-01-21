@@ -179,15 +179,45 @@
       </div>
     </section>
     
+    <!-- Important Notice Section -->
+    <section class="important-notice">
+      <div class="container">
+        <div class="notice-content">
+          <h2>Why Accuracy Matters</h2>
+          <p class="notice-intro">
+            Environmental claims are under increasing scrutiny. Bill C-59 introduced significant penalties for misleading 
+            environmental representations, making it more important than ever to ensure your sustainability communications 
+            are accurate, substantiated, and compliant.
+          </p>
+          <div class="notice-details">
+            <p>
+              While we have taken considerable effort to incorporate relevant laws, regulations, and best practices into 
+              this assessment tool, <strong>artificial intelligence can make mistakes</strong>. It is essential that you 
+              review and validate all information before relying on it for business, legal, or compliance decisions.
+            </p>
+            <p>
+              <strong>This assessment does not constitute legal advice.</strong> For specific guidance regarding Bill C-59, 
+              the Competition Act, or environmental claims compliance, please consult with a qualified legal professional.
+            </p>
+            <p class="liability-notice">
+              By using this service, you acknowledge that Muuvment Ltd. and its affiliates shall not be held liable for 
+              any damages arising from reliance on this assessment tool. This service is governed by the laws of the 
+              Province of Ontario, Canada.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
     <!-- CTA Section -->
     <section class="cta">
       <div class="container">
         <div class="cta-content">
           <div class="cta-flag">🇨🇦</div>
-          <h2>Ready to assess your environmental claims for Canada?</h2>
-          <p>Get started with our free greenwashing assessment tool, built specifically for Canadian regulatory requirements.</p>
+          <h2>Ready to Check Your Environmental Claims?</h2>
+          <p>Use our free assessment tool to evaluate your sustainability communications against Canadian Bill C-59 and Competition Bureau guidelines.</p>
           <a href={currentUser ? '/assess' : '/login'} class="btn btn-primary btn-lg">
-            {currentUser ? 'Start Assessment' : 'Get Started Free'}
+            Run Free Assessment
             <ArrowRight size={20} />
           </a>
         </div>
@@ -548,6 +578,62 @@
   
   .framework-link:hover {
     color: #3D3676;
+  }
+  
+  /* Important Notice Section */
+  .important-notice {
+    padding: 4rem 1.5rem;
+    background: #F8FAFC;
+  }
+  
+  .notice-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .notice-content h2 {
+    font-size: 1.75rem;
+    color: #1C2947;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  .notice-intro {
+    font-size: 1.1rem;
+    color: #475569;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  .notice-details {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid #E2E8F0;
+  }
+  
+  .notice-details p {
+    color: #64748B;
+    line-height: 1.7;
+    margin: 0 0 1rem;
+    font-size: 0.95rem;
+  }
+  
+  .notice-details p:last-child {
+    margin-bottom: 0;
+  }
+  
+  .notice-details strong {
+    color: #1C2947;
+  }
+  
+  .notice-details .liability-notice {
+    padding-top: 1rem;
+    border-top: 1px solid #E2E8F0;
+    font-size: 0.875rem;
+    font-style: italic;
+    color: #94A3B8;
   }
   
   /* CTA Section */

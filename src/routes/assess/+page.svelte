@@ -387,37 +387,6 @@
       </div>
     </div>
     
-    <!-- Risk Warning Banner -->
-    <div class="risk-banner">
-      <div class="risk-banner-header">
-        <AlertTriangle size={24} />
-        <h3>The Cost of Greenwashing</h3>
-      </div>
-      <div class="risk-stats">
-        <div class="risk-stat">
-          <DollarSign size={20} />
-          <div>
-            <span class="stat-value">$10M - $15M+</span>
-            <span class="stat-label">Penalties under Bill C-59 (or 3% of global revenue)</span>
-          </div>
-        </div>
-        <div class="risk-stat">
-          <TrendingDown size={20} />
-          <div>
-            <span class="stat-value">80%</span>
-            <span class="stat-label">Consumers lose trust after greenwashing exposure</span>
-          </div>
-        </div>
-        <div class="risk-stat">
-          <Scale size={20} />
-          <div>
-            <span class="stat-value">New</span>
-            <span class="stat-label">Private right of action enabled (June 2025)</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    
     <!-- Quick Actions -->
     <div class="quick-actions">
       <button 
@@ -1001,32 +970,7 @@
         </div>
       </div>
     {/if}
-    
-    <!-- Legal Disclaimer -->
-    <div class="legal-disclaimer">
-      <h4>Important Legal Disclaimer</h4>
-      <p>
-        While we have taken considerable effort to incorporate relevant laws, regulations, and best practices into this assessment tool, 
-        <strong>artificial intelligence can make mistakes</strong>. It is essential that you review and validate all information provided 
-        by this tool before relying on it for any business, legal, or compliance decisions.
-      </p>
-      <p>
-        <strong>This assessment does not constitute legal advice.</strong> The information provided is for general informational purposes 
-        only and should not be construed as professional legal counsel. For specific legal guidance regarding Bill C-59, the Competition Act, 
-        or environmental claims compliance, please consult with a qualified legal professional.
-      </p>
-      <p>
-        By using this service, you acknowledge and agree that <strong>Muuvment Ltd.</strong> and all of its affiliates, subsidiaries, 
-        directors, officers, employees, agents, and related entities shall not be held liable for any direct, indirect, incidental, 
-        consequential, special, or exemplary damages arising from or related to your use of or reliance on this assessment tool, 
-        including but not limited to any decisions made or actions taken based on the results provided.
-      </p>
-      <p class="jurisdiction">
-        This service is governed by the laws of the Province of Ontario and the federal laws of Canada applicable therein. 
-        Any disputes arising from or related to the use of this service shall be subject to the exclusive jurisdiction of the courts 
-        of the Province of Ontario.
-      </p>
-    </div>
+
   </div>
 </div>
 
