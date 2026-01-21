@@ -32,9 +32,6 @@
     <div class="footer-content">
       <!-- Brand Column -->
       <div class="footer-brand">
-        <a href="https://muuvment.com" target="_blank" rel="noopener" class="logo">
-          <img src="/muuvment-logo-white.webp" alt="Muuvment" class="logo-img" />
-        </a>
         <div class="contact-info">
           <a href="mailto:info@muuvment.com" class="contact-link">
             <Mail size={16} />
