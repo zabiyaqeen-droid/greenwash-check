@@ -40,7 +40,6 @@
       
       {#if currentUser}
         <a href="/history" class="nav-link">History</a>
-        <a href="/prompts" class="nav-link">Prompts</a>
         {#if isAdmin()}
           <a href="/admin" class="nav-link admin-link">
             <Shield size={16} />
@@ -77,7 +76,6 @@
       
       {#if currentUser}
         <a href="/history" class="nav-link" onclick={() => mobileMenuOpen = false}>History</a>
-        <a href="/prompts" class="nav-link" onclick={() => mobileMenuOpen = false}>Prompts</a>
         {#if isAdmin()}
           <a href="/admin" class="nav-link admin-link" onclick={() => mobileMenuOpen = false}>
             <Shield size={16} />
