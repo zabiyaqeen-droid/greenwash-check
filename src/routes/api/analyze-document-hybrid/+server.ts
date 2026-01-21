@@ -58,6 +58,7 @@ interface VisionAnalysisResult {
     claimsIdentified: string[];
     concerns: string[];
   }>;
+  extractedText?: string;
 }
 
 // Download file from URL
@@ -95,14 +96,19 @@ async function convertPagesToImages(pdfPath: string, outputDir: string, pages: n
   
   for (const page of pages) {
     try {
-      const outputPath = join(outputDir, `page-${page}.png`);
+      // Clean up any existing files first
+      await execAsync(`rm -f "${outputDir}"/page-*.png 2>/dev/null || true`);
+      
       await execAsync(`pdftoppm -png -r 150 -f ${page} -l ${page} "${pdfPath}" "${outputDir}/page"`);
       
       // pdftoppm adds padding to page numbers, find the actual file
       const { stdout } = await execAsync(`ls -1 "${outputDir}"/page-*.png 2>/dev/null | head -1`);
       const actualPath = stdout.trim();
       if (actualPath && existsSync(actualPath)) {
-        pageImages.set(page, actualPath);
+        // Rename to a unique name to avoid conflicts
+        const uniquePath = join(outputDir, `page-${page}-unique.png`);
+        await execAsync(`mv "${actualPath}" "${uniquePath}"`);
+        pageImages.set(page, uniquePath);
       }
     } catch (error) {
       console.warn(`Could not convert page ${page} to image:`, error);
@@ -112,17 +118,19 @@ async function convertPagesToImages(pdfPath: string, outputDir: string, pages: n
   return pageImages;
 }
 
-// Analyze visual elements using Vision API
+// Analyze visual elements using Vision API - also extracts text from images
 async function analyzeVisualElements(
   imagePaths: Map<number, string>,
   dimensions: any[],
-  customPrompts?: AssessmentPrompt[]
+  customPrompts?: AssessmentPrompt[],
+  extractTextFromImages: boolean = false
 ): Promise<VisionAnalysisResult> {
   if (imagePaths.size === 0) {
-    return { visualClaims: [] };
+    return { visualClaims: [], extractedText: '' };
   }
   
   const visualClaims: VisionAnalysisResult['visualClaims'] = [];
+  let allExtractedText = '';
   
   // Process images in batches
   const entries = Array.from(imagePaths.entries());
@@ -153,7 +161,37 @@ async function analyzeVisualElements(
     
     if (imageContents.length === 0) continue;
     
-    const prompt = `Analyze these pages from a sustainability report for VISUAL environmental claims.
+    // Different prompts based on whether we need text extraction
+    const prompt = extractTextFromImages 
+      ? `Analyze these pages from a document. You MUST:
+
+1. EXTRACT ALL TEXT visible on each page - read every word, heading, paragraph, bullet point, and caption
+2. IDENTIFY environmental/sustainability claims - any statements about eco-friendliness, carbon, emissions, recycling, sustainability, green initiatives, etc.
+3. ANALYZE visual elements (charts, graphs, tables, images) for environmental claims
+
+For each page, extract:
+- All readable text content
+- Environmental claims (both explicit statements and implicit claims from visuals)
+- Any concerns about accuracy or potential greenwashing
+
+Return JSON:
+{
+  "pages": [
+    {
+      "pageNumber": <number>,
+      "extractedText": "all text content from this page...",
+      "visualClaims": [
+        {
+          "description": "description of visual element",
+          "type": "chart|graph|infographic|image|table|text",
+          "claimsIdentified": ["claim 1", "claim 2"],
+          "concerns": ["any concerns"]
+        }
+      ]
+    }
+  ]
+}`
+      : `Analyze these pages from a sustainability report for VISUAL environmental claims.
 
 Focus on:
 1. Charts and graphs showing environmental metrics
@@ -186,7 +224,9 @@ Return JSON:
         messages: [
           {
             role: 'system',
-            content: 'You are an expert in analyzing visual sustainability communications for potential greenwashing. Focus on charts, graphs, and images that make environmental claims.'
+            content: extractTextFromImages 
+              ? 'You are an expert document analyzer. Extract ALL text from the images and identify any environmental or sustainability claims. Be thorough - capture every piece of text visible.'
+              : 'You are an expert in analyzing visual sustainability communications for potential greenwashing. Focus on charts, graphs, and images that make environmental claims.'
           },
           {
             role: 'user',
@@ -196,14 +236,29 @@ Return JSON:
             ]
           }
         ],
-        max_tokens: 2000,
+        max_tokens: 4000,
         response_format: { type: 'json_object' }
       });
 
       const content = response.choices[0]?.message?.content || '{}';
       const result = JSON.parse(content);
       
-      if (result.visualClaims) {
+      if (extractTextFromImages && result.pages) {
+        // Handle text extraction mode
+        for (const page of result.pages) {
+          if (page.extractedText) {
+            allExtractedText += `\n\n[Page ${page.pageNumber}]\n${page.extractedText}`;
+          }
+          if (page.visualClaims) {
+            for (const vc of page.visualClaims) {
+              visualClaims.push({
+                ...vc,
+                page: page.pageNumber
+              });
+            }
+          }
+        }
+      } else if (result.visualClaims) {
         visualClaims.push(...result.visualClaims);
       }
     } catch (error) {
@@ -211,7 +266,7 @@ Return JSON:
     }
   }
   
-  return { visualClaims };
+  return { visualClaims, extractedText: allExtractedText.trim() };
 }
 
 // Convert dimensions to SubcategoryConfig array
@@ -251,7 +306,7 @@ function visualClaimsToExtractedClaims(visualClaims: VisionAnalysisResult['visua
   let claimIndex = 1;
   
   for (const vc of visualClaims) {
-    for (const claimText of vc.claimsIdentified) {
+    for (const claimText of vc.claimsIdentified || []) {
       claims.push({
         id: `visual_claim_${claimIndex++}`,
         text: claimText,
@@ -369,10 +424,10 @@ export const POST: RequestHandler = async ({ request }) => {
     // Delete any existing chunks for this document
     await deleteDocumentChunks(fileId);
     
-    // PHASE 1: Extract text from PDF
+    // PHASE 1: Extract text from PDF using pdftotext
     console.log('[HYBRID] Phase 1: Extracting text from PDF...');
     const pagesWithText = await extractTextWithPages(localFilePath);
-    const visualPages: number[] = [];
+    let visualPages: number[] = [];
     const textChunks: Array<{ content: string; pageNumber: number; metadata: any }> = [];
     
     for (const { page, text } of pagesWithText) {
@@ -393,35 +448,74 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     
     console.log(`[HYBRID] Extracted ${textChunks.length} text chunks from ${pagesWithText.length} pages`);
-    console.log(`[HYBRID] Found ${visualPages.length} pages with visual content`);
     
-    // Store chunks with embeddings for future use
+    // FALLBACK: If no text was extracted, use Vision API for ALL pages
+    // This handles image-based PDFs, scanned documents, or PDFs with embedded images
+    let useVisionFallback = false;
+    let visionExtractedText = '';
+    
+    if (textChunks.length === 0) {
+      console.log('[HYBRID] No text extracted via pdftotext - falling back to Vision API for text extraction');
+      useVisionFallback = true;
+      // Mark all pages for visual analysis with text extraction
+      visualPages = Array.from({ length: pagesToProcess }, (_, i) => i + 1);
+    }
+    
+    console.log(`[HYBRID] Found ${visualPages.length} pages for visual analysis`);
+    
+    // Store chunks with embeddings for future use (if we have text)
     if (textChunks.length > 0 && userId) {
       await storeChunksWithEmbeddings(fileId, userId, textChunks);
     }
     
-    // Combine text for claim extraction
-    const combinedText = textChunks
-      .slice(0, 100) // Limit to first 100 chunks to stay within token limits
-      .map(c => `[Page ${c.pageNumber || 'N/A'}]\n${c.content}`)
-      .join('\n\n---\n\n');
-    
-    // PHASE 2: Extract claims using dedicated Claimify-inspired prompt
-    console.log('[HYBRID] Phase 2: Extracting environmental claims (Claimify-inspired)...');
-    const claimExtractionResult = await extractClaims(combinedText, 90000);
-    console.log(`[HYBRID] Extracted ${claimExtractionResult.totalClaimsFound} claims from text`);
-    
-    // PHASE 3: Analyze visual elements with Vision API (in parallel with text)
-    console.log('[HYBRID] Phase 3: Analyzing visual elements...');
+    // PHASE 2 & 3: Visual analysis (and text extraction if needed)
+    console.log('[HYBRID] Phase 2: Analyzing visual elements...');
     const imageDir = join(tempDir, 'images');
     await mkdir(imageDir, { recursive: true });
     
-    // Limit visual pages to analyze
-    const pagesToAnalyzeVisually = visualPages.slice(0, 30);
-    const pageImages = await convertPagesToImages(localFilePath, imageDir, pagesToAnalyzeVisually);
+    // If using vision fallback, analyze more pages with text extraction
+    const maxVisualPages = useVisionFallback ? Math.min(pagesToProcess, 50) : 30;
+    const pagesToAnalyzeVisually = visualPages.slice(0, maxVisualPages);
+    console.log(`[HYBRID] Converting ${pagesToAnalyzeVisually.length} pages to images for Vision analysis`);
     
-    const visionResults = await analyzeVisualElements(pageImages, dimensions, customPrompts);
+    const pageImages = await convertPagesToImages(localFilePath, imageDir, pagesToAnalyzeVisually);
+    console.log(`[HYBRID] Successfully converted ${pageImages.size} pages to images`);
+    
+    // Analyze with Vision API - extract text if we're in fallback mode
+    const visionResults = await analyzeVisualElements(
+      pageImages, 
+      dimensions, 
+      customPrompts,
+      useVisionFallback // Extract text from images if pdftotext failed
+    );
     console.log(`[HYBRID] Found ${visionResults.visualClaims.length} visual claims`);
+    
+    if (useVisionFallback && visionResults.extractedText) {
+      visionExtractedText = visionResults.extractedText;
+      console.log(`[HYBRID] Extracted ${visionExtractedText.length} characters of text via Vision API`);
+    }
+    
+    // Combine text for claim extraction
+    let combinedText = '';
+    if (textChunks.length > 0) {
+      combinedText = textChunks
+        .slice(0, 100)
+        .map(c => `[Page ${c.pageNumber || 'N/A'}]\n${c.content}`)
+        .join('\n\n---\n\n');
+    } else if (visionExtractedText) {
+      combinedText = visionExtractedText;
+    }
+    
+    // PHASE 3: Extract claims using dedicated Claimify-inspired prompt
+    console.log('[HYBRID] Phase 3: Extracting environmental claims (Claimify-inspired)...');
+    let claimExtractionResult = { claims: [] as ExtractedClaim[], totalClaimsFound: 0 };
+    
+    if (combinedText.trim().length > 100) {
+      claimExtractionResult = await extractClaims(combinedText, 90000);
+      console.log(`[HYBRID] Extracted ${claimExtractionResult.totalClaimsFound} claims from text`);
+    } else {
+      console.log('[HYBRID] Insufficient text for claim extraction - relying on visual claims only');
+    }
     
     // Convert visual claims to ExtractedClaim format and merge
     const visualExtractedClaims = visualClaimsToExtractedClaims(visionResults.visualClaims);
@@ -442,10 +536,13 @@ export const POST: RequestHandler = async ({ request }) => {
     const subcategories = dimensionsToSubcategories(dimensions, customPrompts);
     console.log(`[HYBRID] Assessing ${subcategories.length} subcategories in parallel`);
     
+    // Use the best available text context
+    const contextText = combinedText.slice(0, 5000) || 'No text content available - assessment based on visual claims only.';
+    
     const assessmentResult = await assessAllSubcategories(
       subcategories,
       allClaims,
-      combinedText.slice(0, 5000) // Additional context
+      contextText
     );
     const subcategoryResults = assessmentResult.results;
     
@@ -471,7 +568,7 @@ export const POST: RequestHandler = async ({ request }) => {
       fileName,
       totalPages,
       pagesToProcess,
-      textChunks.length,
+      textChunks.length || (visionExtractedText ? 1 : 0),
       pagesToAnalyzeVisually.length,
       processingTime
     );
