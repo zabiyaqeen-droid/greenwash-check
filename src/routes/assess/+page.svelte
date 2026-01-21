@@ -971,6 +971,36 @@
           Run Assessment
         {/if}
       </button>
+      
+      <!-- Disclaimer and Privacy Notice -->
+      <div class="pre-assessment-disclaimer">
+        <div class="disclaimer-header">
+          <AlertTriangle size={18} />
+          <h4>Important Notice & Privacy</h4>
+        </div>
+        <div class="disclaimer-content">
+          <p>
+            <strong>Your privacy matters.</strong> Your data is only accessed and used to deliver this service. 
+            We respect your privacy and <strong>do not use your documents or data to train AI models</strong>. 
+            Your assessments remain confidential.
+          </p>
+          <p>
+            While we have taken considerable effort to incorporate relevant laws, regulations, and best practices into 
+            this assessment tool, <strong>artificial intelligence can make mistakes</strong>. It is essential that you 
+            review and validate all information before relying on it for business, legal, or compliance decisions.
+          </p>
+          <p>
+            <strong>This assessment does not constitute legal advice.</strong> For specific guidance regarding Bill C-59, 
+            the Competition Act, or environmental claims compliance, please consult with a qualified legal professional.
+          </p>
+          <p class="liability-text">
+            By using this service, you acknowledge that Muuvment Ltd. and its affiliates shall not be held liable for any 
+            damages arising from reliance on this assessment tool. This tool provides informational analysis only. 
+            No warranty is made regarding accuracy or fitness for purpose. By using this service, you agree to attorn to 
+            the exclusive jurisdiction of the courts of the Province of Ontario, Canada.
+          </p>
+        </div>
+      </div>
     </div>
     
     <!-- Progress Section -->
@@ -3439,7 +3469,56 @@
     cursor: not-allowed;
   }
   
-  /* Assessment Disclaimer */
+  /* Pre-Assessment Disclaimer (always visible) */
+  .pre-assessment-disclaimer {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+    border: 1px solid #86efac;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .pre-assessment-disclaimer .disclaimer-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    color: #166534;
+  }
+  
+  .pre-assessment-disclaimer .disclaimer-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #166534;
+  }
+  
+  .pre-assessment-disclaimer .disclaimer-content p {
+    color: #14532d;
+    margin: 0 0 0.75rem 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  
+  .pre-assessment-disclaimer .disclaimer-content p:last-child {
+    margin-bottom: 0;
+  }
+  
+  .pre-assessment-disclaimer .disclaimer-content strong {
+    color: #166534;
+  }
+  
+  .pre-assessment-disclaimer .liability-text {
+    font-size: 0.8rem;
+    color: #15803d;
+    font-style: italic;
+    padding-top: 0.75rem;
+    margin-top: 0.5rem;
+    border-top: 1px solid #86efac;
+  }
+  
+  /* Assessment Disclaimer (in results) */
   .assessment-disclaimer {
     background: #fef3c7;
     border: 1px solid #f59e0b;
