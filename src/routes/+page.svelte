@@ -574,7 +574,7 @@
   }
   
   .cta p {
-    color: #94A3B8;
+    color: #E2E8F0;
     font-size: 1.1rem;
     margin-bottom: 2rem;
     line-height: 1.6;

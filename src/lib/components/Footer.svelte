@@ -242,7 +242,7 @@
   
   .footer-column a {
     display: block;
-    color: #94A3B8;
+    color: #CBD5E1;
     text-decoration: none;
     font-size: 0.9rem;
     margin-bottom: 0.75rem;
@@ -274,7 +274,7 @@
     height: 36px;
     border-radius: 50%;
     border: 1px solid #334155;
-    color: #94A3B8;
+    color: #CBD5E1;
     transition: all 0.2s;
   }
   

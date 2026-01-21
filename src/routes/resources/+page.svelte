@@ -539,7 +539,7 @@
   }
   
   .cta-content > p {
-    color: #94A3B8;
+    color: #E2E8F0;
     margin: 0 0 1.5rem;
     line-height: 1.6;
   }
@@ -644,7 +644,11 @@
   }
   
   .cta-secondary-block p {
-    color: #94A3B8;
+    color: #CBD5E1;
     margin-bottom: 1rem;
+  }
+  
+  .cta-block p {
+    color: #E2E8F0;
   }
 </style>

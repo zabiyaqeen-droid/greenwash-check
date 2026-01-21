@@ -2381,7 +2381,7 @@
   
   .cta-text p {
     margin: 0;
-    color: #94A3B8;
+    color: #CBD5E1;
     line-height: 1.6;
   }
   
@@ -2415,7 +2415,7 @@
   }
   
   .cta-note {
-    color: #94A3B8;
+    color: #CBD5E1;
     font-size: 0.85rem;
     margin: 0;
   }
