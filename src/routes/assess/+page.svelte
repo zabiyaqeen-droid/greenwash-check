@@ -394,6 +394,16 @@
         recommendations: result.top20Issues?.slice(0, 5).map((i: any) => i.recommendation) || result.recommendations
       });
       
+      // Automatically send email if address was provided
+      if (emailAddress && emailAddress.includes('@')) {
+        try {
+          await sendReportEmailAuto();
+        } catch (emailErr) {
+          console.error('Failed to send email automatically:', emailErr);
+          // Don't show error to user - they can still manually send
+        }
+      }
+      
     } catch (err) {
       if (err instanceof Error && err.name === 'AbortError') {
         analysisError = 'Analysis timed out. Please try with a smaller document.';
@@ -508,6 +518,34 @@
     emailAddress = '';
     emailError = '';
     emailSent = false;
+  }
+  
+  // Automatic email sending (silent, no UI updates)
+  async function sendReportEmailAuto() {
+    if (!result || !emailAddress) return;
+    
+    const reportHtml = generateReportHtml();
+    const documentName = result.metadata?.fileName || uploadedFile?.name || 'Document';
+    
+    const response = await fetch('/api/send-report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: emailAddress,
+        reportHtml,
+        documentName,
+        overallScore: result.overallScore,
+        riskLevel: result.riskLevel
+      })
+    });
+    
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to send email');
+    }
+    
+    // Clear email address after successful send
+    emailAddress = '';
   }
   
   function generateReportHtml(): string {
@@ -804,6 +842,32 @@
           <p class="char-count">{inputText.length} characters</p>
         </div>
       {/if}
+      
+      <!-- Email for report delivery -->
+      <div class="email-delivery-section">
+        <div class="email-delivery-header">
+          <Mail size={18} />
+          <span>Get your report via email (optional)</span>
+        </div>
+        <input
+          type="email"
+          class="email-delivery-input"
+          placeholder="Enter your email address"
+          bind:value={emailAddress}
+          disabled={isAnalyzing}
+        />
+        <div class="assessment-info-box">
+          <Info size={16} />
+          <div class="assessment-info-text">
+            <p><strong>Before you start:</strong></p>
+            <ul>
+              <li>Analysis can take up to <strong>30 minutes</strong> for large documents</li>
+              <li><strong>Do not leave this page</strong> until the assessment is complete</li>
+              <li>If you provide an email, the report will be sent automatically when ready</li>
+            </ul>
+          </div>
+        </div>
+      </div>
       
       <button 
         class="run-btn"
@@ -3187,5 +3251,76 @@
   .send-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+  
+  /* Email delivery section styles */
+  .email-delivery-section {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-top: 1.5rem;
+  }
+  
+  .email-delivery-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #166534;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  
+  .email-delivery-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .email-delivery-input:focus {
+    outline: none;
+    border-color: #27AE60;
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+  }
+  
+  .email-delivery-input:disabled {
+    background: #f3f4f6;
+    cursor: not-allowed;
+  }
+  
+  .assessment-info-box {
+    display: flex;
+    gap: 0.75rem;
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+    border-radius: 8px;
+    padding: 1rem;
+    color: #92400e;
+  }
+  
+  .assessment-info-box :global(svg) {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  
+  .assessment-info-text p {
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+  }
+  
+  .assessment-info-text ul {
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+  
+  .assessment-info-text li {
+    margin-bottom: 0.25rem;
+  }
+  
+  .assessment-info-text li:last-child {
+    margin-bottom: 0;
   }
 </style>
