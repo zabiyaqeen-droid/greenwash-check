@@ -122,6 +122,13 @@
     width: auto;
   }
   
+  .logo-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0D9488;
+    margin-left: 0.5rem;
+  }
+  
   .nav-desktop {
     display: flex;
     align-items: center;
