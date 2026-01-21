@@ -1001,6 +1001,32 @@
         </div>
       </div>
     {/if}
+    
+    <!-- Legal Disclaimer -->
+    <div class="legal-disclaimer">
+      <h4>Important Legal Disclaimer</h4>
+      <p>
+        While we have taken considerable effort to incorporate relevant laws, regulations, and best practices into this assessment tool, 
+        <strong>artificial intelligence can make mistakes</strong>. It is essential that you review and validate all information provided 
+        by this tool before relying on it for any business, legal, or compliance decisions.
+      </p>
+      <p>
+        <strong>This assessment does not constitute legal advice.</strong> The information provided is for general informational purposes 
+        only and should not be construed as professional legal counsel. For specific legal guidance regarding Bill C-59, the Competition Act, 
+        or environmental claims compliance, please consult with a qualified legal professional.
+      </p>
+      <p>
+        By using this service, you acknowledge and agree that <strong>Muuvment Ltd.</strong> and all of its affiliates, subsidiaries, 
+        directors, officers, employees, agents, and related entities shall not be held liable for any direct, indirect, incidental, 
+        consequential, special, or exemplary damages arising from or related to your use of or reliance on this assessment tool, 
+        including but not limited to any decisions made or actions taken based on the results provided.
+      </p>
+      <p class="jurisdiction">
+        This service is governed by the laws of the Province of Ontario and the federal laws of Canada applicable therein. 
+        Any disputes arising from or related to the use of this service shall be subject to the exclusive jurisdiction of the courts 
+        of the Province of Ontario.
+      </p>
+    </div>
   </div>
 </div>
 
@@ -2574,5 +2600,42 @@
       width: 100%;
       justify-content: flex-end;
     }
+  }
+  
+  /* Legal Disclaimer */
+  .legal-disclaimer {
+    margin-top: 3rem;
+    padding: 1.5rem;
+    background: #F8F9FA;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #5A6A7A;
+    line-height: 1.6;
+  }
+  
+  .legal-disclaimer h4 {
+    margin: 0 0 1rem;
+    color: #2C3E50;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  
+  .legal-disclaimer p {
+    margin: 0 0 1rem;
+  }
+  
+  .legal-disclaimer p:last-child {
+    margin-bottom: 0;
+  }
+  
+  .legal-disclaimer strong {
+    color: #2C3E50;
+  }
+  
+  .legal-disclaimer .jurisdiction {
+    padding-top: 1rem;
+    border-top: 1px solid #E0E0E0;
+    font-style: italic;
   }
 </style>
