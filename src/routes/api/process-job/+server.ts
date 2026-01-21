@@ -381,7 +381,8 @@ async function processJob(job: AssessmentJob): Promise<void> {
     await updateAssessmentJobProgress(jobId, 45, 'Extracting environmental claims...');
     
     // Extract claims from text
-    const textClaims = await extractClaims(extractedText);
+    const textClaimsResult = await extractClaims(extractedText);
+    const textClaims = Array.isArray(textClaimsResult) ? textClaimsResult : (textClaimsResult?.claims || []);
     const visualExtractedClaims = visualClaimsToExtractedClaims(visualClaims);
     const allClaims = [...textClaims, ...visualExtractedClaims];
     
