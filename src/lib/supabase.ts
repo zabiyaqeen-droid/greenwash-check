@@ -71,7 +71,7 @@ export interface AssessmentResult {
 
 // Get all assessment prompts (default or user-customized)
 export async function getAssessmentPrompts(userId?: string): Promise<AssessmentPrompt[]> {
-  let query = supabaseAdmin
+  let query = getSupabaseAdmin()
     .from('assessment_prompts')
     .select('*')
     .eq('is_active', true)
@@ -114,7 +114,7 @@ export async function updateAssessmentPrompt(
   weight?: number
 ): Promise<AssessmentPrompt | null> {
   // Check if user already has a custom prompt for this subcategory
-  const { data: existing } = await supabaseAdmin
+  const { data: existing } = await getSupabaseAdmin()
     .from('assessment_prompts')
     .select('*')
     .eq('user_id', userId)
@@ -123,7 +123,7 @@ export async function updateAssessmentPrompt(
   
   if (existing) {
     // Update existing custom prompt
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await getSupabaseAdmin()
       .from('assessment_prompts')
       .update({
         prompt_template: promptTemplate,
@@ -141,7 +141,7 @@ export async function updateAssessmentPrompt(
     return data;
   } else {
     // Get the default prompt to copy other fields
-    const { data: defaultPrompt } = await supabaseAdmin
+    const { data: defaultPrompt } = await getSupabaseAdmin()
       .from('assessment_prompts')
       .select('*')
       .eq('subcategory_id', subcategoryId)
@@ -154,7 +154,7 @@ export async function updateAssessmentPrompt(
     }
     
     // Create new custom prompt for user
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await getSupabaseAdmin()
       .from('assessment_prompts')
       .insert({
         principle_id: defaultPrompt.principle_id,
@@ -182,7 +182,7 @@ export async function resetPromptToDefault(
   userId: string,
   subcategoryId: string
 ): Promise<boolean> {
-  const { error } = await supabaseAdmin
+  const { error } = await getSupabaseAdmin()
     .from('assessment_prompts')
     .delete()
     .eq('user_id', userId)
@@ -210,7 +210,7 @@ export async function storeDocumentChunks(
     metadata: chunk.metadata
   }));
   
-  const { error } = await supabaseAdmin
+  const { error } = await getSupabaseAdmin()
     .from('document_chunks')
     .insert(chunkRecords);
   
@@ -229,7 +229,7 @@ export async function searchDocumentChunks(
 ): Promise<DocumentChunk[]> {
   // For now, do a simple text search
   // TODO: Implement vector similarity search with embeddings
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await getSupabaseAdmin()
     .from('document_chunks')
     .select('*')
     .eq('document_id', documentId)
@@ -245,7 +245,7 @@ export async function searchDocumentChunks(
 
 // Get all chunks for a document
 export async function getDocumentChunks(documentId: string): Promise<DocumentChunk[]> {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await getSupabaseAdmin()
     .from('document_chunks')
     .select('*')
     .eq('document_id', documentId)
@@ -260,7 +260,7 @@ export async function getDocumentChunks(documentId: string): Promise<DocumentChu
 
 // Save assessment result
 export async function saveAssessmentResult(result: AssessmentResult): Promise<string | null> {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await getSupabaseAdmin()
     .from('assessment_results')
     .insert(result)
     .select('id')
@@ -278,7 +278,7 @@ export async function getUserAssessmentHistory(
   userId: string,
   limit: number = 10
 ): Promise<AssessmentResult[]> {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await getSupabaseAdmin()
     .from('assessment_results')
     .select('*')
     .eq('user_id', userId)
@@ -294,7 +294,7 @@ export async function getUserAssessmentHistory(
 
 // Delete document chunks when no longer needed
 export async function deleteDocumentChunks(documentId: string): Promise<boolean> {
-  const { error } = await supabaseAdmin
+  const { error } = await getSupabaseAdmin()
     .from('document_chunks')
     .delete()
     .eq('document_id', documentId);
