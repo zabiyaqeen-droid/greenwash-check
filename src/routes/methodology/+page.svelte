@@ -248,19 +248,128 @@
     
     <div class="scoring-section">
       <h2>How We Score</h2>
-      <p>
-        Each document is assessed against all 6 principles and their subcategories. For each subcategory, we evaluate:
-      </p>
-      <ul>
-        <li><strong>Compliance Level:</strong> How well the document adheres to the principle (scored 0-100)</li>
-        <li><strong>Evidence:</strong> Specific quotes and page references from the document</li>
-        <li><strong>Rationale:</strong> Explanation of why the score was assigned</li>
-        <li><strong>Recommendations:</strong> Actionable suggestions for improvement</li>
-      </ul>
-      <p>
-        The overall score is a weighted average across all principles, with each principle contributing equally 
-        to the final assessment.
-      </p>
+      
+      <div class="scoring-overview">
+        <p>
+          Each document undergoes a comprehensive assessment against all <strong>6 Competition Bureau principles</strong> 
+          and their <strong>18 subcategories</strong>. Our AI-powered analysis examines every environmental claim 
+          in your document to provide detailed, actionable insights.
+        </p>
+      </div>
+      
+      <div class="scoring-process">
+        <h3>Assessment Process</h3>
+        <div class="process-steps">
+          <div class="process-step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h4>Document Analysis</h4>
+              <p>Our AI reads your entire document, identifying all environmental claims, sustainability statements, and eco-related representations including text, images, charts, and infographics.</p>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h4>Claim Extraction</h4>
+              <p>Each environmental claim is extracted and categorised by type (carbon, waste, water, biodiversity, etc.) and mapped to the relevant Competition Bureau principles.</p>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h4>Principle-by-Principle Evaluation</h4>
+              <p>Every claim is evaluated against all 6 principles and their subcategories to identify compliance gaps, missing substantiation, and potential greenwashing risks.</p>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h4>Score Calculation</h4>
+              <p>Scores are calculated at the subcategory, principle, and overall document level, with detailed evidence and recommendations for each finding.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="scoring-criteria">
+        <h3>What We Evaluate for Each Claim</h3>
+        <div class="criteria-grid">
+          <div class="criteria-card">
+            <div class="criteria-icon compliance">📊</div>
+            <h4>Compliance Level</h4>
+            <p>How well the claim adheres to each principle, scored from 0-100 based on specific compliance indicators.</p>
+            <div class="score-scale">
+              <span class="scale-item high">80-100: Compliant</span>
+              <span class="scale-item medium">50-79: Needs Improvement</span>
+              <span class="scale-item low">0-49: High Risk</span>
+            </div>
+          </div>
+          <div class="criteria-card">
+            <div class="criteria-icon evidence">📝</div>
+            <h4>Evidence</h4>
+            <p>Specific quotes extracted directly from your document with page references, allowing you to locate and address each issue.</p>
+          </div>
+          <div class="criteria-card">
+            <div class="criteria-icon rationale">💡</div>
+            <h4>Rationale</h4>
+            <p>Clear explanation of why the score was assigned, referencing the specific Competition Bureau principle and Bill C-59 requirements.</p>
+          </div>
+          <div class="criteria-card">
+            <div class="criteria-icon recommendations">✅</div>
+            <h4>Recommendations</h4>
+            <p>Actionable suggestions for improving compliance, including specific language changes, substantiation requirements, and disclosure additions.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="scoring-calculation">
+        <h3>Score Calculation</h3>
+        <div class="calculation-details">
+          <div class="calculation-item">
+            <h4>Subcategory Scores</h4>
+            <p>Each of the 18 subcategories receives a score (0-100) based on how well the document's claims comply with that specific requirement.</p>
+          </div>
+          <div class="calculation-item">
+            <h4>Principle Scores</h4>
+            <p>The 3 subcategory scores within each principle are averaged to produce the principle score. Each principle is weighted equally at approximately 16.7%.</p>
+          </div>
+          <div class="calculation-item">
+            <h4>Overall Score</h4>
+            <p>The final score is the weighted average across all 6 principles, providing a single compliance indicator for your document.</p>
+          </div>
+        </div>
+        
+        <div class="risk-levels">
+          <h4>Risk Level Classification</h4>
+          <div class="risk-grid">
+            <div class="risk-item low-risk">
+              <span class="risk-score">80-100</span>
+              <span class="risk-label">Low Risk</span>
+              <p>Claims are well-substantiated and compliant with Competition Bureau guidelines.</p>
+            </div>
+            <div class="risk-item medium-risk">
+              <span class="risk-score">50-79</span>
+              <span class="risk-label">Medium Risk</span>
+              <p>Some claims may need additional substantiation or clarification to ensure compliance.</p>
+            </div>
+            <div class="risk-item high-risk">
+              <span class="risk-score">0-49</span>
+              <span class="risk-label">High Risk</span>
+              <p>Significant compliance gaps identified. Immediate attention recommended before publication.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="scoring-limitations">
+        <h3>Important Considerations</h3>
+        <ul>
+          <li><strong>AI-Assisted Analysis:</strong> Our assessment uses advanced AI to analyse documents, but AI can make mistakes. Always review findings with your legal and compliance teams.</li>
+          <li><strong>Point-in-Time Assessment:</strong> Scores reflect compliance at the time of analysis. Regulations and guidance may evolve.</li>
+          <li><strong>Document Scope:</strong> The assessment evaluates only the content provided. External substantiation documents are not automatically verified.</li>
+          <li><strong>Not Legal Advice:</strong> This tool provides compliance guidance but does not constitute legal advice. Consult qualified legal counsel for specific compliance questions.</li>
+        </ul>
+      </div>
     </div>
     
     <div class="additional-sources">
@@ -524,6 +633,250 @@
   .additional-sources a {
     color: #4A428E;
     text-decoration: underline;
+  }
+  
+  /* Scoring Section Detailed Styles */
+  .scoring-section h3 {
+    font-size: 1.25rem;
+    color: #1C2947;
+    margin: 2rem 0 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #E2E8F0;
+  }
+  
+  .scoring-section h3:first-of-type {
+    border-top: none;
+    padding-top: 0;
+  }
+  
+  .scoring-overview {
+    background: #F0FDF4;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .scoring-overview p {
+    margin: 0;
+  }
+  
+  /* Process Steps */
+  .process-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .process-step {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .step-number {
+    width: 36px;
+    height: 36px;
+    background: #4A428E;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  
+  .step-content {
+    flex: 1;
+  }
+  
+  .step-content h4 {
+    font-size: 1rem;
+    color: #1C2947;
+    margin: 0 0 0.25rem;
+  }
+  
+  .step-content p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #64748B;
+  }
+  
+  /* Criteria Grid */
+  .criteria-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .criteria-card {
+    background: #F8FAFC;
+    border-radius: 8px;
+    padding: 1.25rem;
+    border: 1px solid #E2E8F0;
+  }
+  
+  .criteria-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .criteria-card h4 {
+    font-size: 1rem;
+    color: #1C2947;
+    margin: 0 0 0.5rem;
+  }
+  
+  .criteria-card p {
+    font-size: 0.9rem;
+    color: #64748B;
+    margin: 0;
+  }
+  
+  .score-scale {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .scale-item {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+  }
+  
+  .scale-item.high {
+    background: #D1FAE5;
+    color: #065F46;
+  }
+  
+  .scale-item.medium {
+    background: #FEF3C7;
+    color: #92400E;
+  }
+  
+  .scale-item.low {
+    background: #FEE2E2;
+    color: #991B1B;
+  }
+  
+  /* Calculation Details */
+  .calculation-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .calculation-item {
+    background: #F8FAFC;
+    border-radius: 8px;
+    padding: 1rem;
+    border: 1px solid #E2E8F0;
+  }
+  
+  .calculation-item h4 {
+    font-size: 0.95rem;
+    color: #4A428E;
+    margin: 0 0 0.5rem;
+  }
+  
+  .calculation-item p {
+    font-size: 0.9rem;
+    margin: 0;
+  }
+  
+  /* Risk Levels */
+  .risk-levels h4 {
+    font-size: 1rem;
+    color: #1C2947;
+    margin: 0 0 1rem;
+  }
+  
+  .risk-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  
+  .risk-item {
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  .risk-item.low-risk {
+    background: #D1FAE5;
+    border: 1px solid #A7F3D0;
+  }
+  
+  .risk-item.medium-risk {
+    background: #FEF3C7;
+    border: 1px solid #FDE68A;
+  }
+  
+  .risk-item.high-risk {
+    background: #FEE2E2;
+    border: 1px solid #FECACA;
+  }
+  
+  .risk-score {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+  
+  .risk-item.low-risk .risk-score { color: #065F46; }
+  .risk-item.medium-risk .risk-score { color: #92400E; }
+  .risk-item.high-risk .risk-score { color: #991B1B; }
+  
+  .risk-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  .risk-item.low-risk .risk-label { color: #065F46; }
+  .risk-item.medium-risk .risk-label { color: #92400E; }
+  .risk-item.high-risk .risk-label { color: #991B1B; }
+  
+  .risk-item p {
+    font-size: 0.85rem;
+    margin: 0;
+    color: #334155;
+  }
+  
+  /* Limitations */
+  .scoring-limitations {
+    background: #FEF3C7;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-top: 1.5rem;
+  }
+  
+  .scoring-limitations h3 {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+    color: #92400E;
+  }
+  
+  .scoring-limitations ul {
+    margin: 0;
+  }
+  
+  .scoring-limitations li {
+    color: #78350F;
+  }
+  
+  @media (max-width: 768px) {
+    .criteria-grid,
+    .calculation-details,
+    .risk-grid {
+      grid-template-columns: 1fr;
+    }
   }
   
   @media (max-width: 640px) {

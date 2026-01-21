@@ -4,7 +4,7 @@
   import { assessmentHistory } from '$lib/stores/assessment';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
-  import { Upload, FileText, Settings2, Play, Loader2, ChevronDown, ChevronUp, RotateCcw, AlertCircle, CheckCircle, Info, X, File, Award, AlertTriangle, ExternalLink, Sparkles, Shield, DollarSign, Scale, TrendingDown } from 'lucide-svelte';
+  import { Upload, FileText, Settings2, Play, Loader2, ChevronDown, ChevronUp, RotateCcw, AlertCircle, CheckCircle, Info, X, File, Award, AlertTriangle, ExternalLink, Sparkles, Shield, DollarSign, Scale, TrendingDown, Square } from 'lucide-svelte';
   
   let inputText = $state('');
   let showCriteriaPanel = $state(false);
@@ -23,6 +23,8 @@
   let analysisStage = $state('');
   let analysisError = $state('');
   let analysisTimer: ReturnType<typeof setInterval> | null = null;
+  let abortController: AbortController | null = null;
+  let analysisId = $state<string | null>(null);
   
   let result = $state<any>(null);
   let currentUser = $state<any>(null);
@@ -31,6 +33,51 @@
   // Expanded sections state
   let expandedIssues = $state<Set<number>>(new Set());
   let expandedPositives = $state<Set<number>>(new Set());
+  
+  // Storage key for persisting analysis state
+  const STORAGE_KEY = 'greenwash_check_analysis_state';
+  
+  // Save analysis state to localStorage
+  function saveAnalysisState() {
+    if (typeof window === 'undefined') return;
+    const state = {
+      isAnalyzing,
+      analysisProgress,
+      analysisStage,
+      analysisId,
+      inputText,
+      inputMode,
+      uploadedFilePath,
+      uploadedFileId,
+      uploadedFileName: uploadedFile?.name || null,
+      timestamp: Date.now()
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+  
+  // Load analysis state from localStorage
+  function loadAnalysisState() {
+    if (typeof window === 'undefined') return null;
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return null;
+    try {
+      const state = JSON.parse(saved);
+      // Only restore if less than 15 minutes old
+      if (Date.now() - state.timestamp > 15 * 60 * 1000) {
+        clearAnalysisState();
+        return null;
+      }
+      return state;
+    } catch {
+      return null;
+    }
+  }
+  
+  // Clear analysis state from localStorage
+  function clearAnalysisState() {
+    if (typeof window === 'undefined') return;
+    localStorage.removeItem(STORAGE_KEY);
+  }
   
   onMount(() => {
     user.init();
@@ -41,6 +88,25 @@
     criteria.subscribe(d => {
       dimensions = d;
     });
+    
+    // Restore analysis state if returning to page
+    const savedState = loadAnalysisState();
+    if (savedState && savedState.isAnalyzing) {
+      // Show that analysis is in progress
+      isAnalyzing = true;
+      analysisProgress = savedState.analysisProgress;
+      analysisStage = savedState.analysisStage || 'Analysis in progress...';
+      analysisId = savedState.analysisId;
+      inputText = savedState.inputText || '';
+      inputMode = savedState.inputMode || 'document';
+      uploadedFilePath = savedState.uploadedFilePath;
+      uploadedFileId = savedState.uploadedFileId;
+      
+      // Continue polling for result if we have an analysis ID
+      if (savedState.analysisId) {
+        pollForResult(savedState.analysisId);
+      }
+    }
   });
   
   function toggleDimensionExpand(dimId: string) {

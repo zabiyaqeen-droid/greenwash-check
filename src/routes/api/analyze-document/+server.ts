@@ -6,6 +6,7 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import { join } from 'path';
 import { existsSync } from 'fs';
+import { getAssessmentPrompts, storeDocumentChunks, saveAssessmentResult, type AssessmentPrompt } from '$lib/supabase';
 
 const execAsync = promisify(exec);
 
@@ -28,6 +29,7 @@ interface AnalyzeRequest {
   filePath: string;
   fileName: string;
   dimensions: any[];
+  userId?: string;
 }
 
 interface ClaimEvidence {
@@ -120,8 +122,8 @@ async function getPdfPageCount(pdfPath: string): Promise<number> {
   }
 }
 
-// Build the detailed assessment framework prompt
-function buildAssessmentFramework(dimensions: any[]): string {
+// Build the detailed assessment framework prompt using custom prompts from Supabase
+function buildAssessmentFramework(dimensions: any[], customPrompts?: AssessmentPrompt[]): string {
   const enabledDimensions = dimensions.filter((d: any) => d.enabled !== false);
   
   let framework = `COMPETITION BUREAU'S 6 PRINCIPLES FOR ENVIRONMENTAL CLAIMS:\n\n`;
@@ -134,7 +136,12 @@ function buildAssessmentFramework(dimensions: any[]): string {
     
     const enabledCriteria = dim.criteria?.filter((c: any) => c.enabled !== false) || [];
     enabledCriteria.forEach((c: any) => {
-      framework += `   - ${c.name}: ${c.description}\n`;
+      // Check if there's a custom prompt for this subcategory
+      const customPrompt = customPrompts?.find(p => p.subcategory_id === c.id);
+      const promptText = customPrompt?.prompt_template || c.description;
+      const weight = customPrompt?.weight || c.weight || 1;
+      
+      framework += `   - ${c.name} (Weight: ${weight}%): ${promptText}\n`;
     });
     framework += `\n`;
   });
@@ -143,8 +150,8 @@ function buildAssessmentFramework(dimensions: any[]): string {
 }
 
 // Analyze a batch of images with Vision API - extract claims and findings
-async function analyzeImageBatch(imagePaths: string[], dimensions: any[], batchNumber: number, pageStart: number): Promise<ChunkResult> {
-  const framework = buildAssessmentFramework(dimensions);
+async function analyzeImageBatch(imagePaths: string[], dimensions: any[], batchNumber: number, pageStart: number, customPrompts?: AssessmentPrompt[]): Promise<ChunkResult> {
+  const framework = buildAssessmentFramework(dimensions, customPrompts);
 
   const imageContents: OpenAI.Chat.Completions.ChatCompletionContentPart[] = [];
   
@@ -181,21 +188,38 @@ ${framework}
 
 LEGAL CONTEXT:
 - Bill C-59 amended the Competition Act in June 2024
-- Penalties: Up to $10M for individuals, $15M for corporations
+- Penalties: Up to $10M for individuals, $15M for corporations (or 3% of global revenue)
+- Private right of action enabled June 2025 - individuals can now sue for greenwashing
 - Both literal meaning AND general impression are assessed
-- Claims must be substantiated BEFORE being made
+- Claims must be substantiated BEFORE being made using internationally recognised methodology
+
+SCORING METHODOLOGY:
+You are scoring against the Competition Bureau's 6 Principles, each with 3 subcategories (18 total):
+
+1. BE TRUTHFUL (Literal Accuracy, General Impression, No Exaggeration)
+2. BE SUBSTANTIATED (Adequate Testing, Recognised Methodology, Third-Party Verification)
+3. BE SPECIFIC ABOUT COMPARISONS (Clear Comparison Basis, Extent of Difference, Fair Comparisons)
+4. BE PROPORTIONATE (Proportionate Claims, Materiality, No Cherry-Picking)
+5. WHEN IN DOUBT, SPELL IT OUT (Avoid Vague Terms, Scope Clarity, Accessible Information)
+6. SUBSTANTIATE FUTURE CLAIMS (Concrete Plan, Interim Targets, Meaningful Steps Underway)
+
+SCORING SCALE:
+- 80-100: COMPLIANT - Claims are well-substantiated and compliant with Competition Bureau guidelines
+- 50-79: NEEDS IMPROVEMENT - Some claims may need additional substantiation or clarification
+- 0-49: HIGH RISK - Significant compliance gaps identified, immediate attention recommended
 
 YOUR TASK:
 Analyze these document pages (pages ${pageStart}-${pageStart + imagePaths.length - 1}) and:
 
 1. EXTRACT ALL ENVIRONMENTAL/SUSTAINABILITY CLAIMS - Include exact quotes and page numbers
-2. ASSESS EACH CLAIM against the 6 Principles and their subcategories
+2. ASSESS EACH CLAIM against ALL 6 Principles and their 18 subcategories
 3. NOTE which specific principle AND subcategory each finding relates to
+4. Provide EVIDENCE (exact quotes with page references) for each assessment
 
 For each claim found, determine:
 - Which principle(s) it relates to
 - Which specific subcategory within that principle
-- Whether it's compliant, needs attention, or high risk
+- Whether it's compliant (80-100), needs attention (50-79), or high risk (0-49)
 - The exact quote from the document
 - The page number where it appears
 
@@ -434,9 +458,18 @@ export const POST: RequestHandler = async ({ request }) => {
   
   try {
     const body: AnalyzeRequest = await request.json();
-    const { fileId, filePath, fileName, dimensions } = body;
+    const { fileId, filePath, fileName, dimensions, userId } = body;
 
     console.log(`Starting analysis of ${fileName}, storage path: ${filePath}`);
+
+    // Fetch custom prompts from Supabase (user-specific or defaults)
+    let customPrompts: AssessmentPrompt[] = [];
+    try {
+      customPrompts = await getAssessmentPrompts(userId);
+      console.log(`Loaded ${customPrompts.length} assessment prompts${userId ? ' (including user customizations)' : ' (defaults)'}`);
+    } catch (promptError) {
+      console.warn('Could not load custom prompts, using defaults:', promptError);
+    }
 
     // Create temp directory for processing
     const tempDir = `/tmp/greenwash-process-${fileId}`;
@@ -486,7 +519,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const imagePaths = await convertPdfToImages(localFilePath, imageDir, startPage, endPage);
       
       if (imagePaths.length > 0) {
-        const chunkResult = await analyzeImageBatch(imagePaths, dimensions, batchNumber, startPage);
+        const chunkResult = await analyzeImageBatch(imagePaths, dimensions, batchNumber, startPage, customPrompts);
         chunks.push(chunkResult);
         
         // Clean up images after processing
@@ -528,6 +561,25 @@ export const POST: RequestHandler = async ({ request }) => {
 
     const processingTime = Math.round((Date.now() - startTime) / 1000);
     console.log(`Analysis complete in ${processingTime} seconds`);
+
+    // Save assessment result to Supabase for history tracking
+    if (userId) {
+      try {
+        await saveAssessmentResult({
+          user_id: userId,
+          document_id: fileId,
+          document_name: fileName,
+          overall_score: finalResult.overallScore || 0,
+          risk_level: finalResult.riskLevel || 'Unknown',
+          principle_scores: finalResult.principleScores || {},
+          findings: finalResult.criticalIssues || [],
+          recommendations: finalResult.legalRiskAssessment?.priorityActions || []
+        });
+        console.log('Assessment result saved to Supabase');
+      } catch (saveError) {
+        console.warn('Could not save assessment result:', saveError);
+      }
+    }
 
     return json({
       success: true,

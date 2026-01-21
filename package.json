@@ -26,6 +26,7 @@
 		"vite": "^7.2.6"
 	},
 	"dependencies": {
+		"@supabase/supabase-js": "^2.91.0",
 		"@sveltejs/adapter-vercel": "^6.3.0",
 		"@vercel/blob": "^2.0.0",
 		"express": "^5.2.1",
